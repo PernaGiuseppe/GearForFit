@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="10ecab47-713b-4f2f-8941-16250b289024" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/giuseppeperna/GearForFit/entities/Alimenti/Condimento.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/giuseppeperna/GearForFit/entities/Alimenti/Dolce.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/giuseppeperna/GearForFit/entities/Alimenti/Pesce.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/giuseppeperna/GearForFit/entities/Bevande/BevandaAnalcolica.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/giuseppeperna/GearForFit/runners/ElementiCsvRunner.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/giuseppeperna/GearForFit/services/AlimentoService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/giuseppeperna/GearForFit/services/BevandaService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/data/elementi_unificati.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/giuseppeperna/GearForFit/entities/Alimenti/Alimento.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/giuseppeperna/GearForFit/entities/Alimenti/Alimento.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/giuseppeperna/GearForFit/entities/Alimenti/Carboidrato.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/giuseppeperna/GearForFit/entities/Alimenti/Carboidrato.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/giuseppeperna/GearForFit/entities/Alimenti/Carne.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/giuseppeperna/GearForFit/entities/Alimenti/Carne.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/giuseppeperna/GearForFit/entities/Alimenti/Frutta.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/giuseppeperna/GearForFit/entities/Alimenti/Frutta.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/giuseppeperna/GearForFit/entities/Alimenti/Latticino.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/giuseppeperna/GearForFit/entities/Alimenti/Latticino.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/giuseppeperna/GearForFit/entities/Alimenti/Legume.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/giuseppeperna/GearForFit/entities/Alimenti/Legume.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/giuseppeperna/GearForFit/entities/Alimenti/Verdura.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/giuseppeperna/GearForFit/entities/Alimenti/Verdura.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/giuseppeperna/GearForFit/entities/Bevande/Acqua.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/giuseppeperna/GearForFit/entities/Bevande/Bevanda.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/giuseppeperna/GearForFit/entities/Bevande/Bevanda.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/giuseppeperna/GearForFit/entities/Bevande/BevandaAlcolica.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/giuseppeperna/GearForFit/entities/Bevande/BevandaAlcolica.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/giuseppeperna/GearForFit/entities/Bevande/BevandaGassata.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/giuseppeperna/GearForFit/entities/Bevande/BevandaEnergetica.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/giuseppeperna/GearForFit/entities/Bevande/Succo.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/giuseppeperna/GearForFit/repositories/AlimentoRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/giuseppeperna/GearForFit/repositories/AlimentoRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/giuseppeperna/GearForFit/repositories/BevandaRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/giuseppeperna/GearForFit/repositories/BevandaRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/giuseppeperna/GearForFit/runners/DatabasePopulationRunner.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/giuseppeperna/GearForFit/services/ImportazioneCREAService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/data/crea_alimenti.csv" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CompilerWorkspaceConfiguration">
+    <option name="MAKE_PROJECT_ON_SAVE" value="true" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Record" />
+        <option value="Exception" />
+        <option value="Interface" />
+        <option value="Enum" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="FormatOnSaveOptions">
+    <option name="myRunOnSave" value="true" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="mavenHomeTypeForPersistence" value="WRAPPER" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="OptimizeOnSaveOptions">
+    <option name="myRunOnSave" value="true" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 5
+}</component>
+  <component name="ProjectId" id="351HTvm0ioTCFckCClSrqruKZh8" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.Application.executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "GiuseppeBackEnd",
+    "ignore.virus.scanning.warn.message": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/giuse/Desktop/Progetto Capstone/GearForFit/BackEnd/src/main/resources/data",
+    "rearrange.code.on.save": "true",
+    "settings.editor.selected.configurable": "actions.on.save"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\giuse\Desktop\Progetto Capstone\GearForFit\BackEnd\src\main\resources\data" />
+      <recent name="C:\Users\giuse\Desktop\Epicode Back-end\GearForFit\src\main\resources\data" />
+    </key>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="10ecab47-713b-4f2f-8941-16250b289024" name="Changes" comment="" />
+      <created>1762270670449</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1762270670449</updated>
+    </task>
+    <servers />
+  </component>
+</project>
