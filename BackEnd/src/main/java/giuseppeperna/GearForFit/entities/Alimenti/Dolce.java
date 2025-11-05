@@ -4,6 +4,7 @@ import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 
 @Entity
-@DiscriminatorValue("CARBOIDRATO")
-public class Carboidrato extends Alimento {
+@DiscriminatorValue("DOLCE")
+public class Dolce extends Alimento {
+
 }

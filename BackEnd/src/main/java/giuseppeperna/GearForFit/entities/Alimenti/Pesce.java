@@ -2,8 +2,10 @@ package giuseppeperna.GearForFit.entities.Alimenti;
 
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
+import lombok.NoArgsConstructor;
 
 @Entity
-@DiscriminatorValue("CARBOIDRATO")
-public class Carboidrato extends Alimento {
+@DiscriminatorValue("PESCE")
+@NoArgsConstructor
+public class Pesce extends Alimento {
 }
