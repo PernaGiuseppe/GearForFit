@@ -1,4 +1,5 @@
 package giuseppeperna.GearForFit.entities;
 
-public class Prova {
+public enum TipoUtente {
+    ADMIN, USER
 }
