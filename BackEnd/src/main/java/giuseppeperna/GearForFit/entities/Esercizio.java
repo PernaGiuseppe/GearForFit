@@ -1,24 +1,50 @@
 package giuseppeperna.GearForFit.entities;
 
+
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
-@Getter
-@Setter
+@Table(name = "exercises")
+@Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
-
 public class Esercizio {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Setter(AccessLevel.NONE)
     private Long id;
-    private String nome;
-    @Column(length = 2000)
-    private String descrizione;
-    private String immagineUrl;
-    private String gruppoMuscolare;
-    private String difficolta;
+
+    @Column(nullable = false)
+    private String name;
+
+    @Column(columnDefinition = "TEXT")
+    private String description;
+
+    @Column(columnDefinition = "TEXT")
+    private String imageUrl;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "muscle_group_id", nullable = false)
+    private GruppoMuscolare muscleGroup;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "equipment_id", nullable = false)
+    private Attrezzo equipment;
+
+    @Column(nullable = false)
+    private Boolean isCompound;
+
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private java.time.LocalDateTime createdAt;
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = java.time.LocalDateTime.now();
+    }
 }
+
