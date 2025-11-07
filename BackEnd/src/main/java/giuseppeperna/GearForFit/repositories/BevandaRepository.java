@@ -18,7 +18,4 @@ public interface BevandaRepository extends JpaRepository<Bevanda, Long> {
 
     List<Bevanda> findByProteinePer100gBetween(double min, double max);
 
-    List<Bevanda> findByAlcolPer100mlGreaterThan(double alcol);
-
-    List<Bevanda> findByAlcolPer100mlEquals(double alcol);
 }

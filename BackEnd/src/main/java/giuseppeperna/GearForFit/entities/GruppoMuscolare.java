@@ -19,8 +19,6 @@ public class GruppoMuscolare {
     private Long id;
 
     @Column(nullable = false, unique = true)
-    private String name;
-
-    @Column(columnDefinition = "TEXT")
-    private String description;
+    private String nome;
+    
 }

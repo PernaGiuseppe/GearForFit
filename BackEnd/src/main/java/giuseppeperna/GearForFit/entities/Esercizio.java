@@ -1,6 +1,5 @@
 package giuseppeperna.GearForFit.entities;
 
-
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,7 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "exercises")
+@Table(name = "esercizi")
 @Data
 @Builder
 @NoArgsConstructor
@@ -20,31 +19,30 @@ public class Esercizio {
     private Long id;
 
     @Column(nullable = false)
-    private String name;
+    private String nome;
 
-    @Column(columnDefinition = "TEXT")
-    private String description;
-
-    @Column(columnDefinition = "TEXT")
-    private String imageUrl;
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "muscle_group_id", nullable = false)
-    private GruppoMuscolare muscleGroup;
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "equipment_id", nullable = false)
-    private Attrezzo equipment;
+    @Column(name = "descrizione_esercizio")
+    private String descrizione;
 
     @Column(nullable = false)
-    private Boolean isCompound;
+    private String urlImmagine;
 
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private java.time.LocalDateTime createdAt;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "gruppo_muscolare_id", nullable = false)
+    private GruppoMuscolare gruppoMuscolare;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "attrezzo_id", nullable = false)
+    private Attrezzo attrezzo;
+
+    @Column(nullable = false)
+    private Boolean isComposto;
+
+    @Column(name = "data_creazione", nullable = false, updatable = false)
+    private java.time.LocalDateTime dataCreazione;
 
     @PrePersist
     protected void onCreate() {
-        this.createdAt = java.time.LocalDateTime.now();
+        this.dataCreazione = java.time.LocalDateTime.now();
     }
 }
-

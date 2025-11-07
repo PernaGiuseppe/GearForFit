@@ -24,7 +24,7 @@ public class SchemaSerie {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private TipoSerie tipo;
+    private TipoAllenamento tipoAllenamento;
 
     @Column(nullable = false)
     private Integer serie;
@@ -32,14 +32,10 @@ public class SchemaSerie {
     @Column(nullable = false)
     private Integer ripetizioni;
 
-    @Column(name = "ripetizioni_piramidale", columnDefinition = "TEXT")
-    private String ripetizioni_piramidale;
-
-    @Column(columnDefinition = "TEXT")
+    @Column(name = "descrizione_schemaSerie")
     private String descrizione;
+    //se piramidale 6/8/10, o a scendere
+    //se stripping quante reps per quante volte
 
-    public enum TipoSerie {
-        STANDARD, PIRAMIDALE
-    }
 }
 

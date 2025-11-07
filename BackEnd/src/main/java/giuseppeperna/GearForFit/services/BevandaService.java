@@ -68,13 +68,6 @@ public class BevandaService {
         return bevandaRepository.findByProteinePer100gBetween(min, max);
     }
 
-    public List<Bevanda> findBevandeAlcoliche() {
-        return bevandaRepository.findByAlcolPer100mlGreaterThan(0.0);
-    }
-
-    public List<Bevanda> findBevandeNonAlcoliche() {
-        return bevandaRepository.findByAlcolPer100mlEquals(0.0);
-    }
 
     // ==================== MEDTODI UPDATE ====================
 

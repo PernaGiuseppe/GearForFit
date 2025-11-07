@@ -1,12 +1,16 @@
 package giuseppeperna.GearForFit.entities;
 
-
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 
 @Entity
@@ -15,7 +19,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Utente {
+public class Utente implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,22 +42,56 @@ public class Utente {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Ruolo ruolo;
+    private TipoUtente tipoUtente;
+
+    // ← AGGIUNGI QUESTO
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private TipoPiano tipoPiano;
 
     @OneToMany(mappedBy = "utente", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SchedaAllenamento> schedeAllenamento;
 
     @Column(name = "data_creazione", nullable = false, updatable = false)
-    private java.time.LocalDateTime dataCreazione;
+    private LocalDateTime dataCreazione;
 
     @PrePersist
     protected void onCreate() {
-        this.dataCreazione = java.time.LocalDateTime.now();
+        this.dataCreazione = LocalDateTime.now();
     }
 
-    public enum Ruolo {
-        ADMIN,
-        UTENTE
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority(tipoUtente.name()));
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return attivo;
     }
 }
-

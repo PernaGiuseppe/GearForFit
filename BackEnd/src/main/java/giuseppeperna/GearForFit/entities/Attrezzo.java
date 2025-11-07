@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "equipment")
+@Table(name = "attrezzi")
 @Data
 @Builder
 @NoArgsConstructor
@@ -19,8 +19,6 @@ public class Attrezzo {
     private Long id;
 
     @Column(nullable = false, unique = true)
-    private String name;
+    private String nome;
 
-    @Column(columnDefinition = "TEXT")
-    private String description;
 }
