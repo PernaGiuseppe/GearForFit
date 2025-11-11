@@ -1,7 +1,7 @@
 package giuseppeperna.GearForFit.services;
 
 import giuseppeperna.GearForFit.entities.CalcoloBMR;
-import giuseppeperna.GearForFit.entities.SchedePalestra.TipoDieta;
+import giuseppeperna.GearForFit.entities.TipoDieta;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;

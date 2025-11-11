@@ -6,7 +6,6 @@ public record EsercizioDTO(
         String descrizione,
         String urlImmagine,
         String gruppoMuscolare,
-        String attrezzo,
-        Boolean isComposto
+        String attrezzo
 ) {
 }

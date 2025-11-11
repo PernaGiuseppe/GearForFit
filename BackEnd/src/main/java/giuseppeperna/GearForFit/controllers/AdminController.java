@@ -1,23 +1,19 @@
 package giuseppeperna.GearForFit.controllers;
 
-import giuseppeperna.GearForFit.entities.SchedePalestra.ObiettivoAllenamento;
+import giuseppeperna.GearForFit.entities.Utente.QeA;
+import giuseppeperna.GearForFit.entities.SchedePalestra.*;
 import giuseppeperna.GearForFit.entities.Utente.TipoPiano;
-import giuseppeperna.GearForFit.entities.Utente.TipoUtente;
 import giuseppeperna.GearForFit.entities.Utente.Utente;
-import giuseppeperna.GearForFit.exceptions.NotValidException;
 import giuseppeperna.GearForFit.payloads.*;
-import giuseppeperna.GearForFit.services.EsercizioService;
-import giuseppeperna.GearForFit.services.QeAService;
-import giuseppeperna.GearForFit.services.SchedaAllenamentoService;
-import giuseppeperna.GearForFit.services.UtenteService;
+import giuseppeperna.GearForFit.services.*;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -29,313 +25,272 @@ public class AdminController {
     private UtenteService utenteService;
 
     @Autowired
-    private SchedaAllenamentoService schedaService;
+    private GruppoMuscolareService gruppoMuscolareService;
+
+    @Autowired
+    private AttrezzoService attrezzoService;
 
     @Autowired
     private EsercizioService esercizioService;
 
     @Autowired
-    private QeAService qeaService;
+    private SchedaAllenamentoService schedaAllenamentoService;
 
-    // ============= GESTIONE UTENTI =============
+    @Autowired
+    private QeAService qeAService;
 
-    // Ottieni tutti gli utenti
+
+    // GESTIONE UTENTI
+
+
     @GetMapping("/utenti")
-    public List<Utente> getAllUtenti() {
+    public List<Utente> getTuttiUtenti() {
         return utenteService.getAllUtenti();
     }
 
-    // Ottieni un utente specifico
     @GetMapping("/utenti/{id}")
-    public Utente getUtente(@PathVariable Long id) {
+    public Utente getUtenteById(@PathVariable Long id) {
         return utenteService.findById(id);
     }
 
-    // Crea un nuovo utente (ADMIN crea gli utenti) - CON JSON E PIANO OPZIONALE
-    @PostMapping("/utenti")
-    @ResponseStatus(HttpStatus.CREATED)
-    public Utente creaUtente(@RequestBody @Validated CreaUtenteRequestDTO body, BindingResult validationResult) {
-        if (validationResult.hasErrors()) {
-            List<String> errorMessages = validationResult.getFieldErrors().stream()
-                    .map(fieldError -> fieldError.getField() + " :" + fieldError.getDefaultMessage())
-                    .toList();
-            throw new NotValidException(errorMessages);
-        }
-
-        // Se tipoPiano è specificato, usa il metodo con piano custom
-        if (body.tipoPiano() != null) {
-            return utenteService.creaUtenteConPiano(
-                    body.email(),
-                    body.password(),
-                    body.nome(),
-                    body.cognome(),
-                    body.tipoUtente(),
-                    body.tipoPiano()
-            );
-        }
-
-        // Altrimenti usa il metodo standard (FREE di default)
-        return utenteService.creaUtente(body.email(), body.password(), body.nome(), body.cognome(), body.tipoUtente());
-    }
-
-
-    // Cambia il ruolo di un utente
-    @PutMapping("/utenti/{id}/ruolo")
-    public Utente cambiaRuolo(
-            @PathVariable Long id,
-            @RequestParam TipoUtente nuovoRuolo) {
-        return utenteService.cambiaRuolo(id, nuovoRuolo);
-    }
-
-    // Cambia il piano di un utente
     @PutMapping("/utenti/{id}/piano")
-    public Utente cambiaPiano(
-            @PathVariable Long id,
-            @RequestParam TipoPiano nuovoPiano) {
+    public Utente modificaPiano(@PathVariable Long id, @RequestParam TipoPiano nuovoPiano) {
         return utenteService.cambiaPiano(id, nuovoPiano);
     }
 
-    /*    // Disattiva un utente
-        @PutMapping("/utenti/{id}/disattiva")
-        public Utente disattivaUtente(@PathVariable Long id) {
-            return utenteService.disattivaUtente(id);
-        }
-
-        // Attiva un utente
-        @PutMapping("/utenti/{id}/attiva")
-        public Utente attivaUtente(@PathVariable Long id) {
-            return utenteService.attivaUtente(id);
-        }*/
-
-    // Admin resetta password di un utente
     @PutMapping("/utenti/reset-password")
-    public Utente resetPasswordUtente(@RequestBody ResetPasswordAdminDTO body) {
+    public Utente resetPasswordUtente(@RequestBody @Valid ResetPasswordAdminDTO body) {
         return utenteService.resetPasswordByAdmin(body.utenteId(), body.nuovaPassword());
     }
 
-    // Elimina un utente
     @DeleteMapping("/utenti/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void eliminaUtente(@PathVariable Long id) {
         utenteService.eliminaUtente(id);
     }
 
-    // ============= GESTIONE SCHEDE STANDARD =============
 
-    // Crea una scheda STANDARD (associata all'admin corrente)
-    @PostMapping("/schede-standard")
+    // GRUPPI MUSCOLARI
+
+
+    @PostMapping("/gruppi-muscolari")
     @ResponseStatus(HttpStatus.CREATED)
-    public SchedaAllenamentoDTO creaSchedaStandard(
-            @RequestBody @Validated SchedaAllenamentoRequestDTO body,
-            BindingResult validationResult,
-            Authentication authentication) {
-        if (validationResult.hasErrors()) {
-            List<String> errorMessages = validationResult.getFieldErrors().stream()
-                    .map(fieldError -> fieldError.getField() + " :" + fieldError.getDefaultMessage())
-                    .toList();
-            throw new NotValidException(errorMessages);
-        }
-        Utente admin = (Utente) authentication.getPrincipal();
-        return schedaService.creaSchedaStandard(admin.getId(), body);
+    public GruppoMuscolare creaGruppoMuscolare(@RequestBody @Valid GruppoMuscolareRequestDTO body) {
+        return gruppoMuscolareService.creaGruppoMuscolare(body);
     }
 
-    // Ottieni tutte le schede STANDARD
-    @GetMapping("/schede-standard")
-    public List<SchedaAllenamentoDTO> ottieniSchedeStandard() {
-        return schedaService.ottieniSchedeStandard();
+    @GetMapping("/gruppi-muscolari")
+    public List<GruppoMuscolare> getTuttiGruppiMuscolari() {
+        return gruppoMuscolareService.getTutti();
     }
 
-    // Ottieni schede standard per obiettivo
-    @GetMapping("/schede-standard/obiettivo/{obiettivo}")
-    public List<SchedaAllenamentoDTO> ottieniSchedeStandardPerObiettivo(
-            @PathVariable ObiettivoAllenamento obiettivo) {
-        return schedaService.ottieniSchedeStandardPerObiettivo(obiettivo);
+    @GetMapping("/gruppi-muscolari/{id}")
+    public GruppoMuscolare getGruppoMuscolare(@PathVariable Long id) {
+        return gruppoMuscolareService.findById(id);
     }
 
-    // Ottieni una scheda STANDARD per ID
-    @GetMapping("/schede-standard/{id}")
-    public SchedaAllenamentoDTO ottieniSchedaStandard(@PathVariable Long id) {
-        return schedaService.ottieniSchedaPerId(id);
-    }
-
-    // Aggiorna una scheda STANDARD
-    @PutMapping("/schede-standard/{id}")
-    public SchedaAllenamentoDTO aggiornaSchedaStandard(
+    @PutMapping("/gruppi-muscolari/{id}")
+    public GruppoMuscolare aggiornaGruppoMuscolare(
             @PathVariable Long id,
-            @RequestBody @Validated SchedaAllenamentoRequestDTO body,
-            BindingResult validationResult) {
-        if (validationResult.hasErrors()) {
-            List<String> errorMessages = validationResult.getFieldErrors().stream()
-                    .map(fieldError -> fieldError.getField() + " :" + fieldError.getDefaultMessage())
-                    .toList();
-            throw new NotValidException(errorMessages);
-        }
-        return schedaService.aggiornaScheda(id, body);
+            @RequestBody @Valid GruppoMuscolareRequestDTO body) {
+        return gruppoMuscolareService.aggiorna(id, body);
     }
 
-    // Elimina una scheda STANDARD
-    @DeleteMapping("/schede-standard/{id}")
+    @DeleteMapping("/gruppi-muscolari/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void eliminaSchedaStandard(@PathVariable Long id) {
-        schedaService.eliminaScheda(id);
+    public void eliminaGruppoMuscolare(@PathVariable Long id) {
+        gruppoMuscolareService.elimina(id);
     }
 
-    // Duplica una scheda standard per un utente specifico
-    @PostMapping("/schede-standard/{schedaId}/duplica/{utenteId}")
+
+    // ATTREZZI
+
+
+    @PostMapping("/attrezzi")
     @ResponseStatus(HttpStatus.CREATED)
-    public SchedaAllenamentoDTO duplicaSchedaStandardPerUtente(
-            @PathVariable Long schedaId,
-            @PathVariable Long utenteId) {
-        return schedaService.duplicaSchedaStandardPerUtente(schedaId, utenteId);
+    public Attrezzo creaAttrezzo(@RequestBody @Valid AttrezzoRequestDTO body) {
+        return attrezzoService.creaAttrezzo(body);
     }
 
-    // ============= GESTIONE SCHEDE UTENTE =============
-
-    // Crea una scheda per un utente specifico (scheda custom/personalizzata)
-    @PostMapping("/schede/{utenteId}")
-    @ResponseStatus(HttpStatus.CREATED)
-    public SchedaAllenamentoDTO creaSchedaPerUtente(
-            @PathVariable Long utenteId,
-            @RequestBody @Validated SchedaAllenamentoRequestDTO body,
-            BindingResult validationResult) {
-        if (validationResult.hasErrors()) {
-            List<String> errorMessages = validationResult.getFieldErrors().stream()
-                    .map(fieldError -> fieldError.getField() + " :" + fieldError.getDefaultMessage())
-                    .toList();
-            throw new NotValidException(errorMessages);
-        }
-        return schedaService.creaScheda(utenteId, body);
+    @GetMapping("/attrezzi")
+    public List<Attrezzo> getTuttiAttrezzi() {
+        return attrezzoService.getTutti();
     }
 
-    // Ottieni tutte le schede di un utente specifico
-    @GetMapping("/schede/utente/{utenteId}")
-    public List<SchedaAllenamentoDTO> ottieniSchedeUtente(@PathVariable Long utenteId) {
-        return schedaService.ottieniSchedeUtente(utenteId);
+    @GetMapping("/attrezzi/{id}")
+    public Attrezzo getAttrezzo(@PathVariable Long id) {
+        return attrezzoService.findById(id);
     }
 
-    // ============= GESTIONE ESERCIZI =============
+    @PutMapping("/attrezzi/{id}")
+    public Attrezzo aggiornaAttrezzo(
+            @PathVariable Long id,
+            @RequestBody @Valid AttrezzoRequestDTO body) {
+        return attrezzoService.aggiorna(id, body);
+    }
 
-    // Crea un nuovo esercizio
+    @DeleteMapping("/attrezzi/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void eliminaAttrezzo(@PathVariable Long id) {
+        attrezzoService.elimina(id);
+    }
+
+
+    // ESERCIZI
+
+
     @PostMapping("/esercizi")
     @ResponseStatus(HttpStatus.CREATED)
-    public EsercizioDTO creaEsercizio(
-            @RequestBody @Validated EsercizioRequestDTO body,
-            BindingResult validationResult) {
-        if (validationResult.hasErrors()) {
-            List<String> errorMessages = validationResult.getFieldErrors().stream()
-                    .map(fieldError -> fieldError.getField() + " :" + fieldError.getDefaultMessage())
-                    .toList();
-            throw new NotValidException(errorMessages);
-        }
+    public Esercizio creaEsercizio(@RequestBody @Valid EsercizioRequestDTO body) {
         return esercizioService.creaEsercizio(body);
     }
 
-    // Ottieni tutti gli esercizi
     @GetMapping("/esercizi")
-    public List<EsercizioDTO> getAllEsercizi() {
-        return esercizioService.ottieniTuttiEsercizi();
+    public List<Esercizio> getTuttiEsercizi() {
+        return esercizioService.getAllEsercizi();
     }
 
-    // Ottieni un esercizio specifico
     @GetMapping("/esercizi/{id}")
-    public EsercizioDTO getEsercizio(@PathVariable Long id) {
-        return esercizioService.ottieniEsercizioPerId(id);
+    public Esercizio getEsercizio(@PathVariable Long id) {
+        return esercizioService.getEsercizioById(id);
     }
 
-    // Cerca esercizi per nome
-    @GetMapping("/esercizi/cerca")
-    public List<EsercizioDTO> cercaEsercizi(@RequestParam String nome) {
-        return esercizioService.cercaEserciziPerNome(nome);
-    }
-
-    // Ottieni esercizi per gruppo muscolare
-    @GetMapping("/esercizi/gruppo/{gruppoId}")
-    public List<EsercizioDTO> getEserciziPerGruppo(@PathVariable Long gruppoId) {
-        return esercizioService.ottieniEsercizioPerGruppo(gruppoId);
-    }
-
-    // Ottieni esercizi per attrezzo
-    @GetMapping("/esercizi/attrezzo/{attrezzoId}")
-    public List<EsercizioDTO> getEserciziPerAttrezzo(@PathVariable Long attrezzoId) {
-        return esercizioService.ottieniEserciziPerAttrezzo(attrezzoId);
-    }
-
-    // Ottieni solo esercizi composti
-    @GetMapping("/esercizi/composti")
-    public List<EsercizioDTO> getEserciziComposti() {
-        return esercizioService.ottieniEserciziComposti();
-    }
-
-    // Aggiorna un esercizio
     @PutMapping("/esercizi/{id}")
-    public EsercizioDTO aggiornaEsercizio(
+    public Esercizio aggiornaEsercizio(
             @PathVariable Long id,
-            @RequestBody @Validated EsercizioRequestDTO body,
-            BindingResult validationResult) {
-        if (validationResult.hasErrors()) {
-            List<String> errorMessages = validationResult.getFieldErrors().stream()
-                    .map(fieldError -> fieldError.getField() + " :" + fieldError.getDefaultMessage())
-                    .toList();
-            throw new NotValidException(errorMessages);
-        }
+            @RequestBody @Valid EsercizioRequestDTO body) {
         return esercizioService.aggiornaEsercizio(id, body);
     }
 
-    // Elimina un esercizio
     @DeleteMapping("/esercizi/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void eliminaEsercizio(@PathVariable Long id) {
         esercizioService.eliminaEsercizio(id);
     }
 
-    // ============= GESTIONE Q&A =============
+    @GetMapping("/esercizi/gruppo/{gruppoMuscolareId}")
+    public List<Esercizio> getEserciziPerGruppoMuscolare(@PathVariable Long gruppoMuscolareId) {
+        return esercizioService.getEserciziByGruppoMuscolare(gruppoMuscolareId);
+    }
 
-    // Crea nuova Q&A
+    @GetMapping("/esercizi/attrezzo/{attrezzoId}")
+    public List<Esercizio> getEserciziPerAttrezzo(@PathVariable Long attrezzoId) {
+        return esercizioService.getEserciziByAttrezzo(attrezzoId);
+    }
+
+    @GetMapping("/esercizi/composti")
+    public List<Esercizio> getEserciziComposti() {
+        return esercizioService.getEserciziComposti();
+    }
+
+    @GetMapping("/esercizi/cerca")
+    public List<Esercizio> cercaEsercizi(@RequestParam String nome) {
+        return esercizioService.cercaEserciziPerNome(nome);
+    }
+
+    @PatchMapping("/esercizi/{id}/upload")
+    public Esercizio uploadImmagineEsercizio(
+            @PathVariable Long id,
+            @RequestParam("immagine") MultipartFile file) throws IOException {
+        return esercizioService.uploadImmagine(id, file);
+    }
+
+
+    // SCHEDE ALLENAMENTO
+
+
+    @PostMapping("/schede")
+    @ResponseStatus(HttpStatus.CREATED)
+    public SchedaAllenamento creaScheda(@RequestBody @Valid SchedaAllenamentoRequestDTO body) {
+        return schedaAllenamentoService.creaScheda(body);
+    }
+
+    @GetMapping("/schede")
+    public List<SchedaAllenamento> getTutteSchede() {
+        return schedaAllenamentoService.getAllSchede();
+    }
+
+    @GetMapping("/schede/{id}")
+    public SchedaAllenamento getScheda(@PathVariable Long id) {
+        return schedaAllenamentoService.getSchedaById(id);
+    }
+
+    @PutMapping("/schede/{id}")
+    public SchedaAllenamento aggiornaScheda(
+            @PathVariable Long id,
+            @RequestBody @Valid SchedaAllenamentoRequestDTO body) {
+        return schedaAllenamentoService.aggiornaScheda(id, body);
+    }
+
+    @DeleteMapping("/schede/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void eliminaScheda(@PathVariable Long id) {
+        schedaAllenamentoService.eliminaScheda(id);
+    }
+
+    @PostMapping("/schede/{schedaId}/assegna/{utenteId}")
+    public SchedaAllenamento assegnaSchedaAUtente(
+            @PathVariable Long schedaId,
+            @PathVariable Long utenteId) {
+        return schedaAllenamentoService.assegnaScheda(schedaId, utenteId);
+    }
+
+    @GetMapping("/schede/utente/{utenteId}")
+    public List<SchedaAllenamento> getSchedeByUtente(@PathVariable Long utenteId) {
+        return schedaAllenamentoService.getSchedeByUtente(utenteId);
+    }
+
+    @PostMapping("/schede/standard")
+    @ResponseStatus(HttpStatus.CREATED)
+    public SchedaAllenamento creaSchedaStandard(@RequestBody @Valid SchedaAllenamentoRequestDTO body) {
+        return schedaAllenamentoService.creaSchedaStandard(body);
+    }
+
+    @GetMapping("/schede/standard")
+    public List<SchedaAllenamento> getSchedeStandard() {
+        return schedaAllenamentoService.getSchedeStandard();
+    }
+
+    @GetMapping("/schede/standard/obiettivo/{obiettivo}")
+    public List<SchedaAllenamento> getSchedeStandardPerObiettivo(@PathVariable ObiettivoAllenamento obiettivo) {
+        return schedaAllenamentoService.getSchedeStandardPerObiettivo(obiettivo);
+    }
+
+    @PostMapping("/schede/standard/{schedaId}/duplica/{utenteId}")
+    public SchedaAllenamento duplicaSchedaStandardPerUtente(
+            @PathVariable Long schedaId,
+            @PathVariable Long utenteId) {
+        return schedaAllenamentoService.duplicaSchedaStandardPerUtente(schedaId, utenteId);
+    }
+
+
+    // Q&A (DOMANDE E RISPOSTE)
+
+
     @PostMapping("/qea")
     @ResponseStatus(HttpStatus.CREATED)
-    public QeAResponseDTO creaQeA(
-            @RequestBody @Validated QeARequestDTO body,
-            BindingResult validationResult) {
-        if (validationResult.hasErrors()) {
-            List<String> errorMessages = validationResult.getFieldErrors().stream()
-                    .map(fieldError -> fieldError.getField() + " :" + fieldError.getDefaultMessage())
-                    .toList();
-            throw new NotValidException(errorMessages);
-        }
-        return qeaService.creaQeA(body);
+    public QeAResponseDTO creaDomanda(@RequestBody @Valid QeARequestDTO body) {
+        return qeAService.creaQeA(body);
     }
 
-    // Ottieni tutte le Q&A
     @GetMapping("/qea")
-    public List<QeAResponseDTO> getAllQeA() {
-        return qeaService.getAllQeA();
+    public List<QeAResponseDTO> getTutteDomande() {
+        return qeAService.getAllQeA();
     }
 
-    // Ottieni singola Q&A
     @GetMapping("/qea/{id}")
-    public QeAResponseDTO getQeA(@PathVariable Long id) {
-        return qeaService.getQeAById(id);
+    public QeAResponseDTO getDomandaById(@PathVariable Long id) {
+        return qeAService.getQeAById(id);
     }
 
-    // Aggiorna Q&A
     @PutMapping("/qea/{id}")
-    public QeAResponseDTO aggiornaQeA(
-            @PathVariable Long id,
-            @RequestBody @Validated QeARequestDTO body,
-            BindingResult validationResult) {
-        if (validationResult.hasErrors()) {
-            List<String> errorMessages = validationResult.getFieldErrors().stream()
-                    .map(fieldError -> fieldError.getField() + " :" + fieldError.getDefaultMessage())
-                    .toList();
-            throw new NotValidException(errorMessages);
-        }
-        return qeaService.aggiornaQeA(id, body);
+    public QeAResponseDTO aggiornaDomanda(@PathVariable Long id, @RequestBody @Valid QeARequestDTO body) {
+        return qeAService.aggiornaQeA(id, body);
     }
 
-    // Elimina Q&A
     @DeleteMapping("/qea/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void eliminaQeA(@PathVariable Long id) {
-        qeaService.eliminaQeA(id);
+    public void eliminaDomanda(@PathVariable Long id) {
+        qeAService.eliminaQeA(id);
     }
 }

@@ -2,13 +2,9 @@ package giuseppeperna.GearForFit.services;
 
 import giuseppeperna.GearForFit.entities.SchedePalestra.*;
 import giuseppeperna.GearForFit.entities.Utente.Utente;
-import giuseppeperna.GearForFit.payloads.EsercizioSchedaDTO;
-import giuseppeperna.GearForFit.payloads.SchedaAllenamentoDTO;
+import giuseppeperna.GearForFit.exceptions.NotFoundException;
 import giuseppeperna.GearForFit.payloads.SchedaAllenamentoRequestDTO;
-import giuseppeperna.GearForFit.repositories.EsercizioRepository;
-import giuseppeperna.GearForFit.repositories.SchedaAllenamentoRepository;
-import giuseppeperna.GearForFit.repositories.SchemaSerieRepository;
-import giuseppeperna.GearForFit.repositories.UtenteRepository;
+import giuseppeperna.GearForFit.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,208 +28,139 @@ public class SchedaAllenamentoService {
     @Autowired
     private SchemaSerieRepository schemaSerieRepository;
 
-    public SchedaAllenamentoDTO creaScheda(Long utenteId, SchedaAllenamentoRequestDTO request) {
+    // ============= METODI DI LETTURA =============
 
+    public SchedaAllenamento getSchedaById(Long id) {
+        return schedaRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Scheda non trovata"));
+    }
+
+    public List<SchedaAllenamento> getAllSchede() {
+        return schedaRepository.findAll();
+    }
+
+    public List<SchedaAllenamento> getSchedeByUtente(Long utenteId) {
         Utente utente = utenteRepository.findById(utenteId)
-                .orElseThrow(() -> new RuntimeException("Utente non trovato"));
+                .orElseThrow(() -> new NotFoundException("Utente non trovato"));
+        return schedaRepository.findByUtente(utente);
+    }
 
+    // ============= METODI CRUD (ADMIN) =============
+
+    public SchedaAllenamento creaScheda(SchedaAllenamentoRequestDTO request) {
         SchedaAllenamento scheda = SchedaAllenamento.builder()
                 .nome(request.nome())
                 .descrizione(request.descrizione())
-                .obiettivo(request.obiettivo())
+                .obiettivo(request.obiettivoAllenamento())
                 .giornoSettimana(request.giornoSettimana())
-                .utente(utente)
                 .build();
 
-        SchedaAllenamento scheduleSalvata = schedaRepository.save(scheda);
+        if (request.utenteId() != null) {
+            Utente utente = utenteRepository.findById(request.utenteId())
+                    .orElseThrow(() -> new NotFoundException("Utente non trovato"));
+            scheda.setUtente(utente);
+        }
 
-        // Aggiungi gli esercizi
-        List<EsercizioScheda> esercizi = request.esercizi().stream()
-                .map(eReq -> {
-                    Esercizio esercizio = esercizioRepository.findById(eReq.esercizioId())
-                            .orElseThrow(() -> new RuntimeException("Esercizio non trovato"));
-
-                    SchemaSerie schemaSerie = schemaSerieRepository.findById(eReq.schemaSerieId())
-                            .orElseThrow(() -> new RuntimeException("Schema serie non trovato"));
-
-                    return EsercizioScheda.builder()
-                            .schedaAllenamento(scheduleSalvata)
-                            .esercizio(esercizio)
-                            .schemaSerie(schemaSerie)
-                            .posizione(eReq.posizione())
-                            .secondiRiposo(eReq.secondiRiposo())
-                            .note(eReq.note())
-                            .build();
-                })
-                .collect(Collectors.toList());
-
-        scheduleSalvata.setEsercizi(esercizi);
-        SchedaAllenamento schedaFinale = schedaRepository.save(scheduleSalvata);
-
-        return convertiADTO(schedaFinale);
+        return schedaRepository.save(scheda);
     }
 
-    public SchedaAllenamentoDTO ottieniSchedaPerId(Long schedaId) {
-        SchedaAllenamento scheda = schedaRepository.findById(schedaId)
-                .orElseThrow(() -> new RuntimeException("Scheda non trovata"));
-        return convertiADTO(scheda);
-    }
-
-    public List<SchedaAllenamentoDTO> ottieniSchedeUtente(Long utenteId) {
-        Utente utente = utenteRepository.findById(utenteId)
-                .orElseThrow(() -> new RuntimeException("Utente non trovato"));
-
-        return schedaRepository.findByUtente(utente).stream()
-                .map(this::convertiADTO)
-                .collect(Collectors.toList());
-    }
-
-    public SchedaAllenamentoDTO aggiornaScheda(Long schedaId, SchedaAllenamentoRequestDTO request) {
-        SchedaAllenamento scheda = schedaRepository.findById(schedaId)
-                .orElseThrow(() -> new RuntimeException("Scheda non trovata"));
+    public SchedaAllenamento aggiornaScheda(Long id, SchedaAllenamentoRequestDTO request) {
+        SchedaAllenamento scheda = getSchedaById(id);
 
         scheda.setNome(request.nome());
         scheda.setDescrizione(request.descrizione());
-        scheda.setObiettivo(request.obiettivo());
+        scheda.setObiettivo(request.obiettivoAllenamento());
         scheda.setGiornoSettimana(request.giornoSettimana());
 
-        // Rimuovi vecchi esercizi
-        scheda.getEsercizi().clear();
+        if (request.utenteId() != null) {
+            Utente utente = utenteRepository.findById(request.utenteId())
+                    .orElseThrow(() -> new NotFoundException("Utente non trovato"));
+            scheda.setUtente(utente);
+        }
 
-        // Aggiungi nuovi esercizi
-        List<EsercizioScheda> esercizi = request.esercizi().stream()
-                .map(eReq -> {
-                    Esercizio esercizio = esercizioRepository.findById(eReq.esercizioId())
-                            .orElseThrow(() -> new RuntimeException("Esercizio non trovato"));
-
-                    SchemaSerie schemaSerie = schemaSerieRepository.findById(eReq.schemaSerieId())
-                            .orElseThrow(() -> new RuntimeException("Schema serie non trovato"));
-
-                    return EsercizioScheda.builder()
-                            .schedaAllenamento(scheda)
-                            .esercizio(esercizio)
-                            .schemaSerie(schemaSerie)
-                            .posizione(eReq.posizione())
-                            .secondiRiposo(eReq.secondiRiposo())
-                            .note(eReq.note())
-                            .build();
-                })
-                .collect(Collectors.toList());
-
-        scheda.setEsercizi(esercizi);
-        SchedaAllenamento schedaAggiornata = schedaRepository.save(scheda);
-
-        return convertiADTO(schedaAggiornata);
+        return schedaRepository.save(scheda);
     }
 
-    public void eliminaScheda(Long schedaId) {
-        SchedaAllenamento scheda = schedaRepository.findById(schedaId)
-                .orElseThrow(() -> new RuntimeException("Scheda non trovata"));
+    public void eliminaScheda(Long id) {
+        SchedaAllenamento scheda = getSchedaById(id);
         schedaRepository.delete(scheda);
     }
 
-    // MODIFICA: Questo metodo ora crea un record SchedaAllenamentoDTO
-    // Sostituisce l'uso di SchedaAllenamentoDTO.builder() con il costruttore del record
-    private SchedaAllenamentoDTO convertiADTO(SchedaAllenamento scheda) {
-        return new SchedaAllenamentoDTO(
-                scheda.getId(),
-                scheda.getNome(),
-                scheda.getDescrizione(),
-                scheda.getObiettivo(),
-                scheda.getGiornoSettimana(),
-                scheda.getEsercizi().stream()
-                        .map(this::convertiEsercizioADTO)
-                        .collect(Collectors.toList())
-        );
+    // Assegna scheda a utente
+    public SchedaAllenamento assegnaScheda(Long schedaId, Long utenteId) {
+        SchedaAllenamento scheda = getSchedaById(schedaId);
+        Utente utente = utenteRepository.findById(utenteId)
+                .orElseThrow(() -> new NotFoundException("Utente non trovato"));
+
+        scheda.setUtente(utente);
+        return schedaRepository.save(scheda);
     }
 
-    // MODIFICA: Questo metodo ora crea un record EsercizioSchedaDTO
-    // Sostituisce l'uso di EsercizioSchedaDTO.builder() con il costruttore del record
-    private EsercizioSchedaDTO convertiEsercizioADTO(EsercizioScheda esercizioScheda) {
-        return new EsercizioSchedaDTO(
-                esercizioScheda.getId(),
-                esercizioScheda.getPosizione(),
-                null, // Puoi popolare EsercizioDTO se necessario
-                null, // Puoi popolare SchemaSerieDTO se necessario
-                esercizioScheda.getSecondiRiposo(),
-                esercizioScheda.getNote()
-        );
-    }
+    // ============= SCHEDE STANDARD =============
 
-    // Crea una scheda STANDARD (associata a un utente admin o sistema)
-    public SchedaAllenamentoDTO creaSchedaStandard(Long adminId, SchedaAllenamentoRequestDTO request) {
-        Utente admin = utenteRepository.findById(adminId)
-                .orElseThrow(() -> new RuntimeException("Admin non trovato"));
-
+    public SchedaAllenamento creaSchedaStandard(SchedaAllenamentoRequestDTO request) {
         SchedaAllenamento scheda = SchedaAllenamento.builder()
                 .nome(request.nome())
                 .descrizione(request.descrizione())
-                .obiettivo(request.obiettivo())
+                .obiettivo(request.obiettivoAllenamento())
                 .giornoSettimana(request.giornoSettimana())
-                .isStandard(true) // Marca come standard
-                .utente(admin) // Associa all'admin che la crea
+                .isStandard(true)
                 .build();
 
         SchedaAllenamento scheduleSalvata = schedaRepository.save(scheda);
 
-        // Aggiungi gli esercizi
-        List<EsercizioScheda> esercizi = request.esercizi().stream()
-                .map(eReq -> {
-                    Esercizio esercizio = esercizioRepository.findById(eReq.esercizioId())
-                            .orElseThrow(() -> new RuntimeException("Esercizio non trovato"));
-                    SchemaSerie schemaSerie = schemaSerieRepository.findById(eReq.schemaSerieId())
-                            .orElseThrow(() -> new RuntimeException("Schema serie non trovato"));
+        // Aggiungi esercizi se presenti
+        if (request.esercizi() != null && !request.esercizi().isEmpty()) {
+            List<EsercizioScheda> esercizi = request.esercizi().stream()
+                    .map(eReq -> {
+                        Esercizio esercizio = esercizioRepository.findById(eReq.esercizioId())
+                                .orElseThrow(() -> new NotFoundException("Esercizio non trovato"));
 
-                    return EsercizioScheda.builder()
-                            .schedaAllenamento(scheduleSalvata)
-                            .esercizio(esercizio)
-                            .schemaSerie(schemaSerie)
-                            .posizione(eReq.posizione())
-                            .secondiRiposo(eReq.secondiRiposo())
-                            .note(eReq.note())
-                            .build();
-                })
-                .collect(Collectors.toList());
+                        SchemaSerie schemaSerie = schemaSerieRepository.findById(eReq.schemaSerieId())
+                                .orElseThrow(() -> new NotFoundException("Schema serie non trovato"));
 
-        scheduleSalvata.setEsercizi(esercizi);
-        SchedaAllenamento schedaFinale = schedaRepository.save(scheduleSalvata);
+                        return EsercizioScheda.builder()
+                                .schedaAllenamento(scheduleSalvata)
+                                .esercizio(esercizio)
+                                .schemaSerie(schemaSerie)
+                                .posizione(eReq.posizione())
+                                .secondiRiposo(eReq.secondiRiposo())
+                                .note(eReq.note())
+                                .build();
+                    })
+                    .collect(Collectors.toList());
 
-        return convertiADTO(schedaFinale);
+            scheduleSalvata.setEsercizi(esercizi);
+            return schedaRepository.save(scheduleSalvata);
+        }
+
+        return scheduleSalvata;
     }
 
-    // Ottieni tutte le schede STANDARD
-    public List<SchedaAllenamentoDTO> ottieniSchedeStandard() {
-        return schedaRepository.findByIsStandardTrue().stream()
-                .map(this::convertiADTO)
-                .collect(Collectors.toList());
+    public List<SchedaAllenamento> getSchedeStandard() {
+        return schedaRepository.findByIsStandardTrue();
     }
 
-    // Ottieni schede standard per obiettivo
-    public List<SchedaAllenamentoDTO> ottieniSchedeStandardPerObiettivo(ObiettivoAllenamento obiettivo) {
-        return schedaRepository.findByIsStandardTrueAndObiettivo(obiettivo).stream()
-                .map(this::convertiADTO)
-                .collect(Collectors.toList());
+    public List<SchedaAllenamento> getSchedeStandardPerObiettivo(ObiettivoAllenamento obiettivo) {
+        return schedaRepository.findByIsStandardTrueAndObiettivo(obiettivo);
     }
 
-    // Duplica una scheda standard per un utente (crea una copia personalizzabile)
-    public SchedaAllenamentoDTO duplicaSchedaStandardPerUtente(Long schedaStandardId, Long utenteId) {
-        SchedaAllenamento schedaStandard = schedaRepository.findById(schedaStandardId)
-                .orElseThrow(() -> new RuntimeException("Scheda standard non trovata"));
+    public SchedaAllenamento duplicaSchedaStandardPerUtente(Long schedaStandardId, Long utenteId) {
+        SchedaAllenamento schedaStandard = getSchedaById(schedaStandardId);
 
         if (!schedaStandard.isStandard()) {
             throw new RuntimeException("La scheda selezionata non è una scheda standard");
         }
 
         Utente utente = utenteRepository.findById(utenteId)
-                .orElseThrow(() -> new RuntimeException("Utente non trovato"));
+                .orElseThrow(() -> new NotFoundException("Utente non trovato"));
 
-        // Crea una copia della scheda per l'utente
         SchedaAllenamento nuovaScheda = SchedaAllenamento.builder()
                 .nome(schedaStandard.getNome() + " (Copia)")
                 .descrizione(schedaStandard.getDescrizione())
                 .obiettivo(schedaStandard.getObiettivo())
                 .giornoSettimana(schedaStandard.getGiornoSettimana())
-                .isStandard(false) // La copia diventa custom
+                .isStandard(false)
                 .utente(utente)
                 .build();
 
@@ -252,8 +179,6 @@ public class SchedaAllenamentoService {
                 .collect(Collectors.toList());
 
         nuovaSchedaSalvata.setEsercizi(eserciziCopia);
-        SchedaAllenamento schedaFinale = schedaRepository.save(nuovaSchedaSalvata);
-
-        return convertiADTO(schedaFinale);
+        return schedaRepository.save(nuovaSchedaSalvata);
     }
 }

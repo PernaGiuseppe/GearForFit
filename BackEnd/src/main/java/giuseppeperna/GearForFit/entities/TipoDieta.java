@@ -1,4 +1,4 @@
-package giuseppeperna.GearForFit.entities.SchedePalestra;
+package giuseppeperna.GearForFit.entities;
 
 public enum TipoDieta {
     IPOCALORICA,

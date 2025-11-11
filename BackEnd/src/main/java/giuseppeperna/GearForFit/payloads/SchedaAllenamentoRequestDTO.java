@@ -14,12 +14,12 @@ public record SchedaAllenamentoRequestDTO(
         String descrizione,
 
         @NotNull(message = "L'obiettivo è obbligatorio")
-        ObiettivoAllenamento obiettivo,
+        ObiettivoAllenamento obiettivoAllenamento, // CORRETTO: era "obiettivo"
 
         @NotNull(message = "Il giorno della settimana è obbligatorio")
         GiornoSettimana giornoSettimana,
 
-        @NotNull(message = "Deve contenere almeno un esercizio")
-        List<EsercizioSchedaRequestDTO> esercizi
-) {
-}
+        Long utenteId, // AGGIUNTO: campo mancante
+
+        List<EsercizioSchedaRequestDTO> esercizi // OPZIONALE
+) {}

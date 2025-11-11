@@ -1,6 +1,6 @@
 package giuseppeperna.GearForFit.controllers;
 
-import giuseppeperna.GearForFit.payloads.EsercizioDTO;
+import giuseppeperna.GearForFit.entities.SchedePalestra.Esercizio;
 import giuseppeperna.GearForFit.services.EsercizioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,19 +19,19 @@ public class EsercizioController {
 
     // Ottieni tutti gli esercizi
     @GetMapping
-    public List<EsercizioDTO> ottieniTuttiEsercizi() {
-        return esercizioService.ottieniTuttiEsercizi();
+    public List<Esercizio> ottieniTuttiEsercizi() {
+        return esercizioService.getAllEsercizi();
     }
 
     // Ottieni esercizio per ID
     @GetMapping("/{id}")
-    public EsercizioDTO ottieniEsercizioPerId(@PathVariable Long id) {
-        return esercizioService.ottieniEsercizioPerId(id);
+    public Esercizio ottieniEsercizioPerId(@PathVariable Long id) {
+        return esercizioService.getEsercizioById(id);
     }
 
     // Ottieni esercizi per gruppo muscolare
     @GetMapping("/gruppo/{gruppoId}")
-    public List<EsercizioDTO> ottieniEsercizioPerGruppo(@PathVariable Long gruppoId) {
-        return esercizioService.ottieniEsercizioPerGruppo(gruppoId);
+    public List<Esercizio> ottieniEsercizioPerGruppo(@PathVariable Long gruppoId) {
+        return esercizioService.getEserciziByGruppoMuscolare(gruppoId);
     }
 }

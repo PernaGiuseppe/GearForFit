@@ -1,6 +1,6 @@
 package giuseppeperna.GearForFit.services;
 
-import giuseppeperna.GearForFit.entities.Utente.QeA;
+import giuseppeperna.GearForFit.entities.Utente.QeA; // ✅ CORRETTO
 import giuseppeperna.GearForFit.exceptions.NotFoundException;
 import giuseppeperna.GearForFit.payloads.QeARequestDTO;
 import giuseppeperna.GearForFit.payloads.QeAResponseDTO;
@@ -17,7 +17,7 @@ public class QeAService {
     @Autowired
     private QeARepository qeaRepository;
 
-    // Ottieni tutte le Q&A (per utenti Premium)
+    // Ottieni tutte le Q&A
     public List<QeAResponseDTO> getAllQeA() {
         return qeaRepository.findAll().stream()
                 .map(qea -> new QeAResponseDTO(qea.getId(), qea.getDomanda(), qea.getRisposta()))
@@ -36,7 +36,6 @@ public class QeAService {
         QeA qea = new QeA();
         qea.setDomanda(body.domanda());
         qea.setRisposta(body.risposta());
-
         QeA savedQeA = qeaRepository.save(qea);
         return new QeAResponseDTO(savedQeA.getId(), savedQeA.getDomanda(), savedQeA.getRisposta());
     }
@@ -45,10 +44,8 @@ public class QeAService {
     public QeAResponseDTO aggiornaQeA(Long id, QeARequestDTO body) {
         QeA qea = qeaRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Q&A con id " + id + " non trovata"));
-
         qea.setDomanda(body.domanda());
         qea.setRisposta(body.risposta());
-
         QeA updatedQeA = qeaRepository.save(qea);
         return new QeAResponseDTO(updatedQeA.getId(), updatedQeA.getDomanda(), updatedQeA.getRisposta());
     }
@@ -58,5 +55,13 @@ public class QeAService {
         QeA qea = qeaRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Q&A con id " + id + " non trovata"));
         qeaRepository.delete(qea);
+    }
+
+    // Cerca Q&A per keyword
+    public List<QeAResponseDTO> cercaQeA(String keyword) {
+        return qeaRepository.findByDomandaContainingIgnoreCaseOrRispostaContainingIgnoreCase(keyword, keyword)
+                .stream()
+                .map(qea -> new QeAResponseDTO(qea.getId(), qea.getDomanda(), qea.getRisposta()))
+                .collect(Collectors.toList());
     }
 }
