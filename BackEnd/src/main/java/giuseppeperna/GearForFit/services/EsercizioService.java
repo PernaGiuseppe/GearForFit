@@ -1,8 +1,8 @@
 package giuseppeperna.GearForFit.services;
 
-import giuseppeperna.GearForFit.entities.Attrezzo;
-import giuseppeperna.GearForFit.entities.Esercizio;
-import giuseppeperna.GearForFit.entities.GruppoMuscolare;
+import giuseppeperna.GearForFit.entities.SchedePalestra.Attrezzo;
+import giuseppeperna.GearForFit.entities.SchedePalestra.Esercizio;
+import giuseppeperna.GearForFit.entities.SchedePalestra.GruppoMuscolare;
 import giuseppeperna.GearForFit.exceptions.NotFoundException;
 import giuseppeperna.GearForFit.payloads.EsercizioDTO;
 import giuseppeperna.GearForFit.payloads.EsercizioRequestDTO;

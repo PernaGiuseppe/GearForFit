@@ -1,6 +1,6 @@
 package giuseppeperna.GearForFit.security;
 
-import giuseppeperna.GearForFit.entities.Utente;
+import giuseppeperna.GearForFit.entities.Utente.Utente;
 import giuseppeperna.GearForFit.exceptions.UnauthorizedException;
 import giuseppeperna.GearForFit.services.UtenteService;
 import jakarta.servlet.FilterChain;

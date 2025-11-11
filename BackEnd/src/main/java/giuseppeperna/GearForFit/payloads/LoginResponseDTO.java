@@ -1,7 +1,7 @@
 package giuseppeperna.GearForFit.payloads;
 
-import giuseppeperna.GearForFit.entities.TipoPiano;
-import giuseppeperna.GearForFit.entities.TipoUtente;
+import giuseppeperna.GearForFit.entities.Utente.TipoPiano;
+import giuseppeperna.GearForFit.entities.Utente.TipoUtente;
 
 public record LoginResponseDTO(
         String token,

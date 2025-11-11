@@ -1,6 +1,7 @@
 package giuseppeperna.GearForFit.services;
 
-import giuseppeperna.GearForFit.entities.*;
+import giuseppeperna.GearForFit.entities.SchedePalestra.*;
+import giuseppeperna.GearForFit.entities.Utente.Utente;
 import giuseppeperna.GearForFit.payloads.EsercizioSchedaDTO;
 import giuseppeperna.GearForFit.payloads.SchedaAllenamentoDTO;
 import giuseppeperna.GearForFit.payloads.SchedaAllenamentoRequestDTO;

@@ -1,6 +1,6 @@
 package giuseppeperna.GearForFit.repositories;
 
-import giuseppeperna.GearForFit.entities.EsercizioScheda;
+import giuseppeperna.GearForFit.entities.SchedePalestra.EsercizioScheda;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

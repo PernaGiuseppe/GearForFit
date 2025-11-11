@@ -1,6 +1,6 @@
 package giuseppeperna.GearForFit.security;
 
-import giuseppeperna.GearForFit.entities.Utente;
+import giuseppeperna.GearForFit.entities.Utente.Utente;
 import giuseppeperna.GearForFit.exceptions.UnauthorizedException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;

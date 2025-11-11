@@ -1,6 +1,6 @@
 package giuseppeperna.GearForFit.services;
 
-import giuseppeperna.GearForFit.entities.QeA;
+import giuseppeperna.GearForFit.entities.Utente.QeA;
 import giuseppeperna.GearForFit.exceptions.NotFoundException;
 import giuseppeperna.GearForFit.payloads.QeARequestDTO;
 import giuseppeperna.GearForFit.payloads.QeAResponseDTO;

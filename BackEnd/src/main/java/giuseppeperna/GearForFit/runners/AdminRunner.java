@@ -1,7 +1,7 @@
 package giuseppeperna.GearForFit.runners;
 
-import giuseppeperna.GearForFit.entities.TipoPiano;
-import giuseppeperna.GearForFit.entities.TipoUtente;
+import giuseppeperna.GearForFit.entities.Utente.TipoPiano;
+import giuseppeperna.GearForFit.entities.Utente.TipoUtente;
 import giuseppeperna.GearForFit.repositories.UtenteRepository;
 import giuseppeperna.GearForFit.services.UtenteService;
 import org.springframework.beans.factory.annotation.Autowired;

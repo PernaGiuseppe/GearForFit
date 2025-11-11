@@ -1,7 +1,7 @@
 package giuseppeperna.GearForFit.payloads;
 
-import giuseppeperna.GearForFit.entities.GiornoSettimana;
-import giuseppeperna.GearForFit.entities.ObiettivoAllenamento;
+import giuseppeperna.GearForFit.entities.SchedePalestra.GiornoSettimana;
+import giuseppeperna.GearForFit.entities.SchedePalestra.ObiettivoAllenamento;
 
 import java.util.List;
 
