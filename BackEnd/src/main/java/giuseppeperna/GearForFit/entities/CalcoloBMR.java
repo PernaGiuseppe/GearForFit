@@ -1,30 +1,59 @@
 package giuseppeperna.GearForFit.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import lombok.*;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
-@Getter
-@Setter
+@Table(name = "calcoli_bmr")
+@Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
-
 public class CalcoloBMR {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Setter(AccessLevel.NONE)
     private Long id;
-    private Double peso; // kg
-    private Double altezza; // cm
-    private Integer eta;
-    private String sesso; // M/F
-    private String obiettivo; // PERDITA_PESO, DEFINIZIONE, MANTENIMENTO, MASSA
-    private String livelloAttivita; // SEDENTARIO, LEGGERO, MODERATO, INTENSO
-    private Double bmrCalcolato;
-    private Double fabbisognoCaloricoGiornaliero;
-}
 
+    @OneToOne
+    @JoinColumn(name = "utente_id", nullable = false, unique = true)
+    private Utente utente;
+
+    @Column(nullable = false)
+    private Double peso; // kg
+
+    @Column(nullable = false)
+    private Double altezza; // cm
+
+    @Column(nullable = false)
+    private Integer eta;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Sesso sesso;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private TipoDieta tipoDieta;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private LivelloAttivita livelloAttivita;
+
+    @Column(nullable = false)
+    private Double bmrCalcolato;
+
+    @Column(nullable = false)
+    private Double fabbisognoCaloricoGiornaliero;
+
+    public enum Sesso {
+        M, F
+    }
+
+    public enum LivelloAttivita {
+        SEDENTARIO, LEGGERO, MODERATO, INTENSO
+    }
+}

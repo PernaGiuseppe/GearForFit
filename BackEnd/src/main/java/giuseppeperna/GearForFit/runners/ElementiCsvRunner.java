@@ -19,7 +19,7 @@ import java.io.InputStreamReader;
 import java.util.Objects;
 
 @Component
-@Order(1)
+@Order(2)
 @RequiredArgsConstructor
 @Slf4j
 public class ElementiCsvRunner implements CommandLineRunner {
