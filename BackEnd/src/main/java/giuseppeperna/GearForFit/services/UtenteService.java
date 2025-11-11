@@ -262,37 +262,43 @@ public class UtenteService {
         return utenteRepository.save(utente);
     }
 
-    // Disattiva un utente
-    public Utente disattivaUtente(Long id) {
+    /*   // Disattiva un utente
+       public Utente disattivaUtente(Long id) {
 
-        // CONTROLLO ID
-        if (id == null || id <= 0) {
-            throw new BadRequestException("ID non valido");
-        }
+           // CONTROLLO ID
+           if (id == null || id <= 0) {
+               throw new BadRequestException("ID non valido");
+           }
 
-        Utente utente = findById(id);
+           Utente utente = findById(id);
 
-        // PROTEZIONE: Non permettere disattivazione dell'admin
-        if (utente.getTipoUtente().equals(TipoUtente.ADMIN)) {
-            throw new BadRequestException("Non è possibile disattivare un admin");
-        }
+           // PROTEZIONE: Non permettere disattivazione dell'admin
+           if (utente.getTipoUtente().equals(TipoUtente.ADMIN)) {
+               throw new BadRequestException("Non è possibile disattivare un admin");
+           }
 
-        utente.setAttivo(false);
+           utente.setAttivo(false);
 
-        return utenteRepository.save(utente);
-    }
+           return utenteRepository.save(utente);
+       }
 
-    // Attiva un utente
-    public Utente attivaUtente(Long id) {
+       // Attiva un utente
+       public Utente attivaUtente(Long id) {
 
-        // CONTROLLO ID
-        if (id == null || id <= 0) {
-            throw new BadRequestException("ID non valido");
-        }
+           // CONTROLLO ID
+           if (id == null || id <= 0) {
+               throw new BadRequestException("ID non valido");
+           }
 
-        Utente utente = findById(id);
-        utente.setAttivo(true);
+           Utente utente = findById(id);
+           utente.setAttivo(true);
 
+           return utenteRepository.save(utente);
+       }*/
+    // Admin resetta password utente (senza conoscere quella vecchia)
+    public Utente resetPasswordByAdmin(Long userId, String nuovaPassword) {
+        Utente utente = findById(userId);
+        utente.setPassword(passwordEncoder.encode(nuovaPassword));
         return utenteRepository.save(utente);
     }
 

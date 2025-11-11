@@ -51,17 +51,33 @@ public class AdminController {
         return utenteService.findById(id);
     }
 
-    // Crea un nuovo utente (ADMIN crea gli utenti)
+    // Crea un nuovo utente (ADMIN crea gli utenti) - CON JSON E PIANO OPZIONALE
     @PostMapping("/utenti")
     @ResponseStatus(HttpStatus.CREATED)
-    public Utente creaUtente(
-            @RequestParam String email,
-            @RequestParam String password,
-            @RequestParam String nome,
-            @RequestParam String cognome,
-            @RequestParam(defaultValue = "UTENTE") TipoUtente tipoUtente) {
-        return utenteService.creaUtente(email, password, nome, cognome, tipoUtente);
+    public Utente creaUtente(@RequestBody @Validated CreaUtenteRequestDTO body, BindingResult validationResult) {
+        if (validationResult.hasErrors()) {
+            List<String> errorMessages = validationResult.getFieldErrors().stream()
+                    .map(fieldError -> fieldError.getField() + " :" + fieldError.getDefaultMessage())
+                    .toList();
+            throw new NotValidException(errorMessages);
+        }
+
+        // Se tipoPiano è specificato, usa il metodo con piano custom
+        if (body.tipoPiano() != null) {
+            return utenteService.creaUtenteConPiano(
+                    body.email(),
+                    body.password(),
+                    body.nome(),
+                    body.cognome(),
+                    body.tipoUtente(),
+                    body.tipoPiano()
+            );
+        }
+
+        // Altrimenti usa il metodo standard (FREE di default)
+        return utenteService.creaUtente(body.email(), body.password(), body.nome(), body.cognome(), body.tipoUtente());
     }
+
 
     // Cambia il ruolo di un utente
     @PutMapping("/utenti/{id}/ruolo")
@@ -79,16 +95,22 @@ public class AdminController {
         return utenteService.cambiaPiano(id, nuovoPiano);
     }
 
-    // Disattiva un utente
-    @PutMapping("/utenti/{id}/disattiva")
-    public Utente disattivaUtente(@PathVariable Long id) {
-        return utenteService.disattivaUtente(id);
-    }
+    /*    // Disattiva un utente
+        @PutMapping("/utenti/{id}/disattiva")
+        public Utente disattivaUtente(@PathVariable Long id) {
+            return utenteService.disattivaUtente(id);
+        }
 
-    // Attiva un utente
-    @PutMapping("/utenti/{id}/attiva")
-    public Utente attivaUtente(@PathVariable Long id) {
-        return utenteService.attivaUtente(id);
+        // Attiva un utente
+        @PutMapping("/utenti/{id}/attiva")
+        public Utente attivaUtente(@PathVariable Long id) {
+            return utenteService.attivaUtente(id);
+        }*/
+
+    // Admin resetta password di un utente
+    @PutMapping("/utenti/reset-password")
+    public Utente resetPasswordUtente(@RequestBody ResetPasswordAdminDTO body) {
+        return utenteService.resetPasswordByAdmin(body.utenteId(), body.nuovaPassword());
     }
 
     // Elimina un utente
