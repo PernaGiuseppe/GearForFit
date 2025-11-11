@@ -8,7 +8,12 @@ import java.util.List;
 
 @Repository
 public interface EsercizioRepository extends JpaRepository<Esercizio, Long> {
-
-    // Metodo per trovare esercizi per gruppo muscolare
+    
     List<Esercizio> findByGruppoMuscolareId(Long gruppoId);
+
+    List<Esercizio> findByAttrezzoId(Long attrezzoId);
+
+    List<Esercizio> findByIsCompostoTrue();
+
+    List<Esercizio> findByNomeContainingIgnoreCase(String nome);
 }

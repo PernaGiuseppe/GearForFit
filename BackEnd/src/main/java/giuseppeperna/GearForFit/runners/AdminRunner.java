@@ -53,7 +53,7 @@ public class AdminRunner implements CommandLineRunner {
 
 
         } else {
-            System.out.println("✅ Admin con email " + adminEmail + " già presente - Nessuna azione richiesta");
+            System.out.println("✅ Admin già presente - Nessuna azione richiesta");
         }
     }
 }

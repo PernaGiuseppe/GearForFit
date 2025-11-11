@@ -1,6 +1,5 @@
 package giuseppeperna.GearForFit.entities;
 
-
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -36,6 +35,9 @@ public class SchedaAllenamento {
     @Column(nullable = false)
     private GiornoSettimana giornoSettimana;
 
+    @Column(nullable = false)
+    private boolean isStandard = false; // AGGIUNGI SOLO QUESTO
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "utente_id", nullable = false)
     private Utente utente;
@@ -61,4 +63,3 @@ public class SchedaAllenamento {
         this.dataAggiornamento = LocalDateTime.now();
     }
 }
-

@@ -158,4 +158,101 @@ public class SchedaAllenamentoService {
                 esercizioScheda.getNote()
         );
     }
+
+    // Crea una scheda STANDARD (associata a un utente admin o sistema)
+    public SchedaAllenamentoDTO creaSchedaStandard(Long adminId, SchedaAllenamentoRequestDTO request) {
+        Utente admin = utenteRepository.findById(adminId)
+                .orElseThrow(() -> new RuntimeException("Admin non trovato"));
+
+        SchedaAllenamento scheda = SchedaAllenamento.builder()
+                .nome(request.nome())
+                .descrizione(request.descrizione())
+                .obiettivo(request.obiettivo())
+                .giornoSettimana(request.giornoSettimana())
+                .isStandard(true) // Marca come standard
+                .utente(admin) // Associa all'admin che la crea
+                .build();
+
+        SchedaAllenamento scheduleSalvata = schedaRepository.save(scheda);
+
+        // Aggiungi gli esercizi
+        List<EsercizioScheda> esercizi = request.esercizi().stream()
+                .map(eReq -> {
+                    Esercizio esercizio = esercizioRepository.findById(eReq.esercizioId())
+                            .orElseThrow(() -> new RuntimeException("Esercizio non trovato"));
+                    SchemaSerie schemaSerie = schemaSerieRepository.findById(eReq.schemaSerieId())
+                            .orElseThrow(() -> new RuntimeException("Schema serie non trovato"));
+
+                    return EsercizioScheda.builder()
+                            .schedaAllenamento(scheduleSalvata)
+                            .esercizio(esercizio)
+                            .schemaSerie(schemaSerie)
+                            .posizione(eReq.posizione())
+                            .secondiRiposo(eReq.secondiRiposo())
+                            .note(eReq.note())
+                            .build();
+                })
+                .collect(Collectors.toList());
+
+        scheduleSalvata.setEsercizi(esercizi);
+        SchedaAllenamento schedaFinale = schedaRepository.save(scheduleSalvata);
+
+        return convertiADTO(schedaFinale);
+    }
+
+    // Ottieni tutte le schede STANDARD
+    public List<SchedaAllenamentoDTO> ottieniSchedeStandard() {
+        return schedaRepository.findByIsStandardTrue().stream()
+                .map(this::convertiADTO)
+                .collect(Collectors.toList());
+    }
+
+    // Ottieni schede standard per obiettivo
+    public List<SchedaAllenamentoDTO> ottieniSchedeStandardPerObiettivo(ObiettivoAllenamento obiettivo) {
+        return schedaRepository.findByIsStandardTrueAndObiettivo(obiettivo).stream()
+                .map(this::convertiADTO)
+                .collect(Collectors.toList());
+    }
+
+    // Duplica una scheda standard per un utente (crea una copia personalizzabile)
+    public SchedaAllenamentoDTO duplicaSchedaStandardPerUtente(Long schedaStandardId, Long utenteId) {
+        SchedaAllenamento schedaStandard = schedaRepository.findById(schedaStandardId)
+                .orElseThrow(() -> new RuntimeException("Scheda standard non trovata"));
+
+        if (!schedaStandard.isStandard()) {
+            throw new RuntimeException("La scheda selezionata non è una scheda standard");
+        }
+
+        Utente utente = utenteRepository.findById(utenteId)
+                .orElseThrow(() -> new RuntimeException("Utente non trovato"));
+
+        // Crea una copia della scheda per l'utente
+        SchedaAllenamento nuovaScheda = SchedaAllenamento.builder()
+                .nome(schedaStandard.getNome() + " (Copia)")
+                .descrizione(schedaStandard.getDescrizione())
+                .obiettivo(schedaStandard.getObiettivo())
+                .giornoSettimana(schedaStandard.getGiornoSettimana())
+                .isStandard(false) // La copia diventa custom
+                .utente(utente)
+                .build();
+
+        SchedaAllenamento nuovaSchedaSalvata = schedaRepository.save(nuovaScheda);
+
+        // Copia gli esercizi
+        List<EsercizioScheda> eserciziCopia = schedaStandard.getEsercizi().stream()
+                .map(es -> EsercizioScheda.builder()
+                        .schedaAllenamento(nuovaSchedaSalvata)
+                        .esercizio(es.getEsercizio())
+                        .schemaSerie(es.getSchemaSerie())
+                        .posizione(es.getPosizione())
+                        .secondiRiposo(es.getSecondiRiposo())
+                        .note(es.getNote())
+                        .build())
+                .collect(Collectors.toList());
+
+        nuovaSchedaSalvata.setEsercizi(eserciziCopia);
+        SchedaAllenamento schedaFinale = schedaRepository.save(nuovaSchedaSalvata);
+
+        return convertiADTO(schedaFinale);
+    }
 }
