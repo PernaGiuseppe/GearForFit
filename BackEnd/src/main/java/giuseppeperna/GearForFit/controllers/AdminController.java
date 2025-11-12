@@ -39,9 +39,7 @@ public class AdminController {
     @Autowired
     private QeAService qeAService;
 
-
-    // GESTIONE UTENTI
-
+    // ========== GESTIONE UTENTI ==========
 
     @GetMapping("/utenti")
     public List<Utente> getTuttiUtenti() {
@@ -69,19 +67,19 @@ public class AdminController {
         utenteService.eliminaUtente(id);
     }
 
-   /*    // Disattiva un utente
-        @PutMapping("/utenti/{id}/disattiva")
-        public Utente disattivaUtente(@PathVariable Long id) {
-            return utenteService.disattivaUtente(id);
-        }
+    /* // Disattiva un utente
+    @PutMapping("/utenti/{id}/disattiva")
+    public Utente disattivaUtente(@PathVariable Long id) {
+        return utenteService.disattivaUtente(id);
+    }
 
-        // Attiva un utente
-        @PutMapping("/utenti/{id}/attiva")
-        public Utente attivaUtente(@PathVariable Long id) {
-            return utenteService.attivaUtente(id);
-        }*/
-    // GRUPPI MUSCOLARI
+    // Attiva un utente
+    @PutMapping("/utenti/{id}/attiva")
+    public Utente attivaUtente(@PathVariable Long id) {
+        return utenteService.attivaUtente(id);
+    }*/
 
+    // ========== GRUPPI MUSCOLARI ==========
 
     @PostMapping("/gruppi-muscolari")
     @ResponseStatus(HttpStatus.CREATED)
@@ -112,9 +110,7 @@ public class AdminController {
         gruppoMuscolareService.elimina(id);
     }
 
-
-    // ATTREZZI
-
+    // ========== ATTREZZI ==========
 
     @PostMapping("/attrezzi")
     @ResponseStatus(HttpStatus.CREATED)
@@ -145,9 +141,7 @@ public class AdminController {
         attrezzoService.elimina(id);
     }
 
-
-    // ESERCIZI
-
+    // ========== ESERCIZI ==========
 
     @PostMapping("/esercizi")
     @ResponseStatus(HttpStatus.CREATED)
@@ -205,77 +199,58 @@ public class AdminController {
         return esercizioService.uploadImmagine(id, file);
     }
 
-
-    // SCHEDE ALLENAMENTO
-
-
-    @PostMapping("/schede")
-    @ResponseStatus(HttpStatus.CREATED)
-    public SchedaAllenamento creaScheda(@RequestBody @Valid SchedaAllenamentoRequestDTO body) {
-        return schedaAllenamentoService.creaScheda(body);
-    }
-
-    @GetMapping("/schede")
-    public List<SchedaAllenamento> getTutteSchede() {
-        return schedaAllenamentoService.getAllSchede();
-    }
-
-    @GetMapping("/schede/{id}")
-    public SchedaAllenamento getScheda(@PathVariable Long id) {
-        return schedaAllenamentoService.getSchedaById(id);
-    }
-
-    @PutMapping("/schede/{id}")
-    public SchedaAllenamento aggiornaScheda(
-            @PathVariable Long id,
-            @RequestBody @Valid SchedaAllenamentoRequestDTO body) {
-        return schedaAllenamentoService.aggiornaScheda(id, body);
-    }
-
-    @DeleteMapping("/schede/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void eliminaScheda(@PathVariable Long id) {
-        schedaAllenamentoService.eliminaScheda(id);
-    }
-
-    @PostMapping("/schede/{schedaId}/assegna/{utenteId}")
-    public SchedaAllenamento assegnaSchedaAUtente(
-            @PathVariable Long schedaId,
-            @PathVariable Long utenteId) {
-        return schedaAllenamentoService.assegnaScheda(schedaId, utenteId);
-    }
-
-    @GetMapping("/schede/utente/{utenteId}")
-    public List<SchedaAllenamento> getSchedeByUtente(@PathVariable Long utenteId) {
-        return schedaAllenamentoService.getSchedeByUtente(utenteId);
-    }
+    // ========== SCHEDE ALLENAMENTO (STANDARD - ADMIN) ==========
 
     @PostMapping("/schede/standard")
     @ResponseStatus(HttpStatus.CREATED)
-    public SchedaAllenamento creaSchedaStandard(@RequestBody @Valid SchedaAllenamentoRequestDTO body) {
+    public SchedaAllenamentoDTO creaSchedaStandard(@RequestBody @Valid SchedaAllenamentoRequestDTO body) {
         return schedaAllenamentoService.creaSchedaStandard(body);
     }
 
     @GetMapping("/schede/standard")
-    public List<SchedaAllenamento> getSchedeStandard() {
+    public List<SchedaAllenamentoDTO> getSchedeStandard() {
         return schedaAllenamentoService.getSchedeStandard();
     }
 
     @GetMapping("/schede/standard/obiettivo/{obiettivo}")
-    public List<SchedaAllenamento> getSchedeStandardPerObiettivo(@PathVariable ObiettivoAllenamento obiettivo) {
-        return schedaAllenamentoService.getSchedeStandardPerObiettivo(obiettivo);
+    public List<SchedaAllenamentoDTO> getSchedeStandardPerObiettivo(@PathVariable ObiettivoAllenamento obiettivo) {
+        return schedaAllenamentoService.getSchedeStandardByObiettivo(obiettivo);
     }
 
-    @PostMapping("/schede/standard/{schedaId}/duplica/{utenteId}")
-    public SchedaAllenamento duplicaSchedaStandardPerUtente(
-            @PathVariable Long schedaId,
-            @PathVariable Long utenteId) {
-        return schedaAllenamentoService.duplicaSchedaStandardPerUtente(schedaId, utenteId);
+    @GetMapping("/schede/{id}")
+    public SchedaAllenamentoDTO getScheda(@PathVariable Long id) {
+        return schedaAllenamentoService.getSchedaById(id);
     }
 
+    @PutMapping("/schede/standard/{id}")
+    public SchedaAllenamentoDTO aggiornaSchedaStandard(
+            @PathVariable Long id,
+            @RequestBody @Valid SchedaAllenamentoRequestDTO body) {
+        return schedaAllenamentoService.modificaSchedaStandard(id, body);
+    }
 
-    // Q&A (DOMANDE E RISPOSTE)
+    @DeleteMapping("/schede/standard/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void eliminaSchedaStandard(@PathVariable Long id) {
+        schedaAllenamentoService.eliminaSchedaStandard(id);
+    }
 
+    // ========== SCHEDE PERSONALIZZATE (UTENTE) ==========
+
+    @PostMapping("/schede/utente/{utenteId}")
+    @ResponseStatus(HttpStatus.CREATED)
+    public SchedaAllenamentoDTO creaSchedaPerUtente(
+            @PathVariable Long utenteId,
+            @RequestBody @Valid SchedaAllenamentoRequestDTO body) {
+        return schedaAllenamentoService.creaSchedaPersonalizzata(utenteId, body);
+    }
+
+    @GetMapping("/schede/utente/{utenteId}")
+    public List<SchedaAllenamentoDTO> getSchedeByUtente(@PathVariable Long utenteId) {
+        return schedaAllenamentoService.getSchedeByUtente(utenteId);
+    }
+
+    // ========== Q&A (DOMANDE E RISPOSTE) ==========
 
     @PostMapping("/qea")
     @ResponseStatus(HttpStatus.CREATED)

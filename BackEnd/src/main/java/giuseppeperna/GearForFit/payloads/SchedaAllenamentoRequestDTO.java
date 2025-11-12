@@ -1,25 +1,26 @@
 package giuseppeperna.GearForFit.payloads;
 
-import giuseppeperna.GearForFit.entities.SchedePalestra.GiornoSettimana;
 import giuseppeperna.GearForFit.entities.SchedePalestra.ObiettivoAllenamento;
+import giuseppeperna.GearForFit.entities.SchedePalestra.TipoAllenamento;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-import java.util.List;
-
 public record SchedaAllenamentoRequestDTO(
+
         @NotBlank(message = "Il nome della scheda è obbligatorio")
         String nome,
 
         String descrizione,
 
         @NotNull(message = "L'obiettivo è obbligatorio")
-        ObiettivoAllenamento obiettivoAllenamento, // CORRETTO: era "obiettivo"
+        ObiettivoAllenamento obiettivo,
 
-        @NotNull(message = "Il giorno della settimana è obbligatorio")
-        GiornoSettimana giornoSettimana,
+        TipoAllenamento tipoAllenamento,
 
-        Long utenteId, // AGGIUNTO: campo mancante
+        Integer frequenzaSettimanale,
 
-        List<EsercizioSchedaRequestDTO> esercizi // OPZIONALE
-) {}
+        Integer durataSettimane,
+
+        String livelloEsperienza
+) {
+}

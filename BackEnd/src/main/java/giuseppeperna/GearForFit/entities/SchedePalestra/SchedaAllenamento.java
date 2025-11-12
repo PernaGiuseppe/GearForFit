@@ -2,18 +2,16 @@ package giuseppeperna.GearForFit.entities.SchedePalestra;
 
 import giuseppeperna.GearForFit.entities.Utente.Utente;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
+import lombok.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "schede_allenamento")
-@Data
-@Builder
+@Table(name = "scheda_allenamento")
+@Getter
+@Setter
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 public class SchedaAllenamento {
@@ -25,7 +23,6 @@ public class SchedaAllenamento {
     @Column(nullable = false)
     private String nome;
 
-    @Column(columnDefinition = "TEXT")
     private String descrizione;
 
     @Enumerated(EnumType.STRING)
@@ -33,34 +30,34 @@ public class SchedaAllenamento {
     private ObiettivoAllenamento obiettivo;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private GiornoSettimana giornoSettimana;
+    private TipoAllenamento tipoAllenamento;
 
-    @Column(nullable = false)
-    private boolean isStandard = false; // AGGIUNGI SOLO QUESTO
+    @Column(name = "frequenza_settimanale")
+    private Integer frequenzaSettimanale;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "utente_id", nullable = false)
+    @Column(name = "durata_settimane")
+    private Integer durataSettimane;
+
+    @Column(name = "livello_esperienza")
+    private String livelloEsperienza;
+
+    // ========== NUOVI CAMPI ==========
+    @Column(name = "is_standard", nullable = false)
+    private Boolean isStandard = false;
+
+    @ManyToOne
+    @JoinColumn(name = "utente_id")
     private Utente utente;
+    // ================================
 
-    @OneToMany(mappedBy = "schedaAllenamento", cascade = CascadeType.ALL, orphanRemoval = true)
-    @OrderBy("posizione ASC")
-    private List<EsercizioScheda> esercizi;
+    @OneToMany(mappedBy = "scheda", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<EsercizioScheda> esercizi = new ArrayList<>();
 
-    @Column(name = "data_creazione", nullable = false, updatable = false)
+    @Column(name = "data_creazione")
     private LocalDateTime dataCreazione;
-
-    @Column(name = "data_aggiornamento")
-    private LocalDateTime dataAggiornamento;
 
     @PrePersist
     protected void onCreate() {
         this.dataCreazione = LocalDateTime.now();
-        this.dataAggiornamento = LocalDateTime.now();
-    }
-
-    @PreUpdate
-    protected void onUpdate() {
-        this.dataAggiornamento = LocalDateTime.now();
     }
 }

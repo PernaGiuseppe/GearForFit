@@ -1,6 +1,6 @@
 package giuseppeperna.GearForFit.controllers;
 
-import giuseppeperna.GearForFit.entities.SchedePalestra.SchedaAllenamento;
+import giuseppeperna.GearForFit.payloads.SchedaAllenamentoDTO;
 import giuseppeperna.GearForFit.exceptions.NotValidException;
 import giuseppeperna.GearForFit.payloads.SchedaAllenamentoRequestDTO;
 import giuseppeperna.GearForFit.services.SchedaAllenamentoService;
@@ -20,59 +20,108 @@ public class SchedaAllenamentoController {
     @Autowired
     private SchedaAllenamentoService schedaService;
 
-    // ADMIN può creare schede
-    @PostMapping
+    // ========== SCHEDE STANDARD (ADMIN) ==========
+
+    // ADMIN crea scheda standard
+    @PostMapping("/standard")
     @PreAuthorize("hasAuthority('ADMIN')")
     @ResponseStatus(HttpStatus.CREATED)
-    public SchedaAllenamento creaScheda(
+    public SchedaAllenamentoDTO creaSchedaStandard(
             @RequestBody @Validated SchedaAllenamentoRequestDTO body,
             BindingResult validationResult) {
-
         if (validationResult.hasErrors()) {
             List<String> errorMessages = validationResult.getFieldErrors().stream()
                     .map(fieldError -> fieldError.getField() + " :" + fieldError.getDefaultMessage())
                     .toList();
             throw new NotValidException(errorMessages);
         }
-
-        return schedaService.creaScheda(body);
+        return schedaService.creaSchedaStandard(body);
     }
 
-    // Ottieni una scheda specifica per ID
-    @GetMapping("/{id}")
-    public SchedaAllenamento ottieniScheda(@PathVariable Long id) {
-        return schedaService.getSchedaById(id);
+    // Ottieni tutte le schede standard
+    @GetMapping("/standard")
+    public List<SchedaAllenamentoDTO> getSchedeStandard() {
+        return schedaService.getSchedeStandard();
+    }
+
+    // ADMIN aggiorna scheda standard
+    @PutMapping("/standard/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public SchedaAllenamentoDTO aggiornaSchedaStandard(
+            @PathVariable Long id,
+            @RequestBody @Validated SchedaAllenamentoRequestDTO body,
+            BindingResult validationResult) {
+        if (validationResult.hasErrors()) {
+            List<String> errorMessages = validationResult.getFieldErrors().stream()
+                    .map(fieldError -> fieldError.getField() + " :" + fieldError.getDefaultMessage())
+                    .toList();
+            throw new NotValidException(errorMessages);
+        }
+        return schedaService.modificaSchedaStandard(id, body);
+    }
+
+    // ADMIN elimina scheda standard
+    @DeleteMapping("/standard/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void eliminaSchedaStandard(@PathVariable Long id) {
+        schedaService.eliminaSchedaStandard(id);
+    }
+
+    // ========== SCHEDE PERSONALIZZATE (UTENTE) ==========
+
+    // Utente crea scheda personalizzata
+    @PostMapping("/utente/{utenteId}")
+    @ResponseStatus(HttpStatus.CREATED)
+    public SchedaAllenamentoDTO creaSchedaPersonalizzata(
+            @PathVariable Long utenteId,
+            @RequestBody @Validated SchedaAllenamentoRequestDTO body,
+            BindingResult validationResult) {
+        if (validationResult.hasErrors()) {
+            List<String> errorMessages = validationResult.getFieldErrors().stream()
+                    .map(fieldError -> fieldError.getField() + " :" + fieldError.getDefaultMessage())
+                    .toList();
+            throw new NotValidException(errorMessages);
+        }
+        return schedaService.creaSchedaPersonalizzata(utenteId, body);
     }
 
     // Ottieni tutte le schede di uno specifico utente
     @GetMapping("/utente/{utenteId}")
-    public List<SchedaAllenamento> ottieniSchedeUtente(@PathVariable Long utenteId) {
+    public List<SchedaAllenamentoDTO> getSchedeUtente(@PathVariable Long utenteId) {
         return schedaService.getSchedeByUtente(utenteId);
     }
 
-    // ADMIN può aggiornare una scheda
-    @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority('ADMIN')")
-    public SchedaAllenamento aggiornaScheda(
-            @PathVariable Long id,
+    // Utente aggiorna la propria scheda personalizzata
+    @PutMapping("/utente/{utenteId}/{schedaId}")
+    public SchedaAllenamentoDTO aggiornaSchedaPersonalizzata(
+            @PathVariable Long utenteId,
+            @PathVariable Long schedaId,
             @RequestBody @Validated SchedaAllenamentoRequestDTO body,
             BindingResult validationResult) {
-
         if (validationResult.hasErrors()) {
             List<String> errorMessages = validationResult.getFieldErrors().stream()
                     .map(fieldError -> fieldError.getField() + " :" + fieldError.getDefaultMessage())
                     .toList();
             throw new NotValidException(errorMessages);
         }
-
-        return schedaService.aggiornaScheda(id, body);
+        return schedaService.modificaSchedaPersonalizzata(schedaId, utenteId, body);
     }
 
-    // ADMIN può eliminare una scheda
-    @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    // Utente elimina la propria scheda personalizzata
+    @DeleteMapping("/utente/{utenteId}/{schedaId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void eliminaScheda(@PathVariable Long id) {
-        schedaService.eliminaScheda(id);
+    public void eliminaSchedaPersonalizzata(
+            @PathVariable Long utenteId,
+            @PathVariable Long schedaId) {
+        schedaService.eliminaSchedaPersonalizzata(schedaId, utenteId);
+    }
+
+    // ========== UTILITY ==========
+
+    // Ottieni una scheda specifica per ID (standard o personalizzata)
+    @GetMapping("/{id}")
+    public SchedaAllenamentoDTO getSchedaById(@PathVariable Long id) {
+        return schedaService.getSchedaById(id);
     }
 }
