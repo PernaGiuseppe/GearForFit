@@ -1,6 +1,6 @@
 package giuseppeperna.GearForFit.controllers;
 
-import giuseppeperna.GearForFit.entities.Utente;
+import giuseppeperna.GearForFit.entities.Utente.Utente;
 import giuseppeperna.GearForFit.payloads.AggiornaProfiloDTO;
 import giuseppeperna.GearForFit.payloads.CambiaPasswordDTO;
 import giuseppeperna.GearForFit.services.UtenteService;

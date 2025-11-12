@@ -1,8 +1,8 @@
 package giuseppeperna.GearForFit.services;
 
-import giuseppeperna.GearForFit.entities.TipoPiano;
-import giuseppeperna.GearForFit.entities.TipoUtente;
-import giuseppeperna.GearForFit.entities.Utente;
+import giuseppeperna.GearForFit.entities.Utente.TipoPiano;
+import giuseppeperna.GearForFit.entities.Utente.TipoUtente;
+import giuseppeperna.GearForFit.entities.Utente.Utente;
 import giuseppeperna.GearForFit.exceptions.BadRequestException;
 import giuseppeperna.GearForFit.exceptions.NotFoundException;
 import giuseppeperna.GearForFit.exceptions.UnauthorizedException;

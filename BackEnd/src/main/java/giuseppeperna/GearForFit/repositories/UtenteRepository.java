@@ -1,6 +1,6 @@
 package giuseppeperna.GearForFit.repositories;
 
-import giuseppeperna.GearForFit.entities.Utente;
+import giuseppeperna.GearForFit.entities.Utente.Utente;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

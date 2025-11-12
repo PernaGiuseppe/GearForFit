@@ -1,4 +1,4 @@
-package giuseppeperna.GearForFit.entities;
+package giuseppeperna.GearForFit.entities.SchedePalestra;
 
 
 import jakarta.persistence.*;

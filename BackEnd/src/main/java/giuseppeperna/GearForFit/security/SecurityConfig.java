@@ -1,9 +1,10 @@
-package giuseppeperna.GearForFit.config;
+package giuseppeperna.GearForFit.security;
 
 import giuseppeperna.GearForFit.security.JwtFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -27,7 +28,6 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-
         // Disabilita login form (usiamo JWT)
         httpSecurity.formLogin(formLogin -> formLogin.disable());
 
@@ -42,11 +42,19 @@ public class SecurityConfig {
         // Aggiungi il JWT filter prima dell'autenticazione username/password
         httpSecurity.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
-        // Configura le autorizzazioni dei percorsi
+        // ✅ CONFIGURAZIONE AUTORIZZAZIONI CORRETTA
         httpSecurity.authorizeHttpRequests(req ->
-                req.requestMatchers("/auth/**").permitAll()  // Percorsi pubblici
-                        .requestMatchers("/esercizi/**").permitAll() // Esercizi visibili a tutti
-                        .anyRequest().authenticated()  // Tutto il resto richiede autenticazione
+                req.requestMatchers("/auth/**").permitAll() // Percorsi pubblici (login/register)
+                        .requestMatchers(HttpMethod.GET, "/esercizi/**").permitAll() // Esercizi in lettura pubblici
+
+                        // ✅ ADMIN - Tutte le operazioni su /admin/**
+                        .requestMatchers(HttpMethod.POST, "/admin/**").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/admin/**").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.PATCH, "/admin/**").hasAuthority("ADMIN") // ⬅️ AGGIUNTO
+                        .requestMatchers(HttpMethod.DELETE, "/admin/**").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/admin/**").hasAuthority("ADMIN")
+
+                        .anyRequest().authenticated() // Tutto il resto richiede autenticazione
         );
 
         // Abilita CORS

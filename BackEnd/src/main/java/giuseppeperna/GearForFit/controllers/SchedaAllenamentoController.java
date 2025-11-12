@@ -1,7 +1,7 @@
 package giuseppeperna.GearForFit.controllers;
 
+import giuseppeperna.GearForFit.entities.SchedePalestra.SchedaAllenamento;
 import giuseppeperna.GearForFit.exceptions.NotValidException;
-import giuseppeperna.GearForFit.payloads.SchedaAllenamentoDTO;
 import giuseppeperna.GearForFit.payloads.SchedaAllenamentoRequestDTO;
 import giuseppeperna.GearForFit.services.SchedaAllenamentoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,12 +20,11 @@ public class SchedaAllenamentoController {
     @Autowired
     private SchedaAllenamentoService schedaService;
 
-    // ADMIN può creare schede per gli utenti
-    @PostMapping("/{utenteId}")
+    // ADMIN può creare schede
+    @PostMapping
     @PreAuthorize("hasAuthority('ADMIN')")
     @ResponseStatus(HttpStatus.CREATED)
-    public SchedaAllenamentoDTO creaScheda(
-            @PathVariable Long utenteId,
+    public SchedaAllenamento creaScheda(
             @RequestBody @Validated SchedaAllenamentoRequestDTO body,
             BindingResult validationResult) {
 
@@ -36,25 +35,25 @@ public class SchedaAllenamentoController {
             throw new NotValidException(errorMessages);
         }
 
-        return schedaService.creaScheda(utenteId, body);
+        return schedaService.creaScheda(body);
     }
 
     // Ottieni una scheda specifica per ID
     @GetMapping("/{id}")
-    public SchedaAllenamentoDTO ottieniScheda(@PathVariable Long id) {
-        return schedaService.ottieniSchedaPerId(id);
+    public SchedaAllenamento ottieniScheda(@PathVariable Long id) {
+        return schedaService.getSchedaById(id);
     }
 
     // Ottieni tutte le schede di uno specifico utente
     @GetMapping("/utente/{utenteId}")
-    public List<SchedaAllenamentoDTO> ottieniSchedeUtente(@PathVariable Long utenteId) {
-        return schedaService.ottieniSchedeUtente(utenteId);
+    public List<SchedaAllenamento> ottieniSchedeUtente(@PathVariable Long utenteId) {
+        return schedaService.getSchedeByUtente(utenteId);
     }
 
     // ADMIN può aggiornare una scheda
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public SchedaAllenamentoDTO aggiornaScheda(
+    public SchedaAllenamento aggiornaScheda(
             @PathVariable Long id,
             @RequestBody @Validated SchedaAllenamentoRequestDTO body,
             BindingResult validationResult) {

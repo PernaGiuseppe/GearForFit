@@ -1,7 +1,7 @@
 package giuseppeperna.GearForFit.controllers;
 
-import giuseppeperna.GearForFit.entities.TipoUtente;
-import giuseppeperna.GearForFit.entities.Utente;
+import giuseppeperna.GearForFit.entities.Utente.TipoUtente;
+import giuseppeperna.GearForFit.entities.Utente.Utente;
 import giuseppeperna.GearForFit.exceptions.BadRequestException;
 import giuseppeperna.GearForFit.payloads.LoginRequestDTO;
 import giuseppeperna.GearForFit.payloads.LoginResponseDTO;

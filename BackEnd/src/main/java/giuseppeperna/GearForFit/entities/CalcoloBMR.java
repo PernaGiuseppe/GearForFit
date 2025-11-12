@@ -1,5 +1,6 @@
 package giuseppeperna.GearForFit.entities;
 
+import giuseppeperna.GearForFit.entities.Utente.Utente;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
