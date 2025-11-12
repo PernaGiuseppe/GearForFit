@@ -172,4 +172,32 @@ public class SchedaAllenamentoService {
                 scheda.getUtente() != null ? scheda.getUtente().getId() : null
         );
     }
+    public SchedaAllenamentoDTO getSchedaByIdAndUtente(Long schedaId, Long utenteId) {
+        SchedaAllenamento scheda = schedaRepository.findById(schedaId)
+                .orElseThrow(() -> new NotFoundException("Scheda con id " + schedaId + " non trovata"));
+
+        // Verifica che la scheda appartenga all'utente
+        if (!scheda.getUtente().getId().equals(utenteId)) {
+            throw new UnauthorizedException("Non sei autorizzato a visualizzare questa scheda");
+        }
+
+        return new SchedaAllenamentoDTO(
+                scheda.getId(),
+                scheda.getNome(),
+                scheda.getDescrizione(),
+                scheda.getObiettivo(),
+                scheda.getTipoAllenamento(),
+                scheda.getFrequenzaSettimanale(),
+                scheda.getDurataSettimane(),
+                scheda.getLivelloEsperienza(),
+                scheda.getIsStandard(),  // <-- Cambiato qui
+                scheda.getUtente() != null ? scheda.getUtente().getId() : null
+        );
+    }
+    public void eliminaSchedaById(Long id) {
+        SchedaAllenamento scheda = schedaRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Scheda con id " + id + " non trovata"));
+        schedaRepository.delete(scheda);
+    }
+
 }

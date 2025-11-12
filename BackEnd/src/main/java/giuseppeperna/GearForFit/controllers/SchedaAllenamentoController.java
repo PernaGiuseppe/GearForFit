@@ -117,11 +117,25 @@ public class SchedaAllenamentoController {
         schedaService.eliminaSchedaPersonalizzata(schedaId, utenteId);
     }
 
-    // ========== UTILITY ==========
 
+   // GET - Ottieni una singola scheda personalizzata di un utente
+    @GetMapping("/utente/{utenteId}/{schedaId}")
+    public SchedaAllenamentoDTO getSchedaPersonalizzataById(
+            @PathVariable Long utenteId,
+            @PathVariable Long schedaId) {
+        return schedaService.getSchedaByIdAndUtente(schedaId, utenteId);
+    }
     // Ottieni una scheda specifica per ID (standard o personalizzata)
     @GetMapping("/{id}")
     public SchedaAllenamentoDTO getSchedaById(@PathVariable Long id) {
         return schedaService.getSchedaById(id);
     }
+    // Endpoint DELETE per cancellare una scheda tramite ID (standard o personalizzata)
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void eliminaSchedaById(@PathVariable Long id) {
+        schedaService.eliminaSchedaById(id);
+    }
+
 }

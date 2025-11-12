@@ -41,20 +41,21 @@ public class SchedaAllenamento {
     @Column(name = "livello_esperienza")
     private String livelloEsperienza;
 
-    // ========== NUOVI CAMPI ==========
     @Column(name = "is_standard", nullable = false)
     private Boolean isStandard = false;
 
     @ManyToOne
     @JoinColumn(name = "utente_id")
     private Utente utente;
-    // ================================
 
     @OneToMany(mappedBy = "scheda", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<EsercizioScheda> esercizi = new ArrayList<>();
 
     @Column(name = "data_creazione")
     private LocalDateTime dataCreazione;
+
+    @OneToMany(mappedBy = "scheda", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<GiornoAllenamento> giorni = new ArrayList<>();
 
     @PrePersist
     protected void onCreate() {
