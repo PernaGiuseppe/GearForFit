@@ -141,11 +141,11 @@ public class AdminController {
     }*/
     // Il tuo metodo POST per creare le diete (che già funziona)
 
-    @PostMapping("/diete/standard")
+   /* @PostMapping("/diete/standard")
     @ResponseStatus(HttpStatus.CREATED)
     public DietaStandard saveDieta(@RequestBody DietaStandardRequestDTO body) {
         return dietaService.save(body);
-    }
+    }*/
 
     // NUOVI ENDPOINT
     @PutMapping("/diete/standard/{dietaId}")

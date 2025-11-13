@@ -6,18 +6,16 @@ import giuseppeperna.GearForFit.entities.Utente.Utente;
 import giuseppeperna.GearForFit.exceptions.NotFoundException;
 import giuseppeperna.GearForFit.payloads.*;
 import giuseppeperna.GearForFit.repositories.*;
-import org.hibernate.query.Page;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.awt.print.Pageable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -47,6 +45,8 @@ public class DietaService {
     @Autowired
     private DietaUtenteRepository dietaUtenteRepository;
 
+    @Autowired
+    private AlimentoRepository alimentoRepository;
 
     // ----------- METODI PER DIETE STANDARD (ADMIN) -----------
 
@@ -61,9 +61,19 @@ public class DietaService {
     }
 
     public DietaStandardDTO getDietaStandardByTipo(TipoDieta tipoDieta) {
-        return dietaStandardRepository.findByTipoDieta(tipoDieta)
-                .map(this::convertToDTO)
-                .orElseThrow(() -> new RuntimeException("Dieta non trovata per il tipo: " + tipoDieta));
+        // 1. findByTipoDieta ora restituisce una List<DietaStandard>
+        List<DietaStandard> dieteTrovate = dietaStandardRepository.findByTipoDieta(tipoDieta);
+
+        // 2. Controlla se la lista è vuota
+        if (dieteTrovate.isEmpty()) {
+            throw new RuntimeException("Nessuna dieta standard trovata per il tipo: " + tipoDieta);
+        }
+
+        // 3. Prendi il primo elemento della lista e convertilo in DTO
+        // (Qui decidiamo di prendere la prima dieta trovata. Potremmo avere logiche più complesse in futuro)
+        DietaStandard dietaDaRestituire = dieteTrovate.get(0);
+
+        return convertToDTO(dietaDaRestituire);
     }
 
     @Transactional
@@ -266,7 +276,47 @@ public class DietaService {
                 (alimento.getCaloriePer100g() / 100.0) * grammi
         );
     }
+    public DietaStandard save(DietaStandardRequestDTO body) {
+        DietaStandard nuovaDieta = new DietaStandard();
+        nuovaDieta.setNome(body.nome());
+        nuovaDieta.setDescrizione(body.descrizione());
+        nuovaDieta.setDurataSettimane(body.durataSettimane());
+        nuovaDieta.setTipoDieta(body.tipoDieta());
 
+        List<PastoStandard> pastiSalvati = new ArrayList<>();
+        double calorieTotali = 0;
+
+        for (PastoStandardRequestDTO pastoDTO : body.pasti()) {
+            PastoStandard pasto = new PastoStandard();
+            pasto.setNomePasto(pastoDTO.nomePasto());
+            pasto.setOrdine(pastoDTO.ordine());
+            pasto.setDietaStandard(nuovaDieta);
+            pastoStandardRepository.save(pasto); // Assicurati che pastoStandardRepository sia iniettato
+
+            double caloriePasto = 0;
+            List<DietaStandardAlimento> alimentiSalvati = new ArrayList<>();
+            for (var alimentoPastoDTO : pastoDTO.alimenti()) {
+                Alimento alimento = alimentoRepository.findById(alimentoPastoDTO.alimentoId())
+                        .orElseThrow(() -> new NotFoundException("Alimento con id " + alimentoPastoDTO.alimentoId() + " non trovato"));
+                DietaStandardAlimento dietaAlimento = new DietaStandardAlimento();
+                dietaAlimento.setAlimento(alimento);
+                dietaAlimento.setGrammi(alimentoPastoDTO.grammi());
+                dietaAlimento.setPastoStandard(pasto);
+                dietaStandardAlimentoRepository.save(dietaAlimento); // Assicurati che sia iniettato
+                alimentiSalvati.add(dietaAlimento);
+
+                caloriePasto += (alimento.getCaloriePer100g() / 100.0) * alimentoPastoDTO.grammi();
+            }
+            pasto.setAlimenti(alimentiSalvati);
+            calorieTotali += caloriePasto;
+            pastiSalvati.add(pasto);
+        }
+
+        nuovaDieta.setCalorieTotali(calorieTotali);
+        nuovaDieta.setPasti(pastiSalvati);
+
+        return dietaStandardRepository.save(nuovaDieta);
+    }
     public DietaStandard update(long dietaId, DietaStandardRequestDTO body) {
         DietaStandard trovata = this.findById(dietaId);
 
@@ -333,6 +383,7 @@ public class DietaService {
 
         dietaStandardRepository.delete(trovata);
     }
+
     public Page<DietaStandard> getDiete(int page, int size, String orderBy) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(orderBy));
         return dietaStandardRepository.findAll(pageable);

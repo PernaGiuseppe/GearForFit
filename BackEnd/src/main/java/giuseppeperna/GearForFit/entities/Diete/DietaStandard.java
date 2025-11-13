@@ -29,7 +29,9 @@ public class DietaStandard {
 
     private Integer durataSettimane;
 
-    private double calorieTotali;
+    @Column(nullable = false)
+    private double calorieTotali = 0.0;
+
     @OneToMany(mappedBy = "dietaStandard", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PastoStandard> pasti = new ArrayList<>();
 }
