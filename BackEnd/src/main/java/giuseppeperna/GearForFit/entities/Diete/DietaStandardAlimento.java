@@ -1,4 +1,5 @@
 package giuseppeperna.GearForFit.entities.Diete;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import giuseppeperna.GearForFit.entities.Alimenti.Alimento;
 import jakarta.persistence.*;
 import lombok.*;
@@ -17,10 +18,8 @@ public class DietaStandardAlimento {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Quantità standard base (in grammi)
     @Column(nullable = false)
     private Integer grammi;
-
     private Double proteineG;
     private Double carboidratiG;
     private Double grassiG;
@@ -28,9 +27,11 @@ public class DietaStandardAlimento {
 
     @ManyToOne
     @JoinColumn(name = "pasto_standard_id", nullable = false)
+    @JsonIgnore
     private PastoStandard pastoStandard;
 
     @ManyToOne
     @JoinColumn(name = "alimento_id", nullable = false)
+    @JsonIgnore
     private Alimento alimento;
 }

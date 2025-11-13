@@ -1,5 +1,6 @@
 package giuseppeperna.GearForFit.entities.Diete;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import giuseppeperna.GearForFit.entities.Utente.Utente;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -21,6 +22,7 @@ public class CalcoloBMR {
 
     @OneToOne
     @JoinColumn(name = "utente_id", nullable = false, unique = true)
+    @JsonIgnore
     private Utente utente;
 
     @Column(nullable = false)

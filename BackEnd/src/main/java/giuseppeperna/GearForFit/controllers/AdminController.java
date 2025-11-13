@@ -1,5 +1,9 @@
 package giuseppeperna.GearForFit.controllers;
 
+import giuseppeperna.GearForFit.entities.Alimenti.Alimento;
+import giuseppeperna.GearForFit.entities.Alimenti.Carne;
+import giuseppeperna.GearForFit.entities.Diete.DietaStandard;
+import giuseppeperna.GearForFit.entities.Diete.TipoDieta;
 import giuseppeperna.GearForFit.entities.Utente.QeA;
 import giuseppeperna.GearForFit.entities.SchedePalestra.*;
 import giuseppeperna.GearForFit.entities.Utente.TipoPiano;
@@ -9,12 +13,14 @@ import giuseppeperna.GearForFit.services.*;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/admin")
@@ -38,7 +44,120 @@ public class AdminController {
 
     @Autowired
     private QeAService qeAService;
+    @Autowired
+    private DietaService dietaService;
 
+    @Autowired
+    private AlimentoService alimentoService;
+
+// ========== GESTIONE ALIMENTI ==========
+
+    @PostMapping("/alimenti/carne")
+    @ResponseStatus(HttpStatus.CREATED)
+    public Carne creaAlimentoCarne(@RequestBody @Valid AlimentoRequestDTO body) {
+        Carne carne = new Carne();
+        mappaAlimento(carne, body);
+        return alimentoService.saveCarne(carne);
+    }
+
+// Ripeti per tutte le categorie (Pesce, Verdura, Frutta, ecc.)
+
+    @GetMapping("/alimenti")
+    public List<Alimento> getTuttiAlimenti() {
+        return alimentoService.findAllAlimenti();
+    }
+
+    @GetMapping("/alimenti/{id}")
+    public Alimento getAlimento(@PathVariable Long id) {
+        return alimentoService.findAlimentoById(id)
+                .orElseThrow(() -> new RuntimeException("Alimento non trovato"));
+    }
+
+    @DeleteMapping("/alimenti/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void eliminaAlimento(@PathVariable Long id) {
+        alimentoService.deleteAlimento(id);
+    }
+
+// ========== GESTIONE DIETE STANDARD ==========
+
+    @PostMapping("/diete/standard")
+    @ResponseStatus(HttpStatus.CREATED)
+    public DietaStandardDTO creaDietaStandard(@RequestBody @Valid DietaStandardRequestDTO body) {
+        return dietaService.creaDietaStandard(body);
+    }
+
+    @GetMapping("/diete/standard")
+    public List<DietaStandardDTO> getDieteStandard() {
+        return dietaService.getAllDieteStandard();
+    }
+
+    @GetMapping("/diete/standard/{tipoDieta}")
+    public DietaStandardDTO getDietaStandardByTipo(@PathVariable TipoDieta tipoDieta) {
+        return dietaService.getDietaStandardByTipo(tipoDieta);
+    }
+
+    @PutMapping("/diete/standard/{id}")
+    public DietaStandardDTO aggiornaDietaStandard(
+            @PathVariable Long id,
+            @RequestBody @Valid DietaStandardRequestDTO body) {
+        return dietaService.aggiornaDietaStandard(id, body);
+    }
+
+    @DeleteMapping("/diete/standard/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void eliminaDietaStandard(@PathVariable Long id) {
+        dietaService.eliminaDietaStandard(id);
+    }
+    @GetMapping("/admin/diete/standard/{id}")
+    public ResponseEntity<DietaStandardDTO> getDietaById(@PathVariable Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("L'id non può essere nullo");
+        }
+        return dietaService.getDietaStandardById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+
+    private void mappaAlimento(Alimento alimento, AlimentoRequestDTO body) {
+        alimento.setNome(body.nome());
+        alimento.setCaloriePer100g(body.caloriePer100g());
+        alimento.setProteinePer100g(body.proteinePer100g());
+        alimento.setCarboidratiPer100g(body.carboidratiPer100g());
+        alimento.setGrassiPer100g(body.grassiPer100g());
+        alimento.setFibrePer100g(body.fibrePer100g());
+    }
+ /*   @PutMapping("/diete/standard/{dietaId}")
+    public DietaStandardDTO findByIdAndUpdate(@PathVariable long dietaId, @RequestBody DietaStandardRequestDTO body) {
+        DietaStandard aggiornata = dietaService.update(dietaId, body);
+        return dietaService.convertToDTO(aggiornata);
+    }
+
+    @DeleteMapping("/diete/standard/{dietaId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void findByIdAndDelete(@PathVariable long dietaId) {
+        dietaService.findByIdAndDelete(dietaId);
+    }*/
+    // Il tuo metodo POST per creare le diete (che già funziona)
+
+    @PostMapping("/diete/standard")
+    @ResponseStatus(HttpStatus.CREATED)
+    public DietaStandard saveDieta(@RequestBody DietaStandardRequestDTO body) {
+        return dietaService.save(body);
+    }
+
+    // NUOVI ENDPOINT
+    @PutMapping("/diete/standard/{dietaId}")
+    public DietaStandardDTO findByIdAndUpdate(@PathVariable long dietaId, @RequestBody DietaStandardRequestDTO body) {
+        return dietaService.convertToDTO(dietaService.update(dietaId, body));
+    }
+
+    @DeleteMapping("/diete/standard/{dietaId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void findByIdAndDelete(@PathVariable long dietaId) {
+        dietaService.findByIdAndDelete(dietaId);
+    }
     // ========== GESTIONE UTENTI ==========
 
     @GetMapping("/utenti")

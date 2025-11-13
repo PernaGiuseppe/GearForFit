@@ -2,12 +2,16 @@ package giuseppeperna.GearForFit.services;
 
 import giuseppeperna.GearForFit.entities.Diete.CalcoloBMR;
 import giuseppeperna.GearForFit.entities.Diete.TipoDieta;
+import giuseppeperna.GearForFit.repositories.CalcoloBMRRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
 
 @Service
 public class CalcoloBMRService {
+    @Autowired
+    private CalcoloBMRRepository calcoloBMRRepository;
 
     public Double calcolaBMR(CalcoloBMR profilo) {
         double bmr;
@@ -41,5 +45,8 @@ public class CalcoloBMRService {
             case NORMOCALORICA -> tdee;
         };
     }
-
+    public CalcoloBMR getCalcoloBMRByUtente(Long utenteId) {
+        return calcoloBMRRepository.findByUtenteId(utenteId) // <-- Usa l'istanza e passa il Long
+                .orElseThrow(() -> new RuntimeException("Calcolo BMR non trovato per l'utente con ID: " + utenteId));
+    }
 }

@@ -1,4 +1,5 @@
 package giuseppeperna.GearForFit.entities.Diete;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -25,6 +26,7 @@ public class PastoStandard {
 
     @ManyToOne
     @JoinColumn(name = "dieta_standard_id", nullable = false)
+    @JsonIgnore
     private DietaStandard dietaStandard;
 
     @OneToMany(mappedBy = "pastoStandard", cascade = CascadeType.ALL, orphanRemoval = true)

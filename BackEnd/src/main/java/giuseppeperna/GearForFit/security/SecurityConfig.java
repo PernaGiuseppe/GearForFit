@@ -42,15 +42,15 @@ public class SecurityConfig {
         // Aggiungi il JWT filter prima dell'autenticazione username/password
         httpSecurity.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
-        // ✅ CONFIGURAZIONE AUTORIZZAZIONI CORRETTA
+        // CONFIGURAZIONE AUTORIZZAZIONI CORRETTA
         httpSecurity.authorizeHttpRequests(req ->
                 req.requestMatchers("/auth/**").permitAll() // Percorsi pubblici (login/register)
                         .requestMatchers(HttpMethod.GET, "/esercizi/**").permitAll() // Esercizi in lettura pubblici
 
-                        // ✅ ADMIN - Tutte le operazioni su /admin/**
+                        // ADMIN - Tutte le operazioni su /admin/**
                         .requestMatchers(HttpMethod.POST, "/admin/**").hasAuthority("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/admin/**").hasAuthority("ADMIN")
-                        .requestMatchers(HttpMethod.PATCH, "/admin/**").hasAuthority("ADMIN") // ⬅️ AGGIUNTO
+                        .requestMatchers(HttpMethod.PATCH, "/admin/**").hasAuthority("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/admin/**").hasAuthority("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/admin/**").hasAuthority("ADMIN")
 
