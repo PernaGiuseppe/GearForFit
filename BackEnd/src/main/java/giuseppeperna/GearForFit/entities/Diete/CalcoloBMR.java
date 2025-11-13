@@ -1,4 +1,4 @@
-package giuseppeperna.GearForFit.entities;
+package giuseppeperna.GearForFit.entities.Diete;
 
 import giuseppeperna.GearForFit.entities.Utente.Utente;
 import jakarta.persistence.*;

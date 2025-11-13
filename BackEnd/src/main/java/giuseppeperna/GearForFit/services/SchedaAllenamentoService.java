@@ -30,9 +30,7 @@ public class SchedaAllenamentoService {
         scheda.setDescrizione(body.descrizione());
         scheda.setObiettivo(body.obiettivo());
         scheda.setTipoAllenamento(body.tipoAllenamento());
-        scheda.setFrequenzaSettimanale(body.frequenzaSettimanale());
         scheda.setDurataSettimane(body.durataSettimane());
-        scheda.setLivelloEsperienza(body.livelloEsperienza());
         scheda.setIsStandard(true);
         scheda.setUtente(null);
 
@@ -66,9 +64,7 @@ public class SchedaAllenamentoService {
         scheda.setDescrizione(body.descrizione());
         scheda.setObiettivo(body.obiettivo());
         scheda.setTipoAllenamento(body.tipoAllenamento());
-        scheda.setFrequenzaSettimanale(body.frequenzaSettimanale());
         scheda.setDurataSettimane(body.durataSettimane());
-        scheda.setLivelloEsperienza(body.livelloEsperienza());
 
         SchedaAllenamento updated = schedaRepository.save(scheda);
         return mapToDTO(updated);
@@ -96,9 +92,7 @@ public class SchedaAllenamentoService {
         scheda.setDescrizione(body.descrizione());
         scheda.setObiettivo(body.obiettivo());
         scheda.setTipoAllenamento(body.tipoAllenamento());
-        scheda.setFrequenzaSettimanale(body.frequenzaSettimanale());
         scheda.setDurataSettimane(body.durataSettimane());
-        scheda.setLivelloEsperienza(body.livelloEsperienza());
         scheda.setIsStandard(false);
         scheda.setUtente(utente);
 
@@ -128,9 +122,7 @@ public class SchedaAllenamentoService {
         scheda.setDescrizione(body.descrizione());
         scheda.setObiettivo(body.obiettivo());
         scheda.setTipoAllenamento(body.tipoAllenamento());
-        scheda.setFrequenzaSettimanale(body.frequenzaSettimanale());
         scheda.setDurataSettimane(body.durataSettimane());
-        scheda.setLivelloEsperienza(body.livelloEsperienza());
 
         SchedaAllenamento updated = schedaRepository.save(scheda);
         return mapToDTO(updated);
@@ -165,9 +157,7 @@ public class SchedaAllenamentoService {
                 scheda.getDescrizione(),
                 scheda.getObiettivo(),
                 scheda.getTipoAllenamento(),
-                scheda.getFrequenzaSettimanale(),
                 scheda.getDurataSettimane(),
-                scheda.getLivelloEsperienza(),
                 scheda.getIsStandard(),
                 scheda.getUtente() != null ? scheda.getUtente().getId() : null
         );
@@ -187,9 +177,7 @@ public class SchedaAllenamentoService {
                 scheda.getDescrizione(),
                 scheda.getObiettivo(),
                 scheda.getTipoAllenamento(),
-                scheda.getFrequenzaSettimanale(),
                 scheda.getDurataSettimane(),
-                scheda.getLivelloEsperienza(),
                 scheda.getIsStandard(),  // <-- Cambiato qui
                 scheda.getUtente() != null ? scheda.getUtente().getId() : null
         );

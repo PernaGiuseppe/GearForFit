@@ -11,9 +11,7 @@ public record SchedaAllenamentoDTO(
         String descrizione,
         ObiettivoAllenamento obiettivo,
         TipoAllenamento tipoAllenamento,
-        Integer frequenzaSettimanale,
         Integer durataSettimane,
-        String livelloEsperienza,
         Boolean isStandard,  // ✅ NUOVO
         Long utenteId        // ✅ NUOVO
 ) {

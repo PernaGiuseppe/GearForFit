@@ -32,14 +32,8 @@ public class SchedaAllenamento {
     @Enumerated(EnumType.STRING)
     private TipoAllenamento tipoAllenamento;
 
-    @Column(name = "frequenza_settimanale")
-    private Integer frequenzaSettimanale;
-
     @Column(name = "durata_settimane")
     private Integer durataSettimane;
-
-    @Column(name = "livello_esperienza")
-    private String livelloEsperienza;
 
     @Column(name = "is_standard", nullable = false)
     private Boolean isStandard = false;
