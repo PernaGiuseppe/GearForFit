@@ -52,15 +52,21 @@ public class AdminController {
 
 // ========== GESTIONE ALIMENTI ==========
 
-    @PostMapping("/alimenti/carne")
+  /*  @PostMapping("/alimenti/carne")
     @ResponseStatus(HttpStatus.CREATED)
     public Carne creaAlimentoCarne(@RequestBody @Valid AlimentoRequestDTO body) {
         Carne carne = new Carne();
         mappaAlimento(carne, body);
         return alimentoService.saveCarne(carne);
-    }
-
-// Ripeti per tutte le categorie (Pesce, Verdura, Frutta, ecc.)
+    }*/
+/*    private void mappaAlimento(Alimento alimento, AlimentoRequestDTO body) {
+        alimento.setNome(body.nome());
+        alimento.setCaloriePer100g(body.caloriePer100g());
+        alimento.setProteinePer100g(body.proteinePer100g());
+        alimento.setCarboidratiPer100g(body.carboidratiPer100g());
+        alimento.setGrassiPer100g(body.grassiPer100g());
+        alimento.setFibrePer100g(body.fibrePer100g());
+    }*/
 
     @GetMapping("/alimenti")
     public List<Alimento> getTuttiAlimenti() {
@@ -87,16 +93,6 @@ public class AdminController {
         return dietaService.creaDietaStandard(body);
     }
 
-    @GetMapping("/diete/standard")
-    public List<DietaStandardDTO> getDieteStandard() {
-        return dietaService.getAllDieteStandard();
-    }
-
-    @GetMapping("/diete/standard/{tipoDieta}")
-    public DietaStandardDTO getDietaStandardByTipo(@PathVariable TipoDieta tipoDieta) {
-        return dietaService.getDietaStandardByTipo(tipoDieta);
-    }
-
     @PutMapping("/diete/standard/{id}")
     public DietaStandardDTO aggiornaDietaStandard(
             @PathVariable Long id,
@@ -109,55 +105,7 @@ public class AdminController {
     public void eliminaDietaStandard(@PathVariable Long id) {
         dietaService.eliminaDietaStandard(id);
     }
-    @GetMapping("/admin/diete/standard/{id}")
-    public ResponseEntity<DietaStandardDTO> getDietaById(@PathVariable Long id) {
-        if (id == null) {
-            throw new IllegalArgumentException("L'id non può essere nullo");
-        }
-        return dietaService.getDietaStandardById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
-    }
 
-
-    private void mappaAlimento(Alimento alimento, AlimentoRequestDTO body) {
-        alimento.setNome(body.nome());
-        alimento.setCaloriePer100g(body.caloriePer100g());
-        alimento.setProteinePer100g(body.proteinePer100g());
-        alimento.setCarboidratiPer100g(body.carboidratiPer100g());
-        alimento.setGrassiPer100g(body.grassiPer100g());
-        alimento.setFibrePer100g(body.fibrePer100g());
-    }
- /*   @PutMapping("/diete/standard/{dietaId}")
-    public DietaStandardDTO findByIdAndUpdate(@PathVariable long dietaId, @RequestBody DietaStandardRequestDTO body) {
-        DietaStandard aggiornata = dietaService.update(dietaId, body);
-        return dietaService.convertToDTO(aggiornata);
-    }
-
-    @DeleteMapping("/diete/standard/{dietaId}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void findByIdAndDelete(@PathVariable long dietaId) {
-        dietaService.findByIdAndDelete(dietaId);
-    }*/
-    // Il tuo metodo POST per creare le diete (che già funziona)
-
-   /* @PostMapping("/diete/standard")
-    @ResponseStatus(HttpStatus.CREATED)
-    public DietaStandard saveDieta(@RequestBody DietaStandardRequestDTO body) {
-        return dietaService.save(body);
-    }*/
-
-    // NUOVI ENDPOINT
-    @PutMapping("/diete/standard/{dietaId}")
-    public DietaStandardDTO findByIdAndUpdate(@PathVariable long dietaId, @RequestBody DietaStandardRequestDTO body) {
-        return dietaService.convertToDTO(dietaService.update(dietaId, body));
-    }
-
-    @DeleteMapping("/diete/standard/{dietaId}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void findByIdAndDelete(@PathVariable long dietaId) {
-        dietaService.findByIdAndDelete(dietaId);
-    }
     // ========== GESTIONE UTENTI ==========
 
     @GetMapping("/utenti")

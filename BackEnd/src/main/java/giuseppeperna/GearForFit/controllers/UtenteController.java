@@ -73,7 +73,7 @@ public class UtenteController {
         CalcoloBMR bmr = calcoloBMRService.getCalcoloBMRByUtente(utenteLoggato.getId());
         return dietaService.generaDietaStandardPersonalizzata(bmr, tipoDieta);
     }
-    // NON PIÙ GET, ma POST per creare una nuova assegnazione di dieta
+
     @PostMapping("/me/dieta")
     @ResponseStatus(HttpStatus.CREATED)
     public DietaStandardDTO assegnaEMostraMiaDieta(
