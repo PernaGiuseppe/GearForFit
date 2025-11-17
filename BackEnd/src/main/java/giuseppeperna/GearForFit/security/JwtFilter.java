@@ -49,7 +49,7 @@ public class JwtFilter extends OncePerRequestFilter {
         try {
             // Verifica che il token sia presente e nel formato corretto
             if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-                throw new UnauthorizedException("Inserire token nell'Authorization Header nel formato corretto!");
+                throw new UnauthorizedException("Inserire token nell'Authorization Header il token o il formato corretto!");
             }
 
             // Estrai il token dal header (rimuovi "Bearer ")

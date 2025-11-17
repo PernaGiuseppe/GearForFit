@@ -17,4 +17,5 @@ public interface DietaUtenteRepository extends JpaRepository<DietaUtente, Long> 
 
     List<DietaUtente> findByDietaStandardId(Long dietaId);
 
+    Optional<DietaUtente> findByIdAndUtenteId(Long id, Long utenteId);
 }

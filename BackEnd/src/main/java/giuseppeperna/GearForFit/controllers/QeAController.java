@@ -20,6 +20,12 @@ public class QeAController {
 
     @Autowired
     private QeAService qeaService;
+/*    // QeAController.java
+    @GetMapping("")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAuthority('PIANO_PREMIUM')")
+    public List<QeADTO> getAllDomande() {
+        // ...
+    }*/
 
     // Ottieni tutte le Q&A (solo utenti PREMIUM o ADMIN)
     @GetMapping

@@ -5,22 +5,25 @@ import giuseppeperna.GearForFit.entities.Alimenti.Carne;
 import giuseppeperna.GearForFit.entities.Diete.DietaStandard;
 import giuseppeperna.GearForFit.entities.Diete.TipoDieta;
 import giuseppeperna.GearForFit.entities.Utente.QeA;
+import giuseppeperna.GearForFit.payloads.SchedaAllenamentoRequestDTO;
 import giuseppeperna.GearForFit.entities.SchedePalestra.*;
 import giuseppeperna.GearForFit.entities.Utente.TipoPiano;
 import giuseppeperna.GearForFit.entities.Utente.Utente;
+import giuseppeperna.GearForFit.exceptions.NotValidException;
 import giuseppeperna.GearForFit.payloads.*;
 import giuseppeperna.GearForFit.services.*;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
+
 
 @RestController
 @RequestMapping("/admin")
@@ -44,11 +47,13 @@ public class AdminController {
 
     @Autowired
     private QeAService qeAService;
+
     @Autowired
     private DietaService dietaService;
 
     @Autowired
     private AlimentoService alimentoService;
+
 
 // ========== GESTIONE ALIMENTI ==========
 
@@ -268,33 +273,70 @@ public class AdminController {
 
     // ========== SCHEDE ALLENAMENTO (STANDARD - ADMIN) ==========
 
-    @PostMapping("/schede/standard")
-    @ResponseStatus(HttpStatus.CREATED)
-    public SchedaAllenamentoDTO creaSchedaStandard(@RequestBody @Valid SchedaAllenamentoRequestDTO body) {
-        return schedaAllenamentoService.creaSchedaStandard(body);
-    }
-
     @GetMapping("/schede/standard")
     public List<SchedaAllenamentoDTO> getSchedeStandard() {
         return schedaAllenamentoService.getSchedeStandard();
     }
 
-    @GetMapping("/schede/standard/obiettivo/{obiettivo}")
-    public List<SchedaAllenamentoDTO> getSchedeStandardPerObiettivo(@PathVariable ObiettivoAllenamento obiettivo) {
-        return schedaAllenamentoService.getSchedeStandardByObiettivo(obiettivo);
+    // GET - Ottieni lista di tutte le schede di allenamento (standard e custom, solo admin)
+    @GetMapping("/schede")
+    public List<SchedaAllenamentoDTO> getAllSchedeAllenamento() {
+        return schedaAllenamentoService.getAllSchedeAsList();
     }
-
+    // GET - Ottieni una scheda di allenamento by id (standard e custom, solo admin)
     @GetMapping("/schede/{id}")
-    public SchedaAllenamentoDTO getScheda(@PathVariable Long id) {
-        return schedaAllenamentoService.getSchedaById(id);
+    public SchedaAllenamentoDTO getSchedaByIdConAutorizzazione(
+            @PathVariable Long id,
+            @AuthenticationPrincipal Utente utente) {
+        return schedaAllenamentoService.getSchedaByIdAndAuthorize(id, utente);
     }
 
+   @PostMapping("/schede/standard")
+   @ResponseStatus(HttpStatus.CREATED)
+   public SchedaAllenamentoDTO creaSchedaStandard(
+           @RequestBody @Validated SchedaPersonalizzataRequestDTO body,
+           BindingResult validationResult) {
+       if (validationResult.hasErrors()) {
+           List<String> errorMessages = validationResult.getFieldErrors().stream()
+                   .map(fieldError -> fieldError.getField() + " :" + fieldError.getDefaultMessage())
+                   .toList();
+           throw new NotValidException(errorMessages);
+       }
+       return schedaAllenamentoService.creaSchedaStandard(body);
+   }
     @PutMapping("/schede/standard/{id}")
     public SchedaAllenamentoDTO aggiornaSchedaStandard(
             @PathVariable Long id,
-            @RequestBody @Valid SchedaAllenamentoRequestDTO body) {
+
+            @RequestBody @Validated SchedaPersonalizzataRequestDTO body,
+            BindingResult validationResult) {
+        if (validationResult.hasErrors()) {
+            List<String> errorMessages = validationResult.getFieldErrors().stream()
+                    .map(fieldError -> fieldError.getField() + " :" + fieldError.getDefaultMessage())
+                    .toList();
+            throw new NotValidException(errorMessages);
+        }
         return schedaAllenamentoService.modificaSchedaStandard(id, body);
     }
+    // Admin modifica una scheda personalizzata di un utente
+
+    @PutMapping("/schede/utente/{schedaId}")
+    public SchedaAllenamentoDTO adminAggiornaSchedaPersonalizzata(
+            @PathVariable Long schedaId,
+            @RequestBody @Validated SchedaPersonalizzataRequestDTO body,
+            BindingResult validationResult) {
+
+        if (validationResult.hasErrors()) {
+            List<String> errorMessages = validationResult.getFieldErrors().stream()
+                    .map(fieldError -> fieldError.getField() + " :" + fieldError.getDefaultMessage())
+                    .toList();
+            throw new NotValidException(errorMessages);
+        }
+        // Chiama il nuovo metodo del service
+        return schedaAllenamentoService.adminModificaSchedaPersonalizzata(schedaId, body);
+    }
+
+    // ADMIN elimina scheda standard
 
     @DeleteMapping("/schede/standard/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -302,13 +344,22 @@ public class AdminController {
         schedaAllenamentoService.eliminaSchedaStandard(id);
     }
 
+    // ADMIN elimina scheda standard o custom (degli utenti)
+
+    @DeleteMapping("/schede/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void eliminaSchedaById(@PathVariable Long id) {
+        schedaAllenamentoService.eliminaSchedaById(id);
+    }
+
+
     // ========== SCHEDE PERSONALIZZATE (UTENTE) ==========
 
     @PostMapping("/schede/utente/{utenteId}")
     @ResponseStatus(HttpStatus.CREATED)
     public SchedaAllenamentoDTO creaSchedaPerUtente(
             @PathVariable Long utenteId,
-            @RequestBody @Valid SchedaAllenamentoRequestDTO body) {
+            @RequestBody @Valid SchedaPersonalizzataRequestDTO body) {
         return schedaAllenamentoService.creaSchedaPersonalizzata(utenteId, body);
     }
 
@@ -317,6 +368,13 @@ public class AdminController {
         return schedaAllenamentoService.getSchedeByUtente(utenteId);
     }
 
+    // DELETE - Admin elimina una qualsiasi scheda allenamento
+    @DeleteMapping("/schede-allenamento/{schedaId}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void adminDeleteScheda(@PathVariable Long schedaId) {
+        schedaAllenamentoService.adminEliminaScheda(schedaId);
+    }
     // ========== Q&A (DOMANDE E RISPOSTE) ==========
 
     @PostMapping("/qea")

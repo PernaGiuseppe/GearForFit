@@ -187,20 +187,96 @@ public class DietaService {
         return calcoloBMRRepository.save(calcolo);
     }
 
+    // Questo metodo ora calcola e restituisce un DTO scalato
     public DietaStandardDTO generaDietaStandardPersonalizzata(CalcoloBMR profilo, TipoDieta tipoDieta) {
-        // 1. Calcola il BMR e il TDEE (fabbisogno calorico giornaliero) usando i metodi corretti
+        // 1. Calcola il BMR e il TDEE
         Double bmr = calcoloBMRService.calcolaBMR(profilo);
         Double tdee = calcoloBMRService.calcoloTDEE(bmr, profilo.getLivelloAttivita());
 
-        // 2. Adatta le calorie in base all'obiettivo (IPOCALORICA, IPERCALORICA, ecc.)
+        // 2. Adatta le calorie in base all'obiettivo
         Double calorieTarget = calcoloBMRService.adattaPerObiettivo(tdee, tipoDieta);
 
-        // 3. Trova la dieta standard più adatta in base alle calorie target
+        // 3. Trova la dieta standard (template) più adatta
         DietaStandard dietaScelta = trovaDietaPiuAdatta(calorieTarget);
 
-        // 4. Converte l'entità della dieta scelta in un DTO per la risposta
-        return convertToDTO(dietaScelta);
+        // 4. Calcola le calorie *del template*
+        double calorieTemplate = calcolaCalorieTotali(dietaScelta);
+
+        // --- INIZIO CORREZIONE LOGICA ---
+        // Se le calorie del template sono 0, evita divisione per zero e ritorna il DTO non scalato
+        if (calorieTemplate == 0) {
+            return convertToDTO(dietaScelta); // Ritorna il DTO non scalato
+        }
+
+        // 5. Calcola il fattore di scala
+        double fattoreScala = calorieTarget / calorieTemplate;
+
+        // 6. Crea e ritorna un DTO con le quantità scalate
+        // Passiamo anche l'ID del template originale, che servirà per l'assegnazione
+        return creaDTOscalato(dietaScelta, fattoreScala, dietaScelta.getId(), calorieTemplate);
     }
+
+
+    // --- NUOVI METODI PRIVATI PER SCALARE IL DTO ---
+
+    /**
+     * Crea un DietaStandardDTO con tutti i valori (grammi, macro, calorie) scalati.
+     */
+    private DietaStandardDTO creaDTOscalato(DietaStandard dietaTemplate, double fattoreScala, Long templateId, double calorieTemplate) {
+        // Genera un nome che rifletta la personalizzazione
+        String nomePersonalizzato = dietaTemplate.getNome() + " (Personalizzata " + (int)(calorieTemplate * fattoreScala) + " kcal)";
+
+        return new DietaStandardDTO(
+                templateId, // Usiamo l'ID del *template* originale
+                nomePersonalizzato,
+                dietaTemplate.getDescrizione(),
+                dietaTemplate.getDurataSettimane(),
+                dietaTemplate.getPasti().stream()
+                        .map(pasto -> convertPastoToDTOscalato(pasto, fattoreScala)) // Usa il metodo scalato
+                        .collect(Collectors.toList())
+        );
+    }
+
+    /**
+     * Metodo helper per scalare un singolo PastoStandard.
+     */
+    private PastoStandardDTO convertPastoToDTOscalato(PastoStandard pasto, double fattoreScala) {
+        return new PastoStandardDTO(
+                pasto.getNomePasto(),
+                pasto.getOrdine(),
+                pasto.getAlimenti().stream()
+                        .map(dsa -> convertAlimentoToDTOscalato(dsa, fattoreScala)) // Usa il metodo scalato
+                        .collect(Collectors.toList())
+        );
+    }
+
+    /**
+     * Metodo helper per scalare un singolo AlimentoPasto.
+     * Questo è il cuore della logica di scaling.
+     */
+    private AlimentoPastoDTO convertAlimentoToDTOscalato(DietaStandardAlimento dsa, double fattoreScala) {
+        Alimento alimento = dsa.getAlimento();
+        double grammiOriginali = dsa.getGrammi();
+
+        // 1. Scala i grammi
+        double grammiScalati = grammiOriginali * fattoreScala;
+
+        // 2. Arrotonda i grammi per un output realistico (es. 122.34g -> 122g)
+        double grammiArrotondati = Math.round(grammiScalati);
+
+        // 3. Usa la stessa logica di 'convertAlimentoToDTO' ma con i grammi arrotondati
+        double fattorePer100g = grammiArrotondati / 100.0;
+
+        return new AlimentoPastoDTO(
+                alimento.getNome(),
+                grammiArrotondati, // I grammi scalati e arrotondati
+                (alimento.getProteinePer100g()) * fattorePer100g,
+                (alimento.getCarboidratiPer100g()) * fattorePer100g,
+                (alimento.getGrassiPer100g()) * fattorePer100g,
+                (alimento.getCaloriePer100g()) * fattorePer100g
+        );
+    }
+
 
     private DietaStandard trovaDietaPiuAdatta(double calorieTarget) {
         List<DietaStandard> diete = dietaStandardRepository.findAll();
@@ -232,17 +308,127 @@ public class DietaService {
                 .orElseThrow(() -> new NotFoundException("Dieta con ID " + dietaId + " non trovata."));
     }
 
+    @Transactional // Aggiungi @Transactional se non c'è già
     public DietaStandardDTO assegnaDietaAdUtente(Utente utente, TipoDieta tipoDieta) {
         CalcoloBMR bmrDellUtente = calcoloBMRService.getCalcoloBMRByUtente(utente.getId());
+
+        // 1. Questo ora ritorna un DTO *scalato*
         DietaStandardDTO dietaSuggeritaDTO = generaDietaStandardPersonalizzata(bmrDellUtente, tipoDieta);
+
+        // 2. Troviamo il *template* originale usando l'ID dal DTO
         DietaStandard dietaDaAssegnare = findById(dietaSuggeritaDTO.id());
+
+        // 3. Disattiva le altre diete attive (corretto)
         dietaUtenteRepository.findByUtenteIdAndAttivaTrue(utente.getId()).ifPresent(dietaVecchia -> {
             dietaVecchia.setAttiva(false);
             dietaUtenteRepository.save(dietaVecchia);
         });
-        DietaUtente nuovaDietaAssegnata = new DietaUtente(utente, dietaDaAssegnare);
+
+        // 4. Crea la nuova assegnazione usando il costruttore aggiornato
+        DietaUtente nuovaDietaAssegnata = new DietaUtente(utente, dietaDaAssegnare, tipoDieta); // Passa il tipoDieta
         dietaUtenteRepository.save(nuovaDietaAssegnata);
+
+        // 5. Ritorna il DTO scalato per la visualizzazione immediata
         return dietaSuggeritaDTO;
+    }
+
+    /**
+     * (NUOVO) Ritorna un elenco (DTO) di tutte le diete assegnate a un utente.
+     */
+    public List<DietaUtenteDTO> getDieteAssegnate(Utente utente) {
+        return dietaUtenteRepository.findByUtenteId(utente.getId()).stream()
+                .map(this::convertDietaUtenteToDTO)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * (NUOVO) Ottiene una singola dieta assegnata (per ID) e la ritorna SCALATA.
+     */
+    public DietaStandardDTO getDietaAssegnataScalata(Long dietaUtenteId, Utente utente) {
+        // 1. Trova l'assegnazione e verifica che appartenga all'utente
+        DietaUtente dietaAssegnata = dietaUtenteRepository.findByIdAndUtenteId(dietaUtenteId, utente.getId())
+                .orElseThrow(() -> new NotFoundException("Assegnazione dieta non trovata o non appartenente all'utente."));
+
+        // 2. Prendi il profilo BMR dell'utente
+        CalcoloBMR profilo = calcoloBMRService.getCalcoloBMRByUtente(utente.getId());
+
+        // 3. Ritorna la dieta scalata usando la nostra nuova logica
+        return scalaDietaAssegnata(dietaAssegnata, profilo);
+    }
+
+    /**
+     * (NUOVO) Imposta una dieta assegnata come "attiva" e disattiva le altre.
+     */
+    @Transactional
+    public DietaUtenteDTO setDietaAttiva(Long dietaUtenteId, Utente utente) {
+        // 1. Trova l'assegnazione
+        DietaUtente dietaDaAttivare = dietaUtenteRepository.findByIdAndUtenteId(dietaUtenteId, utente.getId())
+                .orElseThrow(() -> new NotFoundException("Assegnazione dieta non trovata."));
+
+        // 2. Disattiva quella attualmente attiva (se diversa)
+        dietaUtenteRepository.findByUtenteIdAndAttivaTrue(utente.getId()).ifPresent(dietaVecchia -> {
+            if (!dietaVecchia.getId().equals(dietaDaAttivare.getId())) {
+                dietaVecchia.setAttiva(false);
+                dietaUtenteRepository.save(dietaVecchia);
+            }
+        });
+
+        // 3. Attiva la nuova dieta e salva
+        dietaDaAttivare.setAttiva(true);
+        DietaUtente salvata = dietaUtenteRepository.save(dietaDaAttivare);
+
+        return convertDietaUtenteToDTO(salvata);
+    }
+
+    /**
+     * (NUOVO) Elimina un'assegnazione di dieta.
+     */
+    public void eliminaDietaAssegnata(Long dietaUtenteId, Utente utente) {
+        DietaUtente dietaDaEliminare = dietaUtenteRepository.findByIdAndUtenteId(dietaUtenteId, utente.getId())
+                .orElseThrow(() -> new NotFoundException("Assegnazione dieta non trovata."));
+
+        // Se è attiva, potresti voler gestire la logica (es. impedire l'eliminazione o attivare un'altra)
+        // Per ora, eliminiamo e basta.
+        dietaUtenteRepository.delete(dietaDaEliminare);
+    }
+
+
+    // --- HELPERS PER I NUOVI METODI ---
+
+    /**
+     * (NUOVO) Helper per ricaricare e scalare una DietaUtente già salvata.
+     */
+    private DietaStandardDTO scalaDietaAssegnata(DietaUtente dietaAssegnata, CalcoloBMR profilo) {
+        DietaStandard dietaTemplate = dietaAssegnata.getDietaStandard();
+        TipoDieta obiettivo = dietaAssegnata.getTipoDietaObiettivo();
+
+        // Calcola BMR, TDEE e Calorie Target
+        Double bmr = calcoloBMRService.calcolaBMR(profilo);
+        Double tdee = calcoloBMRService.calcoloTDEE(bmr, profilo.getLivelloAttivita());
+        Double calorieTarget = calcoloBMRService.adattaPerObiettivo(tdee, obiettivo);
+
+        // Calcola calorie template e fattore di scala
+        double calorieTemplate = calcolaCalorieTotali(dietaTemplate);
+        if (calorieTemplate == 0) {
+            return convertToDTO(dietaTemplate); // Evita divisione per zero
+        }
+        double fattoreScala = calorieTarget / calorieTemplate;
+
+        // Ritorna il DTO scalato (usando l'ID dell'assegnazione, non del template)
+        return creaDTOscalato(dietaTemplate, fattoreScala, dietaAssegnata.getId() ,calorieTemplate);
+    }
+
+    /**
+     * (NUOVO) Helper per convertire DietaUtente in DietaUtenteDTO (per la lista).
+     */
+    private DietaUtenteDTO convertDietaUtenteToDTO(DietaUtente dietaUtente) {
+        return new DietaUtenteDTO(
+                dietaUtente.getId(),
+                dietaUtente.getDietaStandard().getNome(),
+                dietaUtente.getTipoDietaObiettivo(),
+                dietaUtente.getDataAssegnazione(),
+                dietaUtente.isAttiva()
+        );
     }
     // ----------- METODI DI CONVERSIONE DTO -----------
 

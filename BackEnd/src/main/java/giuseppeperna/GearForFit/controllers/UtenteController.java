@@ -3,10 +3,7 @@ package giuseppeperna.GearForFit.controllers;
 import giuseppeperna.GearForFit.entities.Diete.CalcoloBMR;
 import giuseppeperna.GearForFit.entities.Diete.TipoDieta;
 import giuseppeperna.GearForFit.entities.Utente.Utente;
-import giuseppeperna.GearForFit.payloads.AggiornaProfiloDTO;
-import giuseppeperna.GearForFit.payloads.CalcoloBMRDTO;
-import giuseppeperna.GearForFit.payloads.CambiaPasswordDTO;
-import giuseppeperna.GearForFit.payloads.DietaStandardDTO;
+import giuseppeperna.GearForFit.payloads.*;
 import giuseppeperna.GearForFit.services.CalcoloBMRService;
 import giuseppeperna.GearForFit.services.DietaService;
 import giuseppeperna.GearForFit.services.UtenteService;
@@ -17,6 +14,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/utenti")
 @PreAuthorize("isAuthenticated()")
@@ -26,6 +25,9 @@ public class UtenteController {
     private UtenteService utenteService;
     @Autowired
     private CalcoloBMRService calcoloBMRService;
+    @Autowired
+    private DietaService dietaService;
+
     // Ottieni i dati dell'utente loggato
     @GetMapping("/me")
     public Utente getMeUtente(Authentication authentication) {
@@ -54,8 +56,6 @@ public class UtenteController {
         Utente utenteLoggato = (Utente) authentication.getPrincipal();
         utenteService.eliminaUtente(utenteLoggato.getId());
     }
-    @Autowired
-    private DietaService dietaService;
 
     // Salva/aggiorna calcolo BMR personale
     @PostMapping("/me/bmr")
@@ -65,14 +65,6 @@ public class UtenteController {
     }
 
     // Ottieni la propria dieta personalizzata
-    @GetMapping("/me/dieta")
-    public DietaStandardDTO getMiaDieta(
-            @RequestParam TipoDieta tipoDieta,
-            Authentication authentication) {
-        Utente utenteLoggato = (Utente) authentication.getPrincipal();
-        CalcoloBMR bmr = calcoloBMRService.getCalcoloBMRByUtente(utenteLoggato.getId());
-        return dietaService.generaDietaStandardPersonalizzata(bmr, tipoDieta);
-    }
 
     @PostMapping("/me/dieta")
     @ResponseStatus(HttpStatus.CREATED)
@@ -82,6 +74,45 @@ public class UtenteController {
         Utente utenteLoggato = (Utente) authentication.getPrincipal();
 
         return dietaService.assegnaDietaAdUtente(utenteLoggato, body.tipoDieta());
+    }
+    @GetMapping("/me/dieta/genera")
+    public DietaStandardDTO generaMiaDietaPreview(
+            @RequestParam TipoDieta tipoDieta, // 'tipoDieta' è l'obiettivo
+            Authentication authentication) {
+        Utente utenteLoggato = (Utente) authentication.getPrincipal();
+        // Prende il BMR salvato
+        CalcoloBMR bmr = calcoloBMRService.getCalcoloBMRByUtente(utenteLoggato.getId());
+        // Genera il DTO scalato
+        return dietaService.generaDietaStandardPersonalizzata(bmr, tipoDieta);
+    }
+
+    @GetMapping("/me/dieta")
+    public List<DietaUtenteDTO> getMieDieteAssegnate(Authentication authentication) {
+        Utente utenteLoggato = (Utente) authentication.getPrincipal();
+        return dietaService.getDieteAssegnate(utenteLoggato);
+    }
+
+    @GetMapping("/me/dieta/{id}")
+    public DietaStandardDTO getMiaDietaAssegnataById(
+            @PathVariable Long id,
+            Authentication authentication) {
+        Utente utenteLoggato = (Utente) authentication.getPrincipal();
+        return dietaService.getDietaAssegnataScalata(id, utenteLoggato);
+    }
+    @PutMapping("/me/dieta/{id}/attiva")
+    public DietaUtenteDTO setMiaDietaAttiva(
+            @PathVariable Long id,
+            Authentication authentication) {
+        Utente utenteLoggato = (Utente) authentication.getPrincipal();
+        return dietaService.setDietaAttiva(id, utenteLoggato);
+    }
+    @DeleteMapping("/me/dieta/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void eliminaMiaDietaAssegnata(
+            @PathVariable Long id,
+            Authentication authentication) {
+        Utente utenteLoggato = (Utente) authentication.getPrincipal();
+        dietaService.eliminaDietaAssegnata(id, utenteLoggato);
     }
 
     // DTO per la richiesta nel body

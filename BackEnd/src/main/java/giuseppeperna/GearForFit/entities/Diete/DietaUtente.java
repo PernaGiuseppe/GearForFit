@@ -25,16 +25,20 @@ public class DietaUtente {
     @JoinColumn(name = "dieta_standard_id", nullable = false)
     private DietaStandard dietaStandard;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "tipo_dieta_obiettivo", nullable = false)
+    private TipoDieta tipoDietaObiettivo;
+
     @Column(name = "data_assegnazione")
     private LocalDate dataAssegnazione;
 
-    // Potremmo aggiungere un flag per indicare se è la dieta attualmente attiva
     @Column(name = "is_attiva")
     private boolean attiva;
 
-    public DietaUtente(Utente utente, DietaStandard dietaStandard) {
+    public DietaUtente(Utente utente, DietaStandard dietaStandard, TipoDieta tipoDietaObiettivo) {
         this.utente = utente;
         this.dietaStandard = dietaStandard;
+        this.tipoDietaObiettivo = tipoDietaObiettivo; // Salva l'obiettivo
         this.dataAssegnazione = LocalDate.now();
         this.attiva = true; // La nuova dieta è sempre quella attiva
     }
