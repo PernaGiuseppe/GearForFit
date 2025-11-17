@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -330,8 +331,6 @@ public class SchedaAllenamentoService {
 
         schedaRepository.delete(scheda);
     }
-
-    // ========== UTILITY ==========
     public SchedaAllenamentoDTO getSchedaByIdAndAuthorize(Long id, Utente utente) {
         // 1. Trova la scheda o lancia un'eccezione
         SchedaAllenamento scheda = schedaRepository.findById(id)
@@ -363,7 +362,32 @@ public class SchedaAllenamentoService {
         // 3. Se l'utente è autorizzato, mappa e restituisci il DTO
         return mapToDTO(scheda);
     }
+    @Transactional
+    public SchedaAllenamentoDTO setSchedaAttiva(Long schedaId, Utente utente) {
+        // 1. Trova la scheda da attivare, assicurandoti che sia dell'utente corretto e che sia personalizzata
+        SchedaAllenamento schedaDaAttivare = schedaRepository.findByIdAndUtenteId(schedaId, utente.getId())
+                .orElseThrow(() -> new NotFoundException("Scheda allenamento non trovata."));
 
+        if (schedaDaAttivare.getIsStandard()) {
+            throw new IllegalArgumentException("Solo le schede personalizzate possono essere attivate.");
+        }
+
+        // 2. Disattiva quella attualmente attiva (se diversa)
+        schedaRepository.findByUtenteIdAndAttivaTrue(utente.getId()).ifPresent(schedaVecchia -> {
+            if (!schedaVecchia.getId().equals(schedaDaAttivare.getId())) {
+                schedaVecchia.setAttiva(false);
+                schedaRepository.save(schedaVecchia);
+            }
+        });
+
+        // 3. Attiva la nuova scheda e salva
+        schedaDaAttivare.setAttiva(true);
+        SchedaAllenamento salvata = schedaRepository.save(schedaDaAttivare);
+
+        return convertToResponseDTO(salvata);
+    }
+
+    // ========== UTILITY ==========
   private SchedaAllenamentoDTO mapToDTO(SchedaAllenamento scheda) {
       List<GiornoAllenamentoDTO> giorniDTO = scheda.getGiorni().stream()
               .map(giorno -> {
@@ -391,10 +415,25 @@ public class SchedaAllenamentoService {
               scheda.getDurataSettimane(),
               scheda.getIsStandard(),
               scheda.getUtente() != null ? scheda.getUtente().getId() : null,
+              scheda.getAttiva(),
               giorniDTO
       );
   }
+    private SchedaAllenamentoDTO convertToResponseDTO(SchedaAllenamento scheda) {
+        List<GiornoAllenamentoDTO> giorniDTO = new ArrayList<>();
 
+        return new SchedaAllenamentoDTO(
+                scheda.getId(),
+                scheda.getNome(),
+                scheda.getDescrizione(),
+                scheda.getObiettivo(),
+                scheda.getTipoAllenamento(),
+                scheda.getDurataSettimane(),
+                scheda.getIsStandard(),
+                scheda.getUtente() != null ? scheda.getUtente().getId() : null,
+                scheda.getAttiva(),
+                giorniDTO); // Ora la variabile `giorniDTO` è correttamente valorizzata
+    }
     public SchedaAllenamentoDTO getSchedaByIdAndUtente(Long schedaId, Long utenteId) {
         SchedaAllenamento scheda = schedaRepository.findById(schedaId)
                 .orElseThrow(() -> new NotFoundException("Scheda con id " + schedaId + " non trovata"));

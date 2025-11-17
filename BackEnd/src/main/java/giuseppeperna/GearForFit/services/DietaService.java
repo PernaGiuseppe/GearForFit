@@ -219,9 +219,8 @@ public class DietaService {
 
     // --- NUOVI METODI PRIVATI PER SCALARE IL DTO ---
 
-    /**
-     * Crea un DietaStandardDTO con tutti i valori (grammi, macro, calorie) scalati.
-     */
+    //Crea un DietaStandardDTO con tutti i valori (grammi, macro, calorie) scalati.
+
     private DietaStandardDTO creaDTOscalato(DietaStandard dietaTemplate, double fattoreScala, Long templateId, double calorieTemplate) {
         // Genera un nome che rifletta la personalizzazione
         String nomePersonalizzato = dietaTemplate.getNome() + " (Personalizzata " + (int)(calorieTemplate * fattoreScala) + " kcal)";
@@ -237,9 +236,8 @@ public class DietaService {
         );
     }
 
-    /**
-     * Metodo helper per scalare un singolo PastoStandard.
-     */
+    //Metodo helper per scalare un singolo PastoStandard.
+
     private PastoStandardDTO convertPastoToDTOscalato(PastoStandard pasto, double fattoreScala) {
         return new PastoStandardDTO(
                 pasto.getNomePasto(),
@@ -250,10 +248,8 @@ public class DietaService {
         );
     }
 
-    /**
-     * Metodo helper per scalare un singolo AlimentoPasto.
-     * Questo è il cuore della logica di scaling.
-     */
+    // Metodo helper per scalare un singolo AlimentoPasto.
+
     private AlimentoPastoDTO convertAlimentoToDTOscalato(DietaStandardAlimento dsa, double fattoreScala) {
         Alimento alimento = dsa.getAlimento();
         double grammiOriginali = dsa.getGrammi();
@@ -332,18 +328,16 @@ public class DietaService {
         return dietaSuggeritaDTO;
     }
 
-    /**
-     * (NUOVO) Ritorna un elenco (DTO) di tutte le diete assegnate a un utente.
-     */
+   //  Ritorna un elenco (DTO) di tutte le diete assegnate a un utente.
+
     public List<DietaUtenteDTO> getDieteAssegnate(Utente utente) {
         return dietaUtenteRepository.findByUtenteId(utente.getId()).stream()
                 .map(this::convertDietaUtenteToDTO)
                 .collect(Collectors.toList());
     }
 
-    /**
-     * (NUOVO) Ottiene una singola dieta assegnata (per ID) e la ritorna SCALATA.
-     */
+    // Ottiene una singola dieta assegnata (per ID) e la ritorna SCALATA.
+
     public DietaStandardDTO getDietaAssegnataScalata(Long dietaUtenteId, Utente utente) {
         // 1. Trova l'assegnazione e verifica che appartenga all'utente
         DietaUtente dietaAssegnata = dietaUtenteRepository.findByIdAndUtenteId(dietaUtenteId, utente.getId())
@@ -356,9 +350,8 @@ public class DietaService {
         return scalaDietaAssegnata(dietaAssegnata, profilo);
     }
 
-    /**
-     * (NUOVO) Imposta una dieta assegnata come "attiva" e disattiva le altre.
-     */
+    // Imposta una dieta assegnata come "attiva" e disattiva le altre.
+
     @Transactional
     public DietaUtenteDTO setDietaAttiva(Long dietaUtenteId, Utente utente) {
         // 1. Trova l'assegnazione
@@ -380,9 +373,8 @@ public class DietaService {
         return convertDietaUtenteToDTO(salvata);
     }
 
-    /**
-     * (NUOVO) Elimina un'assegnazione di dieta.
-     */
+   // Elimina un'assegnazione di dieta.
+
     public void eliminaDietaAssegnata(Long dietaUtenteId, Utente utente) {
         DietaUtente dietaDaEliminare = dietaUtenteRepository.findByIdAndUtenteId(dietaUtenteId, utente.getId())
                 .orElseThrow(() -> new NotFoundException("Assegnazione dieta non trovata."));
@@ -392,12 +384,8 @@ public class DietaService {
         dietaUtenteRepository.delete(dietaDaEliminare);
     }
 
+     // Helper per ricaricare e scalare una DietaUtente già salvata.
 
-    // --- HELPERS PER I NUOVI METODI ---
-
-    /**
-     * (NUOVO) Helper per ricaricare e scalare una DietaUtente già salvata.
-     */
     private DietaStandardDTO scalaDietaAssegnata(DietaUtente dietaAssegnata, CalcoloBMR profilo) {
         DietaStandard dietaTemplate = dietaAssegnata.getDietaStandard();
         TipoDieta obiettivo = dietaAssegnata.getTipoDietaObiettivo();
@@ -418,9 +406,8 @@ public class DietaService {
         return creaDTOscalato(dietaTemplate, fattoreScala, dietaAssegnata.getId() ,calorieTemplate);
     }
 
-    /**
-     * (NUOVO) Helper per convertire DietaUtente in DietaUtenteDTO (per la lista).
-     */
+    // Helper per convertire DietaUtente in DietaUtenteDTO (per la lista).
+
     private DietaUtenteDTO convertDietaUtenteToDTO(DietaUtente dietaUtente) {
         return new DietaUtenteDTO(
                 dietaUtente.getId(),

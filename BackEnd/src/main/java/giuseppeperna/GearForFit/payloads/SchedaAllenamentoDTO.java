@@ -2,7 +2,7 @@ package giuseppeperna.GearForFit.payloads;
 
 import giuseppeperna.GearForFit.entities.SchedePalestra.ObiettivoAllenamento;
 import giuseppeperna.GearForFit.entities.SchedePalestra.TipoAllenamento;
-import java.util.List; // <-- IMPORTA
+import java.util.List;
 
 public record SchedaAllenamentoDTO(
         Long id,
@@ -13,6 +13,7 @@ public record SchedaAllenamentoDTO(
         Integer durataSettimane,
         Boolean isStandard,
         Long utenteId,
+        Boolean attiva,
         List<GiornoAllenamentoDTO> giorni
 ) {
 }

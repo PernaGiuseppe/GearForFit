@@ -38,6 +38,9 @@ public class SchedaAllenamento {
     @Column(name = "is_standard", nullable = false)
     private Boolean isStandard = false;
 
+    @Column(name = "is_attiva")
+    private Boolean attiva = false; // Impostato a false di default
+
     @ManyToOne
     @JoinColumn(name = "utente_id")
     private Utente utente;

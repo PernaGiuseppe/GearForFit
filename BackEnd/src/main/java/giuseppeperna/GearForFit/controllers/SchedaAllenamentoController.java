@@ -1,13 +1,16 @@
 package giuseppeperna.GearForFit.controllers;
 
 import giuseppeperna.GearForFit.entities.SchedePalestra.ObiettivoAllenamento;
+import giuseppeperna.GearForFit.entities.SchedePalestra.SchedaAllenamento;
 import giuseppeperna.GearForFit.entities.Utente.Utente;
+import giuseppeperna.GearForFit.exceptions.NotFoundException;
 import giuseppeperna.GearForFit.payloads.SchedaAllenamentoDTO;
 import giuseppeperna.GearForFit.exceptions.NotValidException;
 import giuseppeperna.GearForFit.payloads.SchedaAllenamentoRequestDTO;
 import giuseppeperna.GearForFit.entities.SchedePalestra.ObiettivoAllenamento;
 import giuseppeperna.GearForFit.entities.Utente.TipoUtente;
 import giuseppeperna.GearForFit.payloads.SchedaPersonalizzataRequestDTO;
+import giuseppeperna.GearForFit.repositories.SchedaAllenamentoRepository;
 import giuseppeperna.GearForFit.services.SchedaAllenamentoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,6 +28,9 @@ public class SchedaAllenamentoController {
 
     @Autowired
     private SchedaAllenamentoService schedaService;
+    @Autowired
+    private SchedaAllenamentoRepository schedaRepository;
+
 
     // ========== SCHEDE STANDARD (ADMIN) ==========
 
@@ -99,7 +105,7 @@ public class SchedaAllenamentoController {
     @GetMapping("/utente/{utenteId}/obiettivo/{obiettivo}")
     @PreAuthorize("hasAuthority('ADMIN') or hasAnyAuthority('PIANO_PREMIUM', 'PIANO_GOLD')")
     public List<SchedaAllenamentoDTO> getSchedePersonalizzatePerObiettivo(
-            @AuthenticationPrincipal Utente utente, // Per il controllo di proprietà
+            @AuthenticationPrincipal Utente utente,
             @PathVariable Long utenteId,
             @PathVariable ObiettivoAllenamento obiettivo) {
         if (utente.getTipoUtente() != TipoUtente.ADMIN && !utente.getId().equals(utenteId)) {
@@ -108,6 +114,25 @@ public class SchedaAllenamentoController {
 
         return schedaService.getSchedePersonalizzateByObiettivo(utenteId, obiettivo);
     }
+
+    @PutMapping("/me/schede/{id}/attiva")
+    public SchedaAllenamentoDTO setMiaSchedaAttiva(
+            @PathVariable Long id,
+            @AuthenticationPrincipal Utente utenteLoggato) {
+
+        // 1. Recupero la scheda per verificare a chi appartiene
+        SchedaAllenamento scheda = schedaRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Scheda allenamento non trovata con id: " + id));
+
+        // 2. Aggiungo il controllo di autorizzazione come da te indicato
+        if (utenteLoggato.getTipoUtente() != TipoUtente.ADMIN && !scheda.getUtente().getId().equals(utenteLoggato.getId())) {
+            throw new org.springframework.security.access.AccessDeniedException("Non sei autorizzato a modificare la scheda di un altro utente.");
+        }
+
+        // 3. Chiama il service. Passo l'utente proprietario della scheda per mantenere la logica corretta nel service.
+        return schedaService.setSchedaAttiva(id, scheda.getUtente());
+    }
+
     // Utente aggiorna la propria scheda personalizzata
 
     @PutMapping("/utente/{utenteId}/{schedaId}")
