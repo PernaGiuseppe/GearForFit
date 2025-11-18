@@ -55,11 +55,9 @@ public class SchedaAllenamentoController {
     public SchedaAllenamentoDTO creaSchedaPersonalizzata(
             @AuthenticationPrincipal Utente utente,
             @PathVariable Long utenteId,
-            // MODIFICATO: Usa il nuovo DTO
             @RequestBody @Validated SchedaPersonalizzataRequestDTO body,
             BindingResult validationResult) {
 
-        // (Controllo di sicurezza... va bene)
         if (!utente.getId().equals(utenteId)) {
             throw new org.springframework.security.access.AccessDeniedException("Non sei autorizzato a creare una scheda per un altro utente.");
         }
@@ -70,7 +68,6 @@ public class SchedaAllenamentoController {
                     .toList();
             throw new NotValidException(errorMessages);
         }
-        // Ora chiama il service aggiornato
         return schedaService.creaSchedaPersonalizzata(utenteId, body);
     }
 

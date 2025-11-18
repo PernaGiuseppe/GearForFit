@@ -318,23 +318,6 @@ public class AdminController {
         }
         return schedaAllenamentoService.modificaSchedaStandard(id, body);
     }
-    // Admin modifica una scheda personalizzata di un utente
-
-    @PutMapping("/schede/utente/{schedaId}")
-    public SchedaAllenamentoDTO adminAggiornaSchedaPersonalizzata(
-            @PathVariable Long schedaId,
-            @RequestBody @Validated SchedaPersonalizzataRequestDTO body,
-            BindingResult validationResult) {
-
-        if (validationResult.hasErrors()) {
-            List<String> errorMessages = validationResult.getFieldErrors().stream()
-                    .map(fieldError -> fieldError.getField() + " :" + fieldError.getDefaultMessage())
-                    .toList();
-            throw new NotValidException(errorMessages);
-        }
-        // Chiama il nuovo metodo del service
-        return schedaAllenamentoService.adminModificaSchedaPersonalizzata(schedaId, body);
-    }
 
     // ADMIN elimina scheda standard
 
@@ -363,6 +346,23 @@ public class AdminController {
         return schedaAllenamentoService.creaSchedaPersonalizzata(utenteId, body);
     }
 
+
+    @PutMapping("/schede/utente/{utenteId}/{schedaId}")
+    public SchedaAllenamentoDTO modificaSchedaPerUtente(
+            @PathVariable Long utenteId,
+            @PathVariable Long schedaId,
+            @RequestBody @Valid SchedaPersonalizzataRequestDTO body,
+            BindingResult validationResult) {
+
+        if (validationResult.hasErrors()) {
+            List<String> errorMessages = validationResult.getFieldErrors().stream()
+                    .map(fieldError -> fieldError.getField() + " : " + fieldError.getDefaultMessage())
+                    .toList();
+            throw new NotValidException(errorMessages);
+        }
+
+        return schedaAllenamentoService.adminModificaSchedaPersonalizzata(utenteId, schedaId, body);
+    }
     @GetMapping("/schede/utente/{utenteId}")
     public List<SchedaAllenamentoDTO> getSchedeByUtente(@PathVariable Long utenteId) {
         return schedaAllenamentoService.getSchedeByUtente(utenteId);
@@ -370,7 +370,6 @@ public class AdminController {
 
     // DELETE - Admin elimina una qualsiasi scheda allenamento
     @DeleteMapping("/schede-allenamento/{schedaId}")
-    @PreAuthorize("hasAuthority('ADMIN')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void adminDeleteScheda(@PathVariable Long schedaId) {
         schedaAllenamentoService.adminEliminaScheda(schedaId);
@@ -381,16 +380,6 @@ public class AdminController {
     @ResponseStatus(HttpStatus.CREATED)
     public QeAResponseDTO creaDomanda(@RequestBody @Valid QeARequestDTO body) {
         return qeAService.creaQeA(body);
-    }
-
-    @GetMapping("/qea")
-    public List<QeAResponseDTO> getTutteDomande() {
-        return qeAService.getAllQeA();
-    }
-
-    @GetMapping("/qea/{id}")
-    public QeAResponseDTO getDomandaById(@PathVariable Long id) {
-        return qeAService.getQeAById(id);
     }
 
     @PutMapping("/qea/{id}")

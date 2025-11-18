@@ -3,11 +3,15 @@ package giuseppeperna.GearForFit.controllers;
 import giuseppeperna.GearForFit.entities.Diete.CalcoloBMR;
 import giuseppeperna.GearForFit.entities.Diete.DietaStandard;
 import giuseppeperna.GearForFit.entities.Diete.TipoDieta;
-import giuseppeperna.GearForFit.payloads.CalcoloBMRDTO;
-import giuseppeperna.GearForFit.payloads.DietaStandardDTO;
+import giuseppeperna.GearForFit.entities.Utente.Utente;
+import giuseppeperna.GearForFit.payloads.*;
+import giuseppeperna.GearForFit.services.CalcoloBMRService;
 import giuseppeperna.GearForFit.services.DietaService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,7 +23,11 @@ public class DietaController {
     @Autowired
     private DietaService dietaService;
 
-    @PostMapping("/personalizzata")
+    @Autowired
+    private CalcoloBMRService calcoloBMRService;
+
+  /*  @PostMapping("/personalizzata")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAnyAuthority('PIANO_PREMIUM', 'PIANO_GOLD', 'PIANO_SILVER')")
     public ResponseEntity<DietaStandardDTO> generaDietaPersonalizzata(
             @RequestBody DietaRequest dietaRequest
     ) {
@@ -33,7 +41,7 @@ public class DietaController {
 
         DietaStandardDTO dieta = dietaService.generaDietaStandardPersonalizzata(profilo, dietaRequest.tipoDieta());
         return ResponseEntity.ok(dieta);
-    }
+    }*/
     @GetMapping("/standard")
     public List<DietaStandardDTO> getDieteStandard() {
         return dietaService.getAllDieteStandard();
@@ -45,27 +53,70 @@ public class DietaController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    public record DietaRequest(
-            CalcoloBMRDTO calcoloBMR,
-            TipoDieta tipoDieta
-    ){}
-
-   /* @GetMapping("/{dietaId}")
-    public DietaStandardDTO getDietaById(@PathVariable long dietaId) {
-        DietaStandard dieta = dietaService.findById(dietaId);
-        return dietaService.convertToDTO(dieta);
-    }*/
-
-   /* @GetMapping("/{dietaId}")
-    public DietaStandardDTO getDietaById(@PathVariable long dietaId) {
-        return dietaService.convertToDTO(dietaService.findById(dietaId));
-    }
-*/
     @GetMapping
     public org.springframework.data.domain.Page<DietaStandard> getDiete(@RequestParam(defaultValue = "0") int page,
                                                                         @RequestParam(defaultValue = "10") int size,
                                                                         @RequestParam(defaultValue = "id") String orderBy) {
         return dietaService.getDiete(page, size, orderBy);
+    }
+
+    // ENDPOINT PER LA GESTIONE DELLA DIETA DELL'UTENTE LOGGATO
+    @PostMapping("/me/bmr")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAnyAuthority('PIANO_PREMIUM', 'PIANO_GOLD', 'PIANO_SILVER')")
+    public CalcoloBMR salvaBMR(@RequestBody CalcoloBMRDTO body, Authentication authentication) {
+        Utente utenteLoggato = (Utente) authentication.getPrincipal();
+        return dietaService.salvaCalcoloBMR(utenteLoggato.getId(), body);
+    }
+
+    @PostMapping("/me/dieta")
+    @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAuthority('ADMIN') or hasAnyAuthority('PIANO_PREMIUM', 'PIANO_GOLD', 'PIANO_SILVER')")
+    public DietaStandardDTO assegnaEMostraMiaDieta(
+            @RequestBody TipoDietaRequestDTO body,
+            Authentication authentication) {
+        Utente utenteLoggato = (Utente) authentication.getPrincipal();
+        return dietaService.assegnaDietaAdUtente(utenteLoggato, body.tipoDieta());
+    }
+
+    @GetMapping("/me/dieta/genera")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAnyAuthority('PIANO_PREMIUM', 'PIANO_GOLD', 'PIANO_SILVER')")
+    public DietaStandardDTO generaMiaDietaPreview(
+            @RequestParam TipoDieta tipoDieta,
+            Authentication authentication) {
+        Utente utenteLoggato = (Utente) authentication.getPrincipal();
+        CalcoloBMR bmr = calcoloBMRService.getCalcoloBMRByUtente(utenteLoggato.getId());
+        return dietaService.generaDietaStandardPersonalizzata(bmr, tipoDieta);
+    }
+    @GetMapping("/me/dieta")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAnyAuthority('PIANO_PREMIUM', 'PIANO_GOLD', 'PIANO_SILVER')")
+    public List<DietaUtenteDTO> getMieDieteAssegnate(Authentication authentication) {
+        Utente utenteLoggato = (Utente) authentication.getPrincipal();
+        return dietaService.getDieteAssegnate(utenteLoggato);
+    }
+    @GetMapping("/me/dieta/{id}")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAnyAuthority('PIANO_PREMIUM', 'PIANO_GOLD', 'PIANO_SILVER')")
+    public DietaStandardDTO getMiaDietaAssegnataById(
+            @PathVariable Long id,
+            Authentication authentication) {
+        Utente utenteLoggato = (Utente) authentication.getPrincipal();
+        return dietaService.getDietaAssegnataScalata(id, utenteLoggato);
+    }
+    @PutMapping("/me/dieta/{id}/attiva")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAnyAuthority('PIANO_PREMIUM', 'PIANO_GOLD', 'PIANO_SILVER')")
+    public DietaUtenteDTO setMiaDietaAttiva(
+            @PathVariable Long id,
+            Authentication authentication) {
+        Utente utenteLoggato = (Utente) authentication.getPrincipal();
+        return dietaService.setDietaAttiva(id, utenteLoggato);
+    }
+    @DeleteMapping("/me/dieta/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasAuthority('ADMIN') or hasAnyAuthority('PIANO_PREMIUM', 'PIANO_GOLD', 'PIANO_SILVER')")
+    public void eliminaMiaDietaAssegnata(
+            @PathVariable Long id,
+            Authentication authentication) {
+        Utente utenteLoggato = (Utente) authentication.getPrincipal();
+        dietaService.eliminaDietaAssegnata(id, utenteLoggato);
     }
     }
 

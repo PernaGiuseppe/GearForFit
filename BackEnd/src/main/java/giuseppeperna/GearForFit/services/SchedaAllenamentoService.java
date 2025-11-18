@@ -159,22 +159,36 @@ public class SchedaAllenamentoService {
     }
     // Admin modifica una scheda personalizzata di un utente
 
-    public SchedaAllenamentoDTO adminModificaSchedaPersonalizzata(Long schedaId, SchedaPersonalizzataRequestDTO body) {
+    public SchedaAllenamentoDTO adminModificaSchedaPersonalizzata(Long utenteId, Long schedaId, SchedaPersonalizzataRequestDTO body) {
+        // Trova l'utente per assicurarsi che esista
+        Utente utente = utenteRepository.findById(utenteId)
+                .orElseThrow(() -> new NotFoundException("Utente non trovato con ID: " + utenteId));
+
+        // Trova la scheda da modificare
         SchedaAllenamento scheda = schedaRepository.findById(schedaId)
                 .orElseThrow(() -> new NotFoundException("Scheda non trovata con ID: " + schedaId));
 
+        // Controlla che la scheda appartenga all'utente specificato
+        if (scheda.getUtente() == null || !scheda.getUtente().getId().equals(utente.getId())) {
+            throw new UnauthorizedException("La scheda con ID " + schedaId + " non appartiene all'utente con ID " + utenteId);
+        }
+
         // Controllo di sicurezza: assicura che sia una scheda personalizzata
         if (scheda.getIsStandard()) {
-            throw new UnauthorizedException("Questa è una scheda standard. Per modificarla, usa l'endpoint /admin/schede/standard/{id}");
+            throw new UnauthorizedException("Questa è una scheda standard e non può essere modificata per un utente.");
         }
+
+        // Aggiornamento dei dati della scheda
         scheda.setNome(body.nome());
         scheda.setDescrizione(body.descrizione());
         scheda.setObiettivo(body.obiettivo());
         scheda.setTipoAllenamento(body.tipoAllenamento());
         scheda.setDurataSettimane(body.durataSettimane());
 
+        // Pulisce i giorni e le serie esistenti
         scheda.getGiorni().clear();
 
+        // Ricrea i giorni e le serie dalla richiesta
         if (body.giorni() != null && !body.giorni().isEmpty()) {
             List<GiornoAllenamento> nuoviGiorni = new ArrayList<>();
             for (GiornoAllenamentoRequestDTO giornoDTO : body.giorni()) {
@@ -204,6 +218,7 @@ public class SchedaAllenamentoService {
         SchedaAllenamento updated = schedaRepository.save(scheda);
         return mapToDTO(updated);
     }
+
     // Metodo per l'ADMIN per eliminare QUALSIASI scheda
     public void adminEliminaScheda(Long schedaId) {
         SchedaAllenamento scheda = schedaRepository.findById(schedaId)
