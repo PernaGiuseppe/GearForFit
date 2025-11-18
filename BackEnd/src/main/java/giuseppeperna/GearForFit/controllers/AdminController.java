@@ -105,10 +105,26 @@ public class AdminController {
         return dietaService.aggiornaDietaStandard(id, body);
     }
 
-    @DeleteMapping("/diete/standard/{id}")
+    @GetMapping("/diete/personalizzate")
+    public List<DietaUtenteDTO> adminGetAllDieteAssegnate() {
+        return dietaService.adminGetTutteDieteAssegnate();
+    }
+
+    @GetMapping("/diete/personalizzate/{dietaUtenteId}")
+    public DietaUtenteDTO adminGetDietaAssegnataById(@PathVariable Long dietaUtenteId) {
+        return dietaService.adminGetDietaAssegnataById(dietaUtenteId);
+    }
+    @PutMapping("/diete/utente/{utenteId}/{dietaUtenteId}")
+    public DietaUtenteDTO adminAggiornaDietaUtente(
+            @PathVariable Long utenteId,
+            @PathVariable Long dietaUtenteId,
+            @RequestBody @Valid DietaStandardRequestDTO body) {
+        return dietaService.adminModificaDietaUtente(utenteId, dietaUtenteId, body);
+    }
+    @DeleteMapping("/diete/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void eliminaDietaStandard(@PathVariable Long id) {
-        dietaService.eliminaDietaStandard(id);
+    public void eliminaDieta(@PathVariable Long id) {
+        dietaService.eliminaDieta(id);
     }
 
     // ========== GESTIONE UTENTI ==========

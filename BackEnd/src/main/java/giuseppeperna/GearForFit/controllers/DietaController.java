@@ -7,6 +7,7 @@ import giuseppeperna.GearForFit.entities.Utente.Utente;
 import giuseppeperna.GearForFit.payloads.*;
 import giuseppeperna.GearForFit.services.CalcoloBMRService;
 import giuseppeperna.GearForFit.services.DietaService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -52,7 +53,10 @@ public class DietaController {
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
-
+    @GetMapping("/standard/tipo")
+    public DietaStandardDTO getDietaStandardByTipo(@RequestParam TipoDieta tipoDieta) {
+        return dietaService.getDietaStandardByTipo(tipoDieta);
+    }
     @GetMapping
     public org.springframework.data.domain.Page<DietaStandard> getDiete(@RequestParam(defaultValue = "0") int page,
                                                                         @RequestParam(defaultValue = "10") int size,
@@ -99,7 +103,16 @@ public class DietaController {
             @PathVariable Long id,
             Authentication authentication) {
         Utente utenteLoggato = (Utente) authentication.getPrincipal();
-        return dietaService.getDietaAssegnataScalata(id, utenteLoggato);
+        return dietaService.getDietaAssegnataById(id, utenteLoggato);
+    }
+    @PutMapping("/me/dieta/{id}")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAnyAuthority('PIANO_PREMIUM', 'PIANO_GOLD', 'PIANO_SILVER')")
+    public DietaUtenteDTO modificaMiaDietaAssegnata(
+            @PathVariable("id") Long dietaUtenteId,
+            @RequestBody @Valid DietaStandardRequestDTO body,
+            Authentication authentication) {
+        Utente utenteLoggato = (Utente) authentication.getPrincipal();
+        return dietaService.modificaDietaUtente(dietaUtenteId, utenteLoggato, body);
     }
     @PutMapping("/me/dieta/{id}/attiva")
     @PreAuthorize("hasAuthority('ADMIN') or hasAnyAuthority('PIANO_PREMIUM', 'PIANO_GOLD', 'PIANO_SILVER')")
