@@ -2,8 +2,10 @@ package giuseppeperna.GearForFit.services;
 
 import giuseppeperna.GearForFit.entities.Utente.QeA; // ✅ CORRETTO
 import giuseppeperna.GearForFit.exceptions.NotFoundException;
+import giuseppeperna.GearForFit.payloads.QeADomandaDTO;
 import giuseppeperna.GearForFit.payloads.QeARequestDTO;
 import giuseppeperna.GearForFit.payloads.QeAResponseDTO;
+import giuseppeperna.GearForFit.payloads.QeARispostaDTO;
 import giuseppeperna.GearForFit.repositories.QeARepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -57,11 +59,16 @@ public class QeAService {
         qeaRepository.delete(qea);
     }
 
-    // Cerca Q&A per keyword
-    public List<QeAResponseDTO> cercaQeA(String keyword) {
-        return qeaRepository.findByDomandaContainingIgnoreCaseOrRispostaContainingIgnoreCase(keyword, keyword)
-                .stream()
-                .map(qea -> new QeAResponseDTO(qea.getId(), qea.getDomanda(), qea.getRisposta()))
-                .collect(Collectors.toList());
+    // Get singola domanda by ID
+    public QeADomandaDTO getDomandaById(Long id) {
+        QeA qea = qeaRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Q&A con id " + id + " non trovata"));
+        return new QeADomandaDTO(qea.getDomanda());
+    }
+    // Get singola risposta by ID
+    public QeARispostaDTO getRispostaById(Long id) {
+        QeA qea = qeaRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Q&A con id " + id + " non trovata"));
+        return new QeARispostaDTO(qea.getRisposta());
     }
 }

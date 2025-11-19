@@ -45,7 +45,6 @@ public class Utente implements UserDetails {
     @Column(nullable = false)
     private TipoUtente tipoUtente;
 
-    // ← AGGIUNGI QUESTO
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private TipoPiano tipoPiano;
@@ -61,10 +60,16 @@ public class Utente implements UserDetails {
         this.dataCreazione = LocalDateTime.now();
     }
 
+    // Dentro la classe Utente.java
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(tipoUtente.name()));
+        return List.of(
+                new SimpleGrantedAuthority(tipoUtente.name()), // Es. "ADMIN"
+                new SimpleGrantedAuthority("PIANO_" + tipoPiano.name()) // Es. "PIANO_PREMIUM"
+        );
     }
+
 
     @Override
     public String getUsername() {
@@ -95,4 +100,5 @@ public class Utente implements UserDetails {
     public boolean isEnabled() {
         return attivo;
     }
+
 }

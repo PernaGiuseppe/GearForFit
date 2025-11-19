@@ -4,9 +4,9 @@ import giuseppeperna.GearForFit.entities.SchedePalestra.ObiettivoAllenamento;
 import giuseppeperna.GearForFit.entities.SchedePalestra.TipoAllenamento;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import java.util.List;
 
-public record SchedaAllenamentoRequestDTO(
-
+public record SchedaPersonalizzataRequestDTO(
         @NotBlank(message = "Il nome della scheda è obbligatorio")
         String nome,
 
@@ -17,10 +17,8 @@ public record SchedaAllenamentoRequestDTO(
 
         TipoAllenamento tipoAllenamento,
 
-        Integer frequenzaSettimanale,
-
         Integer durataSettimane,
 
-        String livelloEsperienza
+        List<GiornoAllenamentoRequestDTO> giorni
 ) {
 }

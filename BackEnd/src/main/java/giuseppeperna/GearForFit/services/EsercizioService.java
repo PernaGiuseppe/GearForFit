@@ -56,6 +56,7 @@ public class EsercizioService {
     // ============= METODI CRUD (ADMIN) =============
 
     public Esercizio creaEsercizio(EsercizioRequestDTO request) {
+
         GruppoMuscolare gruppo = gruppoMuscolareRepository.findById(request.gruppoMuscolareId())
                 .orElseThrow(() -> new NotFoundException("Gruppo muscolare con id " + request.gruppoMuscolareId() + " non trovato"));
 

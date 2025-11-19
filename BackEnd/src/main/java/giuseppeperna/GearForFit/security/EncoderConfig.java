@@ -1,4 +1,4 @@
-package giuseppeperna.GearForFit.config;
+package giuseppeperna.GearForFit.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

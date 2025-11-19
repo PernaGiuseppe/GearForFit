@@ -2,7 +2,9 @@ package giuseppeperna.GearForFit.controllers;
 
 import giuseppeperna.GearForFit.entities.Utente.Utente;
 import giuseppeperna.GearForFit.exceptions.UnauthorizedException;
+import giuseppeperna.GearForFit.payloads.QeADomandaDTO;
 import giuseppeperna.GearForFit.payloads.QeAResponseDTO;
+import giuseppeperna.GearForFit.payloads.QeARispostaDTO;
 import giuseppeperna.GearForFit.services.QeAService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -16,6 +18,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/qea")
+@PreAuthorize("hasAuthority('ADMIN') or hasAnyAuthority('PIANO_PREMIUM')")
 public class QeAController {
 
     @Autowired
@@ -23,10 +26,9 @@ public class QeAController {
 
     // Ottieni tutte le Q&A (solo utenti PREMIUM o ADMIN)
     @GetMapping
-    @PreAuthorize("isAuthenticated()")
+
     public List<QeAResponseDTO> getAllQeA(Authentication authentication) {
         Utente utenteLoggato = (Utente) authentication.getPrincipal();
-
         // Verifica che l'utente sia PREMIUM o ADMIN
         if (!utenteLoggato.getTipoPiano().name().equals("PREMIUM") &&
                 !utenteLoggato.getTipoUtente().name().equals("ADMIN")) {
@@ -38,7 +40,6 @@ public class QeAController {
 
     // Ottieni una singola Q&A (solo PREMIUM o ADMIN)
     @GetMapping("/{id}")
-    @PreAuthorize("isAuthenticated()")
     public QeAResponseDTO getQeAById(@PathVariable Long id, Authentication authentication) {
         Utente utenteLoggato = (Utente) authentication.getPrincipal();
 
@@ -48,5 +49,17 @@ public class QeAController {
         }
 
         return qeaService.getQeAById(id);
+    }
+
+    // Endpoint per avere solo la domanda di una Q&A
+    @GetMapping("/{id}/domanda")
+    public QeADomandaDTO getDomanda(@PathVariable Long id) {
+        return qeaService.getDomandaById(id);
+    }
+
+    // Endpoint per avere solo la risposta di una Q&A
+    @GetMapping("/{id}/risposta")
+    public QeARispostaDTO getRisposta(@PathVariable Long id) {
+        return qeaService.getRispostaById(id);
     }
 }

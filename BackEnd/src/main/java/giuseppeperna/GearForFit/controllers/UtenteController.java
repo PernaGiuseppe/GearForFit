@@ -1,14 +1,20 @@
 package giuseppeperna.GearForFit.controllers;
 
+import giuseppeperna.GearForFit.entities.Diete.CalcoloBMR;
+import giuseppeperna.GearForFit.entities.Diete.TipoDieta;
 import giuseppeperna.GearForFit.entities.Utente.Utente;
-import giuseppeperna.GearForFit.payloads.AggiornaProfiloDTO;
-import giuseppeperna.GearForFit.payloads.CambiaPasswordDTO;
+import giuseppeperna.GearForFit.payloads.*;
+import giuseppeperna.GearForFit.services.CalcoloBMRService;
+import giuseppeperna.GearForFit.services.DietaService;
 import giuseppeperna.GearForFit.services.UtenteService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/utenti")
@@ -17,6 +23,10 @@ public class UtenteController {
 
     @Autowired
     private UtenteService utenteService;
+    @Autowired
+    private CalcoloBMRService calcoloBMRService;
+    @Autowired
+    private DietaService dietaService;
 
     // Ottieni i dati dell'utente loggato
     @GetMapping("/me")

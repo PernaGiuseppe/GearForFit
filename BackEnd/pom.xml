@@ -94,6 +94,12 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+    <!--    <dependency>
+            <groupId>com.mailgun</groupId>
+            <artifactId>mailgun-java</artifactId>
+            <version>2.1.0</version>
+            <scope>runtime</scope>
+        </dependency>-->
     </dependencies>
 
     <build>

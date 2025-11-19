@@ -1,8 +1,7 @@
 package giuseppeperna.GearForFit.payloads;
 
-import giuseppeperna.GearForFit.entities.SchedePalestra.GiornoSettimana;
 import giuseppeperna.GearForFit.entities.SchedePalestra.ObiettivoAllenamento;
-
+import giuseppeperna.GearForFit.entities.SchedePalestra.TipoAllenamento;
 import java.util.List;
 
 public record SchedaAllenamentoDTO(
@@ -10,7 +9,11 @@ public record SchedaAllenamentoDTO(
         String nome,
         String descrizione,
         ObiettivoAllenamento obiettivo,
-        GiornoSettimana giornoSettimana,
-        List<EsercizioSchedaDTO> esercizi
+        TipoAllenamento tipoAllenamento,
+        Integer durataSettimane,
+        Boolean isStandard,
+        Long utenteId,
+        Boolean attiva,
+        List<GiornoAllenamentoDTO> giorni
 ) {
 }

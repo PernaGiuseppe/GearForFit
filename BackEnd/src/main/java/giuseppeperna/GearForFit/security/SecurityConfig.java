@@ -42,19 +42,33 @@ public class SecurityConfig {
         // Aggiungi il JWT filter prima dell'autenticazione username/password
         httpSecurity.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
-        // ✅ CONFIGURAZIONE AUTORIZZAZIONI CORRETTA
+        // CONFIGURAZIONE AUTORIZZAZIONI CORRETTA
         httpSecurity.authorizeHttpRequests(req ->
-                req.requestMatchers("/auth/**").permitAll() // Percorsi pubblici (login/register)
-                        .requestMatchers(HttpMethod.GET, "/esercizi/**").permitAll() // Esercizi in lettura pubblici
+                req
+                        // ========== ENDPOINT PUBBLICI (NO AUTH) ==========
+                        .requestMatchers("/auth/**").permitAll()
 
-                        // ✅ ADMIN - Tutte le operazioni su /admin/**
+                        // ========== ESERCIZI - LETTURA PUBBLICA ==========
+                        .requestMatchers(HttpMethod.GET, "/esercizi/**").permitAll()
+
+                        // ========== DIETE STANDARD - LETTURA AUTENTICATA ==========
+                        // Gli utenti autenticati possono LEGGERE le diete standard
+                        .requestMatchers(HttpMethod.GET, "/diete/standard/**").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/diete/standard").authenticated()
+
+                        // Generazione dieta personalizzata (richiede autenticazione)
+                        .requestMatchers(HttpMethod.POST, "/diete/personalizzata").authenticated()
+
+                        // ========== ADMIN - OPERAZIONI SCRITTURA ==========
+                        // Solo ADMIN può creare/modificare/eliminare risorse
                         .requestMatchers(HttpMethod.POST, "/admin/**").hasAuthority("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/admin/**").hasAuthority("ADMIN")
-                        .requestMatchers(HttpMethod.PATCH, "/admin/**").hasAuthority("ADMIN") // ⬅️ AGGIUNTO
+                        .requestMatchers(HttpMethod.PATCH, "/admin/**").hasAuthority("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/admin/**").hasAuthority("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/admin/**").hasAuthority("ADMIN")
 
-                        .anyRequest().authenticated() // Tutto il resto richiede autenticazione
+                        // ========== TUTTO IL RESTO RICHIEDE AUTENTICAZIONE ==========
+                        .anyRequest().authenticated()
         );
 
         // Abilita CORS
@@ -68,10 +82,10 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
 
         // Origine del frontend (modifica in base al tuo ambiente)
-        configuration.setAllowedOrigins(List.of("http://localhost:5173", "http://localhost:3000"));
+        configuration.setAllowedOrigins(List.of("http://localhost:5173"));
 
         // Metodi HTTP consentiti
-        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
+        configuration.setAllowedMethods(List.of("*"));
 
         // Header consentiti
         configuration.setAllowedHeaders(List.of("*"));

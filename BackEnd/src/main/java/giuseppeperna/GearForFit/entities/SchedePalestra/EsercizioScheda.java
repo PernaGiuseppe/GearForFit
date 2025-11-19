@@ -2,15 +2,13 @@ package giuseppeperna.GearForFit.entities.SchedePalestra;
 
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
-@Table(name = "esercizi_scheda")
-@Data
-@Builder
+@Table(name = "esercizio_scheda")
+@Getter
+@Setter
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 public class EsercizioScheda {
@@ -19,25 +17,26 @@ public class EsercizioScheda {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "scheda_allenamento_id", nullable = false)
-    private SchedaAllenamento schedaAllenamento;
+    @ManyToOne
+    @JoinColumn(name = "scheda_id", nullable = false)
+    private SchedaAllenamento scheda;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "esercizio_id", nullable = false)
     private Esercizio esercizio;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "schema_serie_id", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "schema_serie_id")
     private SchemaSerie schemaSerie;
 
-    @Column(nullable = false)
-    private Integer posizione;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "giorno_settimana")  // ✅ QUESTO È IL GIORNO!
+    private GiornoSettimana giornoSettimana;
 
-    @Column(nullable = false)
-    private Integer secondiRiposo;
+    @Column(name = "ordine_esecuzione")
+    private Integer ordineEsecuzione;
 
-    @Column(columnDefinition = "TEXT")
     private String note;
 }
+
 
