@@ -4,33 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="10ecab47-713b-4f2f-8941-16250b289024" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/giuseppeperna/GearForFit/entities/Alimenti/Condimento.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/giuseppeperna/GearForFit/entities/Alimenti/Dolce.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/giuseppeperna/GearForFit/entities/Alimenti/Pesce.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/giuseppeperna/GearForFit/entities/Bevande/BevandaAnalcolica.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/giuseppeperna/GearForFit/runners/ElementiCsvRunner.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/giuseppeperna/GearForFit/services/AlimentoService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/giuseppeperna/GearForFit/services/BevandaService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/data/elementi_unificati.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/giuseppeperna/GearForFit/entities/Alimenti/Alimento.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/giuseppeperna/GearForFit/entities/Alimenti/Alimento.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/giuseppeperna/GearForFit/entities/Alimenti/Carboidrato.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/giuseppeperna/GearForFit/entities/Alimenti/Carboidrato.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/giuseppeperna/GearForFit/entities/Alimenti/Carne.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/giuseppeperna/GearForFit/entities/Alimenti/Carne.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/giuseppeperna/GearForFit/entities/Alimenti/Frutta.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/giuseppeperna/GearForFit/entities/Alimenti/Frutta.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/giuseppeperna/GearForFit/entities/Alimenti/Latticino.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/giuseppeperna/GearForFit/entities/Alimenti/Latticino.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/giuseppeperna/GearForFit/entities/Alimenti/Legume.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/giuseppeperna/GearForFit/entities/Alimenti/Legume.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/giuseppeperna/GearForFit/entities/Alimenti/Verdura.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/giuseppeperna/GearForFit/entities/Alimenti/Verdura.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/giuseppeperna/GearForFit/entities/Bevande/Acqua.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/giuseppeperna/GearForFit/entities/Bevande/Bevanda.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/giuseppeperna/GearForFit/entities/Bevande/Bevanda.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/giuseppeperna/GearForFit/entities/Bevande/BevandaAlcolica.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/giuseppeperna/GearForFit/entities/Bevande/BevandaAlcolica.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/giuseppeperna/GearForFit/entities/Bevande/BevandaGassata.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/giuseppeperna/GearForFit/entities/Bevande/BevandaEnergetica.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/giuseppeperna/GearForFit/entities/Bevande/Succo.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/giuseppeperna/GearForFit/repositories/AlimentoRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/giuseppeperna/GearForFit/repositories/AlimentoRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/giuseppeperna/GearForFit/repositories/BevandaRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/giuseppeperna/GearForFit/repositories/BevandaRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/giuseppeperna/GearForFit/runners/DatabasePopulationRunner.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/giuseppeperna/GearForFit/services/ImportazioneCREAService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/data/crea_alimenti.csv" beforeDir="false" />
-    </list>
+    <list default="true" id="10ecab47-713b-4f2f-8941-16250b289024" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -74,20 +48,20 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Application.Application.executor": "Run",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "GiuseppeBackEnd",
-    "ignore.virus.scanning.warn.message": "true",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/giuse/Desktop/Progetto Capstone/GearForFit/BackEnd/src/main/resources/data",
-    "rearrange.code.on.save": "true",
-    "settings.editor.selected.configurable": "actions.on.save"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.Application.executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;GiuseppeBackEnd&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/giuse/Desktop/Progetto Capstone/GearForFit/BackEnd/src/main/resources/data&quot;,
+    &quot;rearrange.code.on.save&quot;: &quot;true&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;actions.on.save&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\giuse\Desktop\Progetto Capstone\GearForFit\BackEnd\src\main\resources\data" />
