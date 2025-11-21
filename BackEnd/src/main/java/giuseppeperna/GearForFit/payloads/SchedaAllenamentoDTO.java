@@ -9,6 +9,7 @@ public record SchedaAllenamentoDTO(
         String nome,
         String descrizione,
         ObiettivoAllenamento obiettivo,
+        // enum da togliere
         TipoAllenamento tipoAllenamento,
         Integer durataSettimane,
         Boolean isStandard,

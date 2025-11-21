@@ -28,7 +28,7 @@ public class SchedaAllenamento {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private ObiettivoAllenamento obiettivo;
-
+// controllare questo enum e toglierlo in caso
     @Enumerated(EnumType.STRING)
     private TipoAllenamento tipoAllenamento;
 

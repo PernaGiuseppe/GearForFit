@@ -14,7 +14,7 @@ public record SchedaAllenamentoRequestDTO(
 
         @NotNull(message = "L'obiettivo è obbligatorio")
         ObiettivoAllenamento obiettivo,
-
+// ernum da togliere
         TipoAllenamento tipoAllenamento,
 
         Integer frequenzaSettimanale,
