@@ -1,5 +1,6 @@
 package giuseppeperna.GearForFit.entities.Utente;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import giuseppeperna.GearForFit.entities.SchedePalestra.SchedaAllenamento;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -50,6 +51,7 @@ public class Utente implements UserDetails {
     private TipoPiano tipoPiano;
 
     @OneToMany(mappedBy = "utente", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<SchedaAllenamento> schedeAllenamento;
 
     @Column(name = "data_creazione", nullable = false, updatable = false)

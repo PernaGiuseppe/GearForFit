@@ -44,4 +44,5 @@ public interface SchedaAllenamentoRepository extends JpaRepository<SchedaAllenam
 
     Optional<SchedaAllenamento> findByUtenteIdAndAttivaTrue(Long utenteId);
 
+
 }

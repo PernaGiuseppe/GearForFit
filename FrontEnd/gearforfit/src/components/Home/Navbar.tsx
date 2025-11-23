@@ -1,7 +1,8 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { RootState } from '../../app/store'
-import { clearUser } from '../../features/auth/authSlice'
+import { logout } from '../../features/auth/authSlice'
+import '../../css/navbar.css'
 
 export default function Navbar() {
   const user = useSelector((s: RootState) => s.auth.user)
@@ -9,31 +10,67 @@ export default function Navbar() {
   const navigate = useNavigate()
 
   const handleLogout = () => {
-    dispatch(clearUser())
+    dispatch(logout())
     navigate('/')
   }
 
+  // Funzione per ottenere la classe CSS del badge in base al piano/ruolo
+  const getBadgeClass = () => {
+    if (user?.tipoUtente === 'ADMIN') return 'badge-admin'
+    switch (user?.tipoPiano) {
+      case 'FREE':
+        return 'badge-free'
+      case 'SILVER':
+        return 'badge-silver'
+      case 'GOLD':
+        return 'badge-gold'
+      case 'PREMIUM':
+        return 'badge-premium'
+      default:
+        return ''
+    }
+  }
+
+  // Funzione per ottenere il testo del badge
+  const getBadgeText = () => {
+    if (user?.tipoUtente === 'ADMIN') return 'ADMIN'
+    return user?.tipoPiano || ''
+  }
+
   return (
-    <nav className="navbar navbar-expand-lg navbar-light bg-light">
-      <div className="container">
-        <Link className="navbar-brand" to="/">
-          <img
-            src="/logo_rotondo.png"
-            width={40}
-            alt="GearForFit Logo"
-            className="mx-2"
-          />
-          GearForFit
-        </Link>
+    <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
+      <div className="container-fluid">
+        {/* Brand con Badge */}
+        <div className="brand-container">
+          <Link className="navbar-brand" to="/">
+            GearForFit
+          </Link>
+          {user && (
+            <span className={`plan-badge ${getBadgeClass()}`}>
+              {getBadgeText()}
+            </span>
+          )}
+        </div>
+
         <button
           className="navbar-toggler"
+          type="button"
           data-bs-toggle="collapse"
-          data-bs-target="#nav"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
         >
-          <span className="navbar-toggler-icon" />
+          <span className="navbar-toggler-icon"></span>
         </button>
-        <div className="collapse navbar-collapse" id="nav">
-          <ul className="navbar-nav me-auto">
+
+        <div className="collapse navbar-collapse" id="navbarNav">
+          <ul
+            className={`navbar-nav me-auto mb-2 mb-lg-0 ${
+              user ? 'nav-with-badge' : ''
+            }`}
+          >
+            {/* Home Link */}
             <li className="nav-item">
               <Link className="nav-link" to="/">
                 Home
@@ -42,65 +79,85 @@ export default function Navbar() {
 
             {user && (
               <>
-                {/* Diete: tutti gli utenti loggati hanno accesso alle diete (diversi livelli di contenuto gestiti nelle pagine) */}
-                <li className="nav-item">
-                  <Link className="nav-link" to="/diete">
-                    Diete
-                  </Link>
-                </li>
+                {/* Link Utenti - SOLO PER ADMIN */}
+                {user.tipoUtente === 'ADMIN' && (
+                  <li className="nav-item">
+                    <Link className="nav-link" to="/utenti">
+                      Utenti
+                    </Link>
+                  </li>
+                )}
 
-                {/* Schede: visibilità dipende dal piano */}
-                {user.tipoPiano === 'PREMIUM' ||
-                user.tipoPiano === 'GOLD' ||
-                user.tipoPiano === 'SILVER' ? (
+                {/* Link a Diete */}
+                {(user.tipoUtente === 'ADMIN' ||
+                  user.tipoPiano === 'PREMIUM' ||
+                  user.tipoPiano === 'GOLD' ||
+                  user.tipoPiano === 'SILVER' ||
+                  user.tipoPiano === 'FREE') && (
+                  <li className="nav-item">
+                    <Link className="nav-link" to="/diete">
+                      Diete
+                    </Link>
+                  </li>
+                )}
+
+                {/* Link a Schede */}
+                {(user.tipoUtente === 'ADMIN' ||
+                  user.tipoPiano === 'PREMIUM' ||
+                  user.tipoPiano === 'GOLD' ||
+                  user.tipoPiano === 'SILVER') && (
                   <li className="nav-item">
                     <Link className="nav-link" to="/schede">
                       Schede
                     </Link>
                   </li>
-                ) : null}
-                {/* 
-                Chat solo per PREMIUM
-                {user.tipoPiano === 'PREMIUM' ? (
+                )}
+
+                {/* Admin Dashboard - SOLO PER ADMIN */}
+                {user.tipoUtente === 'ADMIN' && (
                   <li className="nav-item">
-                    <Link className="nav-link" to="/chat">
-                      Chat
+                    <Link className="nav-link" to="/admin">
+                      Dashboard Admin
                     </Link>
                   </li>
-                ) : null} */}
+                )}
               </>
             )}
           </ul>
 
           <ul className="navbar-nav ms-auto">
-            {/* Admin dashboard link */}
-            {user?.tipoUtente === 'ADMIN' && (
+            {/* Link al Profilo - SOLO PER UTENTI NON ADMIN */}
+            {user && user.tipoUtente !== 'ADMIN' && (
               <li className="nav-item">
-                <Link className="nav-link" to="/admin">
-                  Dashboard
+                <Link className="nav-link" to="/profilo">
+                  Profilo
                 </Link>
               </li>
             )}
+
+            {/* Login/Logout Buttons */}
             {!user ? (
-              <li className="nav-item">
-                <Link className="nav-link" to="/login">
-                  Login / Register
-                </Link>
-              </li>
-            ) : (
               <>
-                <li className="nav-item nav-link">
-                  Ciao, {user.nome ?? user.email}
+                <li className="nav-item">
+                  <Link className="btn btn-primary me-2" to="/login">
+                    Accedi
+                  </Link>
                 </li>
                 <li className="nav-item">
-                  <button
-                    className="btn btn-outline-secondary btn-sm"
-                    onClick={handleLogout}
-                  >
-                    Logout
-                  </button>
+                  <Link className="btn btn-outline-light" to="/register">
+                    Registrati
+                  </Link>
                 </li>
               </>
+            ) : (
+              <li className="nav-item">
+                <button
+                  className="btn btn-outline-light"
+                  onClick={handleLogout}
+                >
+                  Logout
+                </button>
+              </li>
             )}
           </ul>
         </div>

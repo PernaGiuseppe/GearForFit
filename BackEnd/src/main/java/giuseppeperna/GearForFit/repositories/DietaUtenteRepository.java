@@ -1,6 +1,7 @@
 package giuseppeperna.GearForFit.repositories;
 
 import giuseppeperna.GearForFit.entities.Diete.DietaUtente;
+import giuseppeperna.GearForFit.entities.Diete.TipoDieta;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -18,4 +19,7 @@ public interface DietaUtenteRepository extends JpaRepository<DietaUtente, Long> 
     List<DietaUtente> findByDietaStandardId(Long dietaId);
 
     Optional<DietaUtente> findByIdAndUtenteId(Long id, Long utenteId);
+
+    List<DietaUtente> findByUtenteIdAndTipoDietaObiettivo(Long utenteId, TipoDieta tipoDietaObiettivo);
+
 }

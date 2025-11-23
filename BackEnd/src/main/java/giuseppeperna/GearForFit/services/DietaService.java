@@ -2,8 +2,11 @@ package giuseppeperna.GearForFit.services;
 
 import giuseppeperna.GearForFit.entities.Alimenti.Alimento;
 import giuseppeperna.GearForFit.entities.Diete.*;
+import giuseppeperna.GearForFit.entities.Utente.TipoPiano;
+import giuseppeperna.GearForFit.entities.Utente.TipoUtente;
 import giuseppeperna.GearForFit.entities.Utente.Utente;
 import giuseppeperna.GearForFit.exceptions.NotFoundException;
+import giuseppeperna.GearForFit.exceptions.UnauthorizedException;
 import giuseppeperna.GearForFit.payloads.*;
 import giuseppeperna.GearForFit.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,7 +63,7 @@ public class DietaService {
         return dietaStandardRepository.findById(id).map(this::convertToDTO);
     }
 
-    public DietaStandardDTO getDietaStandardByTipo(TipoDieta tipoDieta) {
+  /*  public DietaStandardDTO getDietaStandardByTipo(TipoDieta tipoDieta) {
         // 1. findByTipoDieta ora restituisce una List<DietaStandard>
         List<DietaStandard> dieteTrovate = dietaStandardRepository.findByTipoDieta(tipoDieta);
 
@@ -73,8 +76,53 @@ public class DietaService {
         DietaStandard dietaDaRestituire = dieteTrovate.get(0);
 
         return convertToDTO(dietaDaRestituire);
+    }*/
+   // Ottieni tutte le diete standard filtrate per TipoDieta
+   public List<DietaStandardDTO> getDieteStandardByTipo(TipoDieta tipoDieta) {
+       List<DietaStandard> dieteTrovate = dietaStandardRepository.findByTipoDieta(tipoDieta);
+
+       // Converti tutte le diete trovate in DTO
+       return dieteTrovate.stream()
+               .map(this::convertToDTO)
+               .collect(Collectors.toList());
+   }
+
+    public List<Object> getAllDieteFiltered(Utente utente, String tipoFiltro) {
+        List<Object> result = new ArrayList<>();
+
+        // 1. Recupero Diete STANDARD
+        // Le mostriamo se il filtro è "ALL" oppure "STANDARD"
+        if ("ALL".equalsIgnoreCase(tipoFiltro) || "STANDARD".equalsIgnoreCase(tipoFiltro)) {
+            List<DietaStandard> standardEntities = dietaStandardRepository.findAll();
+            List<DietaStandardDTO> standardDTOs = standardEntities.stream()
+                    .map(this::convertToDTO)
+                    .collect(Collectors.toList());
+            result.addAll(standardDTOs);
+        }
+
+        // 2. Recupero Diete PERSONALIZZATE (Assegnate)
+        // Le mostriamo se il filtro è "ALL" o "PERSONALIZZATE" E se l'utente ha il piano adeguato (SILVER+)
+        boolean canAccessPersonalized = isSilverOrAbove(utente.getTipoPiano());
+
+        if (canAccessPersonalized && ("ALL".equalsIgnoreCase(tipoFiltro) || "PERSONALIZZATE".equalsIgnoreCase(tipoFiltro))) {
+            // Recupera le diete assegnate all'utente specifico
+            List<DietaUtente> personalizzateEntities = dietaUtenteRepository.findByUtenteId(utente.getId());
+            List<DietaUtenteDTO> personalizzateDTOs = personalizzateEntities.stream()
+                    .map(this::convertDietaUtenteToDTO)
+                    .collect(Collectors.toList());
+            result.addAll(personalizzateDTOs);
+        }
+
+        return result;
     }
 
+    // Helper per verificare i permessi del piano (Silver o superiore)
+    private boolean isSilverOrAbove(giuseppeperna.GearForFit.entities.Utente.TipoPiano piano) {
+        return piano == giuseppeperna.GearForFit.entities.Utente.TipoPiano.SILVER ||
+                piano == giuseppeperna.GearForFit.entities.Utente.TipoPiano.GOLD ||
+                piano == giuseppeperna.GearForFit.entities.Utente.TipoPiano.PREMIUM ||
+                piano == giuseppeperna.GearForFit.entities.Utente.TipoPiano.ADMIN;
+    }
     @Transactional
     public DietaStandardDTO creaDietaStandard(DietaStandardRequestDTO dietaRequest) {
         DietaStandard nuovaDieta = new DietaStandard();
@@ -366,6 +414,36 @@ public class DietaService {
         // 3. Ritorna il DTO del template completo (non scalato)
         return convertToDTO(dietaStandardTemplate);
     }
+    // Ottieni le diete assegnate all'utente filtrate per TipoDieta
+    public List<DietaUtenteDTO> getDieteAssegnateByTipo(Long utenteId, TipoDieta tipoDieta) {
+        return dietaUtenteRepository.findByUtenteIdAndTipoDietaObiettivo(utenteId, tipoDieta).stream()
+                .map(this::convertDietaUtenteToDTO)
+                .collect(Collectors.toList());
+    }
+    // Ottieni una dieta per ID (standard o assegnata)
+    public Object getDietaById(Long dietaId, Utente utente) {
+        // Prima prova a cercare tra le diete standard
+        Optional<DietaStandard> dietaStandard = dietaStandardRepository.findById(dietaId);
+        if (dietaStandard.isPresent()) {
+            return convertToDTO(dietaStandard.get());
+
+        }
+
+        // Altrimenti cerca tra le diete assegnate
+        Optional<DietaUtente> dietaUtente = dietaUtenteRepository.findById(dietaId);
+        if (dietaUtente.isPresent()) {
+            DietaUtente dieta = dietaUtente.get();
+            // Verifica che l'utente sia autorizzato a vedere questa dieta
+            if (utente.getTipoUtente() != TipoUtente.ADMIN &&
+                    !dieta.getUtente().getId().equals(utente.getId())) {
+                throw new UnauthorizedException("Non sei autorizzato a visualizzare questa dieta.");
+            }
+            return convertDietaUtenteToDTO(dieta);
+        }
+
+        throw new NotFoundException("Dieta non trovata con id: " + dietaId);
+    }
+
     // Ottiene una singola dieta assegnata (per ID) e la ritorna SCALATA.
 
     public DietaStandardDTO getDietaAssegnataScalata(Long dietaUtenteId, Utente utente) {

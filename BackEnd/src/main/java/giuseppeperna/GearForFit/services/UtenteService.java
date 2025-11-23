@@ -6,6 +6,8 @@ import giuseppeperna.GearForFit.entities.Utente.Utente;
 import giuseppeperna.GearForFit.exceptions.BadRequestException;
 import giuseppeperna.GearForFit.exceptions.NotFoundException;
 import giuseppeperna.GearForFit.exceptions.UnauthorizedException;
+import giuseppeperna.GearForFit.payloads.AggiornaProfiloDTO;
+import giuseppeperna.GearForFit.payloads.UtenteDTO;
 import giuseppeperna.GearForFit.repositories.UtenteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,7 +25,32 @@ public class UtenteService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
-
+    // Ottieni utente come DTO (AGGIUNGI QUESTO)
+    public UtenteDTO getUtenteDTO(Long id) {
+        Utente utente = findById(id);
+        return new UtenteDTO(
+                utente.getId(),
+                utente.getEmail(),
+                utente.getNome(),
+                utente.getCognome(),
+                utente.getTipoUtente(),
+                utente.getTipoPiano(),
+                utente.getAttivo()
+        );
+    }
+    // Aggiorna utente e restituisci DTO (AGGIUNGI QUESTO)
+    public UtenteDTO aggiornaUtenteDTO(Long id, AggiornaProfiloDTO dto) {
+        Utente utente = aggiornaUtente(id, dto.nome(), dto.cognome(), dto.email());
+        return new UtenteDTO(
+                utente.getId(),
+                utente.getEmail(),
+                utente.getNome(),
+                utente.getCognome(),
+                utente.getTipoUtente(),
+                utente.getTipoPiano(),
+                utente.getAttivo()
+        );
+    }
     // Trova un utente per ID
     public Utente findById(Long id) {
         return utenteRepository.findById(id)

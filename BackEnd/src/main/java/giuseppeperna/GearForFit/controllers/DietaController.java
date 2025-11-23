@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -47,23 +48,37 @@ public class DietaController {
     public List<DietaStandardDTO> getDieteStandard() {
         return dietaService.getAllDieteStandard();
     }
+
     @GetMapping("/standard/{id}")
     public ResponseEntity<DietaStandardDTO> getDietaStandardById(@PathVariable Long id) {
         return dietaService.getDietaStandardById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
-    @GetMapping("/standard/tipo")
+ /*   @GetMapping("/standard/tipo")
     public DietaStandardDTO getDietaStandardByTipo(@RequestParam TipoDieta tipoDieta) {
         return dietaService.getDietaStandardByTipo(tipoDieta);
+    }*/
+    @GetMapping("/standard/tipo")
+    @PreAuthorize("isAuthenticated()") // AGGIUNTO
+    public List<DietaStandardDTO> getDieteStandardByTipo(@RequestParam TipoDieta tipoDieta) {
+        return dietaService.getDieteStandardByTipo(tipoDieta); // Ora restituisce List
     }
-    @GetMapping
+    /*@GetMapping
     public org.springframework.data.domain.Page<DietaStandard> getDiete(@RequestParam(defaultValue = "0") int page,
                                                                         @RequestParam(defaultValue = "10") int size,
                                                                         @RequestParam(defaultValue = "id") String orderBy) {
         return dietaService.getDiete(page, size, orderBy);
-    }
+    }*/
+    @GetMapping
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<List<Object>> getAllDiete(
+            @AuthenticationPrincipal Utente utente,
+            @RequestParam(required = false, defaultValue = "STANDARD") String filtro) {
 
+        List<Object> diete = dietaService.getAllDieteFiltered(utente, filtro);
+        return ResponseEntity.ok(diete);
+    }
     // ENDPOINT PER LA GESTIONE DELLA DIETA DELL'UTENTE LOGGATO
     @PostMapping("/me/bmr")
     @PreAuthorize("hasAuthority('ADMIN') or hasAnyAuthority('PIANO_PREMIUM', 'PIANO_GOLD', 'PIANO_SILVER')")
@@ -104,6 +119,23 @@ public class DietaController {
             Authentication authentication) {
         Utente utenteLoggato = (Utente) authentication.getPrincipal();
         return dietaService.getDietaAssegnataById(id, utenteLoggato);
+    }
+    // GET - Ottieni una singola dieta (Standard o Personalizzata) per ID
+    @GetMapping("/{dietaId}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<?> getDietaById(
+            @PathVariable Long dietaId,
+            @AuthenticationPrincipal Utente utente) {
+        return ResponseEntity.ok(dietaService.getDietaById(dietaId, utente));
+    }
+
+    @GetMapping("/me/dieta/tipo/{tipoDieta}")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAnyAuthority('PIANO_PREMIUM', 'PIANO_GOLD', 'PIANO_SILVER')")
+    public List<DietaUtenteDTO> getMieDietePerTipo(
+            @PathVariable TipoDieta tipoDieta,
+            Authentication authentication) {
+        Utente utenteLoggato = (Utente) authentication.getPrincipal();
+        return dietaService.getDieteAssegnateByTipo(utenteLoggato.getId(), tipoDieta);
     }
     @PutMapping("/me/dieta/{id}")
     @PreAuthorize("hasAuthority('ADMIN') or hasAnyAuthority('PIANO_PREMIUM', 'PIANO_GOLD', 'PIANO_SILVER')")

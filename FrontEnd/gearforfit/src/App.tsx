@@ -1,3 +1,5 @@
+// src/App.tsx
+
 import { Routes, Route } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { RootState } from './app/store'
@@ -15,6 +17,9 @@ import DietaDettaglio from './components/Diete/DietaDettaglio'
 import ErrorPage from './components/Home/ErrorPage'
 import Navbar from './components/Home/Navbar'
 import Footer from './components/Home/Footer'
+import ProfiloUtente from './components/Login/ProfiloUtente'
+// NUOVO IMPORT
+import GestioneUtenti from './components/Admin/GestioneUtenti'
 
 export default function App() {
   const user = useSelector((s: RootState) => s.auth.user)
@@ -24,20 +29,12 @@ export default function App() {
       <Navbar />
       <div className="container mt-4">
         <Routes>
-          {/* NoAuth Routes */}
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
-          <Route path="/articolo/:id" element={<ArticoloDettaglio />} />
-          <Route
-            path="/admin"
-            element={
-              <ProtectedRoute requireAdmin={true}>
-                <AdminDashboard />
-              </ProtectedRoute>
-            }
-          />
-          {/* Free/Silver Routes */}
+          <Route path="/articoli/:id" element={<ArticoloDettaglio />} />
+
+          {/* Route protette per tutti gli utenti loggati */}
           <Route
             path="/diete"
             element={
@@ -46,16 +43,14 @@ export default function App() {
               </ProtectedRoute>
             }
           />
-          {/* Free/Silver Routes */}
           <Route
-            path="/dieta/:id"
+            path="/diete/:id"
             element={
               <ProtectedRoute>
                 <DietaDettaglio />
               </ProtectedRoute>
             }
           />
-          {/* Silver/Gold Routes */}
           <Route
             path="/schede"
             element={
@@ -64,23 +59,52 @@ export default function App() {
               </ProtectedRoute>
             }
           />
-          {/* Silver/Gold Routes */}
           <Route
-            path="/scheda/:id"
+            path="/schede/:id"
             element={
               <ProtectedRoute>
                 <SchedaDettaglio />
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/profilo"
+            element={
+              <ProtectedRoute>
+                <ProfiloUtente />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/chat"
+            element={
+              <ProtectedRoute>
+                <Chat />
+              </ProtectedRoute>
+            }
+          />
 
+          {/* Route protette SOLO per ADMIN */}
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute adminOnly>
+                <AdminDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/utenti"
+            element={
+              <ProtectedRoute adminOnly>
+                <GestioneUtenti />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Error 404 */}
           <Route path="*" element={<ErrorPage />} />
         </Routes>
-        {/* Premium e Admin chat */}
-        {user &&
-          (user.tipoUtente === 'ADMIN' || user.tipoPiano === 'PREMIUM') && (
-            <Chat />
-          )}
       </div>
       <Footer />
     </>

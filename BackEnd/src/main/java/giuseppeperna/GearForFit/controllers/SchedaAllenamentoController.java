@@ -14,12 +14,14 @@ import giuseppeperna.GearForFit.repositories.SchedaAllenamentoRepository;
 import giuseppeperna.GearForFit.services.SchedaAllenamentoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -46,10 +48,71 @@ public class SchedaAllenamentoController {
     public List<SchedaAllenamentoDTO> getSchedeStandardPerObiettivo(@PathVariable ObiettivoAllenamento obiettivo) {
         return schedaService.getSchedeStandardByObiettivo(obiettivo);
     }
+
+    // ========== GET di tutte le schede ==========
+
+    @GetMapping
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<List<SchedaAllenamentoDTO>> getAllSchede(
+            @AuthenticationPrincipal Utente utente,
+            @RequestParam(required = false, defaultValue = "STANDARD") String filtro) {
+
+        List<SchedaAllenamentoDTO> schede = schedaService.getAllSchedeFiltered(utente, filtro);
+        return ResponseEntity.ok(schede);
+    }
+    // GET - Ottieni una singola scheda (Standard o Personalizzata) per ID
+    @GetMapping("/{schedaId}")
+    @PreAuthorize("isAuthenticated()")
+    public SchedaAllenamentoDTO getSchedaById(
+            @PathVariable Long schedaId,
+            @AuthenticationPrincipal Utente utente) {
+        return schedaService.getSchedaById(schedaId, utente);
+    }
+
+    // GET tutte le schede (standard + personalizzate) con filtro opzionale per obiettivo
+    @GetMapping("/schede")
+    @PreAuthorize("isAuthenticated()")
+    public List<SchedaAllenamentoDTO> getAllSchede(
+            @RequestParam(required = false) String filtro,
+            @RequestParam(required = false) ObiettivoAllenamento obiettivo,
+            @AuthenticationPrincipal Utente utente) {
+
+        if (obiettivo != null) {
+            // Filtra per obiettivo (include sia standard che personalizzate dell'utente)
+            return schedaService.getAllSchedeByObiettivo(utente.getId(), obiettivo);
+        }
+
+        // Comportamento originale se non c'è filtro obiettivo
+        if ("ALL".equalsIgnoreCase(filtro)) {
+            List<SchedaAllenamentoDTO> result = new ArrayList<>();
+            result.addAll(schedaService.getSchedeStandard());
+            result.addAll(schedaService.getSchedeByUtente(utente.getId()));
+            return result;
+        }
+
+        return schedaService.getSchedeStandard();
+    }
     // ========== SCHEDE PERSONALIZZATE (UTENTE) ==========
 
     // Utente crea scheda personalizzata
-    @PostMapping("/utente/{utenteId}")
+    @PostMapping("/me")
+    @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAuthority('ADMIN') or hasAnyAuthority('PIANO_PREMIUM', 'PIANO_GOLD')")
+    public SchedaAllenamentoDTO creaMiaSchedaPersonalizzata(
+            @AuthenticationPrincipal Utente utente,
+            @RequestBody @Validated SchedaPersonalizzataRequestDTO body,
+            BindingResult validationResult) {
+
+        if (validationResult.hasErrors()) {
+            List<String> errorMessages = validationResult.getFieldErrors().stream()
+                    .map(fieldError -> fieldError.getField() + " : " + fieldError.getDefaultMessage())
+                    .toList();
+            throw new NotValidException(errorMessages);
+        }
+
+        return schedaService.creaSchedaPersonalizzata(utente.getId(), body);
+    }
+ /*   @PostMapping("/utente/{utenteId}")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAuthority('ADMIN') or hasAnyAuthority('PIANO_PREMIUM', 'PIANO_GOLD')")
     public SchedaAllenamentoDTO creaSchedaPersonalizzata(
@@ -69,10 +132,16 @@ public class SchedaAllenamentoController {
             throw new NotValidException(errorMessages);
         }
         return schedaService.creaSchedaPersonalizzata(utenteId, body);
-    }
+    }*/
 
     // Ottieni tutte le schede di uno specifico utente
-    @GetMapping("/utente/{utenteId}")
+    @GetMapping("/me")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAnyAuthority('PIANO_PREMIUM', 'PIANO_GOLD')")
+    public List<SchedaAllenamentoDTO> getMieSchede(
+            @AuthenticationPrincipal Utente utente) {
+        return schedaService.getSchedeByUtente(utente.getId());
+    }
+ /*   @GetMapping("/utente/{utenteId}")
     @PreAuthorize("hasAuthority('ADMIN') or hasAnyAuthority('PIANO_PREMIUM', 'PIANO_GOLD')")
     public List<SchedaAllenamentoDTO> getSchedeUtente(
             @AuthenticationPrincipal Utente utente,
@@ -82,10 +151,17 @@ public class SchedaAllenamentoController {
             throw new org.springframework.security.access.AccessDeniedException("Non sei autorizzato a visualizzare le schede di un altro utente.");
         }
         return schedaService.getSchedeByUtente(utenteId);
-    }
+    }*/
 
     // GET - Ottieni una singola scheda personalizzata di un utente
-    @GetMapping("/utente/{utenteId}/{schedaId}")
+    @GetMapping("/me/{schedaId}")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAnyAuthority('PIANO_PREMIUM', 'PIANO_GOLD')")
+    public SchedaAllenamentoDTO getMiaSchedaPersonalizzata(
+            @AuthenticationPrincipal Utente utente,
+            @PathVariable Long schedaId) {
+        return schedaService.getSchedaByIdAndUtente(schedaId, utente.getId());
+    }
+/*    @GetMapping("/utente/{utenteId}/{schedaId}")
     @PreAuthorize("hasAuthority('ADMIN') or hasAnyAuthority('PIANO_PREMIUM', 'PIANO_GOLD')")
     public SchedaAllenamentoDTO getSchedaPersonalizzataById(
             @AuthenticationPrincipal Utente utente, // Inietta l'utente autenticato
@@ -98,8 +174,16 @@ public class SchedaAllenamentoController {
         }
 
         return schedaService.getSchedaByIdAndUtente(schedaId, utenteId);
+    }*/
+ // Ottieni le schede personalizzate dell'utente autenticato filtrate per obiettivo
+    @GetMapping("/me/obiettivo/{obiettivo}")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAnyAuthority('PIANO_PREMIUM', 'PIANO_GOLD')")
+    public List<SchedaAllenamentoDTO> getMieSchedePerObiettivo(
+            @AuthenticationPrincipal Utente utente,
+            @PathVariable ObiettivoAllenamento obiettivo) {
+        return schedaService.getSchedePersonalizzateByObiettivo(utente.getId(), obiettivo);
     }
-    @GetMapping("/utente/{utenteId}/obiettivo/{obiettivo}")
+ /*   @GetMapping("/utente/{utenteId}/obiettivo/{obiettivo}")
     @PreAuthorize("hasAuthority('ADMIN') or hasAnyAuthority('PIANO_PREMIUM', 'PIANO_GOLD')")
     public List<SchedaAllenamentoDTO> getSchedePersonalizzatePerObiettivo(
             @AuthenticationPrincipal Utente utente,
@@ -111,7 +195,7 @@ public class SchedaAllenamentoController {
 
         return schedaService.getSchedePersonalizzateByObiettivo(utenteId, obiettivo);
     }
-
+*/
     @PutMapping("/me/schede/{id}/attiva")
     public SchedaAllenamentoDTO setMiaSchedaAttiva(
             @PathVariable Long id,
@@ -131,8 +215,24 @@ public class SchedaAllenamentoController {
     }
 
     // Utente aggiorna la propria scheda personalizzata
+    @PutMapping("/me/{schedaId}")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAnyAuthority('PIANO_PREMIUM', 'PIANO_GOLD')")
+    public SchedaAllenamentoDTO aggiornaMiaSchedaPersonalizzata(
+            @AuthenticationPrincipal Utente utente,
+            @PathVariable Long schedaId,
+            @RequestBody @Validated SchedaPersonalizzataRequestDTO body,
+            BindingResult validationResult) {
 
-    @PutMapping("/utente/{utenteId}/{schedaId}")
+        if (validationResult.hasErrors()) {
+            List<String> errorMessages = validationResult.getFieldErrors().stream()
+                    .map(fieldError -> fieldError.getField() + " : " + fieldError.getDefaultMessage())
+                    .toList();
+            throw new NotValidException(errorMessages);
+        }
+
+        return schedaService.modificaSchedaPersonalizzata(schedaId, utente.getId(), body);
+    }
+  /*  @PutMapping("/utente/{utenteId}/{schedaId}")
     @PreAuthorize("hasAuthority('ADMIN') or hasAnyAuthority('PIANO_PREMIUM', 'PIANO_GOLD')")
     public SchedaAllenamentoDTO aggiornaSchedaPersonalizzata(
             @AuthenticationPrincipal Utente utente,
@@ -154,9 +254,17 @@ public class SchedaAllenamentoController {
 
         return schedaService.modificaSchedaPersonalizzata(schedaId, utenteId, body);
     }
-
+*/
     // Utente elimina la propria scheda personalizzata
-    @DeleteMapping("/utente/{utenteId}/{schedaId}")
+  @DeleteMapping("/me/{schedaId}")
+  @PreAuthorize("hasAuthority('ADMIN') or hasAnyAuthority('PIANO_PREMIUM', 'PIANO_GOLD')")
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public void eliminaMiaSchedaPersonalizzata(
+          @AuthenticationPrincipal Utente utente,
+          @PathVariable Long schedaId) {
+      schedaService.eliminaSchedaPersonalizzata(schedaId, utente.getId());
+  }
+/*    @DeleteMapping("/utente/{utenteId}/{schedaId}")
     @PreAuthorize("hasAuthority('ADMIN') or hasAnyAuthority('PIANO_PREMIUM', 'PIANO_GOLD')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void eliminaSchedaPersonalizzata(
@@ -168,7 +276,7 @@ public class SchedaAllenamentoController {
             throw new org.springframework.security.access.AccessDeniedException("Non sei autorizzato a eliminare la scheda di un altro utente.");
         }
         schedaService.eliminaSchedaPersonalizzata(schedaId, utenteId);
-    }
+    }*/
 
 
 

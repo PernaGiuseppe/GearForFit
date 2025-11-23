@@ -377,6 +377,72 @@ public class SchedaAllenamentoService {
         // 3. Se l'utente è autorizzato, mappa e restituisci il DTO
         return mapToDTO(scheda);
     }
+    public List<SchedaAllenamentoDTO> getAllSchedeFiltered(Utente utente, String tipoFiltro) {
+        List<SchedaAllenamentoDTO> result = new ArrayList<>();
+
+        // 1. Recupero Schede STANDARD
+        // Le mostriamo se il filtro è "ALL" o "STANDARD"
+        // Tutti gli utenti loggati vedono le standard (in base alla logica definita)
+        if ("ALL".equalsIgnoreCase(tipoFiltro) || "STANDARD".equalsIgnoreCase(tipoFiltro)) {
+            List<SchedaAllenamento> standardEntities = schedaRepository.findByIsStandardTrue();
+            List<SchedaAllenamentoDTO> standardDTOs = standardEntities.stream()
+                    .map(this::mapToDTO)
+                    .collect(Collectors.toList());
+            result.addAll(standardDTOs);
+        }
+
+        // 2. Recupero Schede PERSONALIZZATE
+        // Le mostriamo se il filtro è "ALL" o "PERSONALIZZATE" E se l'utente ha il piano adeguato (GOLD+)
+        boolean canAccessPersonalized = isGoldOrAbove(utente.getTipoPiano());
+
+        if (canAccessPersonalized && ("ALL".equalsIgnoreCase(tipoFiltro) || "PERSONALIZZATE".equalsIgnoreCase(tipoFiltro))) {
+            // Recupera le schede create dall'utente (o assegnate a lui)
+            List<SchedaAllenamento> personalizzateEntities = schedaRepository.findByUtenteId(utente.getId());
+            List<SchedaAllenamentoDTO> personalizzateDTOs = personalizzateEntities.stream()
+                    .map(this::mapToDTO)
+                    .collect(Collectors.toList());
+            result.addAll(personalizzateDTOs);
+        }
+
+        return result;
+    }
+    // Ottieni una scheda per ID (standard o personalizzata)
+    public SchedaAllenamentoDTO getSchedaById(Long schedaId, Utente utente) {
+        SchedaAllenamento scheda = schedaRepository.findById(schedaId)
+                .orElseThrow(() -> new NotFoundException("Scheda allenamento non trovata con id: " + schedaId));
+
+        // Se è una scheda personalizzata, verifica che l'utente abbia i permessi
+        if (!scheda.getIsStandard()) {
+            // Solo l'owner o un admin può vedere una scheda personalizzata
+            if (utente.getTipoUtente() != TipoUtente.ADMIN &&
+                    !scheda.getUtente().getId().equals(utente.getId())) {
+                throw new UnauthorizedException("Non sei autorizzato a visualizzare questa scheda.");
+            }
+        }
+
+        return mapToDTO(scheda);
+    }
+    // Ottieni tutte le schede (standard + personalizzate utente) filtrate per obiettivo
+    public List<SchedaAllenamentoDTO> getAllSchedeByObiettivo(Long utenteId, ObiettivoAllenamento obiettivo) {
+        List<SchedaAllenamentoDTO> result = new ArrayList<>();
+
+        // Schede standard con l'obiettivo specificato
+        List<SchedaAllenamento> schedeStandard = schedaRepository.findByIsStandardTrueAndObiettivo(obiettivo);
+        result.addAll(schedeStandard.stream().map(this::mapToDTO).collect(Collectors.toList()));
+
+        // Schede personalizzate dell'utente con l'obiettivo specificato
+        List<SchedaAllenamento> schedePersonali = schedaRepository.findByUtenteIdAndObiettivo(utenteId, obiettivo);
+        result.addAll(schedePersonali.stream().map(this::mapToDTO).collect(Collectors.toList()));
+
+        return result;
+    }
+
+    // Helper per verificare i permessi del piano (Gold o superiore)
+    private boolean isGoldOrAbove(giuseppeperna.GearForFit.entities.Utente.TipoPiano piano) {
+        return piano == giuseppeperna.GearForFit.entities.Utente.TipoPiano.GOLD ||
+                piano == giuseppeperna.GearForFit.entities.Utente.TipoPiano.PREMIUM ||
+                piano == giuseppeperna.GearForFit.entities.Utente.TipoPiano.ADMIN;
+    }
     @Transactional
     public SchedaAllenamentoDTO setSchedaAttiva(Long schedaId, Utente utente) {
         // 1. Trova la scheda da attivare, assicurandoti che sia dell'utente corretto e che sia personalizzata

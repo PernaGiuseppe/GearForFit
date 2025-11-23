@@ -1,23 +1,36 @@
-import { useNavigate } from 'react-router-dom'
+// src/components/Home/ErrorPage.tsx
+
+import { Link } from 'react-router-dom'
+import '../../css/errorpage.css'
 
 export default function ErrorPage() {
-  const navigate = useNavigate()
-
   return (
-    <div
-      className="d-flex align-items-center justify-content-center"
-      style={{ height: '70vh', background: '#f8f9fa' }}
-    >
-      <div className="text-center">
-        <h1 className="display-5">Ops — qualcosa è andato storto</h1>
-        <p className="lead">
-          La pagina che stai cercando non è disponibile in questo momento.
-        </p>
-        <div>
-          <button className="btn btn-primary" onClick={() => navigate('/')}>
-            Torna alla homepage
-          </button>
+    <div className="error-page">
+      <div className="error-content">
+        <div className="error-numbers">
+          <span className="number-4 blue">4</span>
+          <div className="ghost-container">
+            <div className="ghost">
+              <div className="ghost-body"></div>
+              <div className="ghost-eyes">
+                <div className="eye"></div>
+                <div className="eye"></div>
+              </div>
+              <div className="ghost-tail">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+            </div>
+          </div>
+          <span className="number-4 green">4</span>
         </div>
+
+        <h1 className="error-title">Ooops, looks like a ghost!</h1>
+        <Link to="/" className="btn btn-primary">
+          Torna alla homepage
+        </Link>
       </div>
     </div>
   )
