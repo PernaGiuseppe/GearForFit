@@ -6,5 +6,5 @@ public record PastoStandardRequestDTO(
         String nomePasto,
         int ordine,
         GiornoSettimana giornoSettimana,
-        List<DietaStandardAlimentoDTO> alimenti
+        List<AlimentoPastoRequestDTO> alimenti
 ) {}

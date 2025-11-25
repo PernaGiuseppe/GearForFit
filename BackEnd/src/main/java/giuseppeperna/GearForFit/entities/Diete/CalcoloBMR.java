@@ -51,12 +51,4 @@ public class CalcoloBMR {
 
     @Column(nullable = false)
     private Double fabbisognoCaloricoGiornaliero;
-
-    public enum Sesso {
-        M, F
-    }
-
-    public enum LivelloAttivita {
-        SEDENTARIO, LEGGERO, MODERATO, INTENSO
-    }
 }

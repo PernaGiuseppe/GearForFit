@@ -1,11 +1,6 @@
 package giuseppeperna.GearForFit.controllers;
 
 import giuseppeperna.GearForFit.entities.Alimenti.Alimento;
-import giuseppeperna.GearForFit.entities.Alimenti.Carne;
-import giuseppeperna.GearForFit.entities.Diete.DietaStandard;
-import giuseppeperna.GearForFit.entities.Diete.TipoDieta;
-import giuseppeperna.GearForFit.entities.Utente.QeA;
-import giuseppeperna.GearForFit.payloads.SchedaAllenamentoRequestDTO;
 import giuseppeperna.GearForFit.entities.SchedePalestra.*;
 import giuseppeperna.GearForFit.entities.Utente.TipoPiano;
 import giuseppeperna.GearForFit.entities.Utente.Utente;
@@ -15,6 +10,7 @@ import giuseppeperna.GearForFit.services.*;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
@@ -92,39 +88,69 @@ public class AdminController {
 
 // ========== GESTIONE DIETE ==========
 
-    @PostMapping("/diete/standard")
-    @ResponseStatus(HttpStatus.CREATED)
-    public DietaStandardDTO creaDietaStandard(@RequestBody @Valid DietaStandardRequestDTO body) {
-        return dietaService.creaDietaStandard(body);
+    // Admin visualizza TUTTE le diete (standard + custom di tutti gli utenti)
+
+    @GetMapping("/diete/all")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<List<DietaDTO>> adminGetAllDiete() {
+        List<DietaDTO> diete = dietaService.getAllDiete();
+        return ResponseEntity.ok(diete);
     }
 
-    @PutMapping("/diete/standard/{id}")
-    public DietaStandardDTO aggiornaDietaStandard(
+    //Admin crea una nuova dieta standard
+
+    @PostMapping("/diete")
+    public ResponseEntity<DietaDTO> creaaDietaStandard(
+            @RequestBody DietaRequestDTO request,
+            @AuthenticationPrincipal Utente utente
+    ) {
+        // Verificare che l'utente sia ADMIN se necessario
+        DietaDTO dietaDTO = dietaService.creaaDietaStandard(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(dietaDTO);
+    }
+
+    //Admin modifica una dieta standard
+
+    @PutMapping("/diete/{id}")
+    public ResponseEntity<DietaDTO> modificaDietaStandard(
             @PathVariable Long id,
-            @RequestBody @Valid DietaStandardRequestDTO body) {
-        return dietaService.aggiornaDietaStandard(id, body);
+            @RequestBody DietaRequestDTO request,
+            @AuthenticationPrincipal Utente utente
+    ) {
+        // Verificare che l'utente sia ADMIN se necessario
+        DietaDTO dietaDTO = dietaService.modificaDietaStandard(id, request);
+        return ResponseEntity.ok(dietaDTO);
     }
 
-    @GetMapping("/diete/personalizzate")
-    public List<DietaUtenteDTO> adminGetAllDieteAssegnate() {
-        return dietaService.adminGetTutteDieteAssegnate();
-    }
 
-    @GetMapping("/diete/personalizzate/{dietaUtenteId}")
-    public DietaUtenteDTO adminGetDietaAssegnataById(@PathVariable Long dietaUtenteId) {
-        return dietaService.adminGetDietaAssegnataById(dietaUtenteId);
+    // Admin visualizza qualsiasi dieta (standard o custom) per ID
+
+    @GetMapping("/diete/{dietaId}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<DietaDTO> adminGetDietaById(
+            @PathVariable Long dietaId
+    ) {
+        DietaDTO dieta = dietaService.adminGetDietaById(dietaId);
+        return ResponseEntity.ok(dieta);
     }
-    @PutMapping("/diete/utente/{utenteId}/{dietaUtenteId}")
-    public DietaUtenteDTO adminAggiornaDietaUtente(
-            @PathVariable Long utenteId,
-            @PathVariable Long dietaUtenteId,
-            @RequestBody @Valid DietaStandardRequestDTO body) {
-        return dietaService.adminModificaDietaUtente(utenteId, dietaUtenteId, body);
+    // Admin visualizza tutte le diete custom di uno specifico utente
+
+    @GetMapping("diete/custom/utente/{utenteId}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<List<DietaDTO>> adminGetDieteCustomByUtente(
+            @PathVariable Long utenteId
+    ) {
+        List<DietaDTO> diete = dietaService.getDieteCustomByUtente(utenteId);
+        return ResponseEntity.ok(diete);
     }
     @DeleteMapping("/diete/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void eliminaDieta(@PathVariable Long id) {
+    public ResponseEntity<Void> eliminaDieta(
+            @PathVariable Long id,
+            @AuthenticationPrincipal Utente utente
+    ) {
+        // Verificare che l'utente sia ADMIN se necessario
         dietaService.eliminaDieta(id);
+        return ResponseEntity.noContent().build();
     }
 
     // ========== GESTIONE UTENTI ==========

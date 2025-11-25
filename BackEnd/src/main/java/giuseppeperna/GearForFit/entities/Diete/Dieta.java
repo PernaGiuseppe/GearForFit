@@ -1,4 +1,5 @@
 package giuseppeperna.GearForFit.entities.Diete;
+import giuseppeperna.GearForFit.entities.Utente.Utente;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -6,21 +7,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "dieta_standard")
+@Table(name = "diete")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class DietaStandard {
+public class Dieta {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private TipoDieta tipoDieta;
 
     @Column(nullable = false)
     private String nome;
@@ -32,6 +29,20 @@ public class DietaStandard {
     @Column(nullable = false)
     private double calorieTotali = 0.0;
 
-    @OneToMany(mappedBy = "dietaStandard", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private TipoDieta tipoDieta;
+
+    @Column(name = "is_standard")
+    private Boolean isStandard;
+
+    @ManyToOne
+    @JoinColumn(name = "utente_id", nullable = true)
+    private Utente utente;
+
+    @Column(name = "is_attiva")
+    private Boolean isAttiva;
+
+    @OneToMany(mappedBy = "dieta", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PastoStandard> pasti = new ArrayList<>();
 }
