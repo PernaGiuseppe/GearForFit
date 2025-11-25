@@ -6,4 +6,3 @@ public enum LivelloAttivita {
     MODERATO,
     INTENSO
 }
-

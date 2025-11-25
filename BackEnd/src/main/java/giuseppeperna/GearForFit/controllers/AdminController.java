@@ -90,7 +90,7 @@ public class AdminController {
         alimentoService.deleteAlimento(id);
     }
 
-// ========== GESTIONE DIETE STANDARD ==========
+// ========== GESTIONE DIETE ==========
 
     @PostMapping("/diete/standard")
     @ResponseStatus(HttpStatus.CREATED)

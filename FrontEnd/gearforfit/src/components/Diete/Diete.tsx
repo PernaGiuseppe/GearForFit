@@ -38,7 +38,6 @@ export default function Diete() {
 
   useEffect(() => {
     if (!user) return
-
     setLoading(true)
     setError(null)
 
@@ -46,11 +45,8 @@ export default function Diete() {
       try {
         let result: DietaDTO[] = []
 
-        // LOGICA AGGIORNATA: Gestisce i filtri combinati
         if (filter === 'ALL') {
-          // Se "Tutte" e un tipo specifico è selezionato
           if (tipoDietaFilter !== 'ALL') {
-            // Fetch diete standard filtrate per tipo
             const resStandard = await fetch(
               `${API_BASE_URL}/diete/standard/tipo?tipoDieta=${tipoDietaFilter}`,
               { headers: getAuthHeader() }
@@ -60,7 +56,6 @@ export default function Diete() {
             const standard = await resStandard.json()
             result.push(...standard)
 
-            // Fetch diete personalizzate filtrate per tipo (se accessibili)
             if (canViewPersonalized) {
               const resPersonal = await fetch(
                 `${API_BASE_URL}/diete/me/dieta/tipo/${tipoDietaFilter}`,
@@ -72,7 +67,6 @@ export default function Diete() {
               }
             }
           } else {
-            // Fetch tutte senza filtro tipo
             const res = await fetch(`${API_BASE_URL}/diete?filtro=ALL`, {
               headers: getAuthHeader(),
             })
@@ -80,22 +74,18 @@ export default function Diete() {
             result = await res.json()
           }
         } else if (filter === 'STANDARD') {
-          // Diete standard con o senza filtro tipo
           const url =
             tipoDietaFilter === 'ALL'
               ? `${API_BASE_URL}/diete/standard`
               : `${API_BASE_URL}/diete/standard/tipo?tipoDieta=${tipoDietaFilter}`
-
           const res = await fetch(url, { headers: getAuthHeader() })
           if (!res.ok) throw new Error('Errore caricamento diete standard')
           result = await res.json()
         } else if (filter === 'PERSONALIZZATE') {
-          // Diete personalizzate con o senza filtro tipo
           const url =
             tipoDietaFilter === 'ALL'
               ? `${API_BASE_URL}/diete/me/dieta`
               : `${API_BASE_URL}/diete/me/dieta/tipo/${tipoDietaFilter}`
-
           const res = await fetch(url, { headers: getAuthHeader() })
           if (!res.ok)
             throw new Error('Errore caricamento diete personalizzate')
@@ -115,7 +105,6 @@ export default function Diete() {
     fetchDiete()
   }, [user, filter, tipoDietaFilter, canViewPersonalized])
 
-  // Reset del filtro tipo dieta quando cambia il filtro principale
   useEffect(() => {
     setTipoDietaFilter('ALL')
   }, [filter])
@@ -127,14 +116,10 @@ export default function Diete() {
       <h1>Catalogo Diete</h1>
       <p>Piano attivo: {user.tipoPiano}</p>
 
-      <div className="row mb-3">
-        {/* Primo dropdown: Tutte/Standard/Personalizzate */}
+      <div className="row mb-4">
         <div className="col-md-6">
-          <label htmlFor="filter-select" className="form-label">
-            Filtra per categoria:
-          </label>
+          <label>Filtra per categoria:</label>
           <select
-            id="filter-select"
             className="form-select"
             value={filter}
             onChange={(e) => setFilter(e.target.value as FilterType)}
@@ -148,13 +133,9 @@ export default function Diete() {
           </select>
         </div>
 
-        {/* Secondo dropdown: Filtro per obiettivo */}
         <div className="col-md-6">
-          <label htmlFor="tipo-dieta-filter" className="form-label">
-            Filtra per obiettivo:
-          </label>
+          <label>Filtra per obiettivo:</label>
           <select
-            id="tipo-dieta-filter"
             className="form-select"
             value={tipoDietaFilter}
             onChange={(e) =>
@@ -171,9 +152,13 @@ export default function Diete() {
       </div>
 
       {error && <div className="alert alert-danger">{error}</div>}
-      {loading && <p>Caricamento diete...</p>}
+
+      {loading && <div>Caricamento diete...</div>}
+
       {!loading && !error && diete.length === 0 && (
-        <p>Nessuna dieta trovata per i filtri selezionati.</p>
+        <div className="alert alert-info">
+          Nessuna dieta trovata per i filtri selezionati.
+        </div>
       )}
 
       {!loading && diete.length > 0 && (
@@ -186,35 +171,41 @@ export default function Diete() {
               (dieta.tipoDietaObiettivo
                 ? `Obiettivo: ${dieta.tipoDietaObiettivo}`
                 : '')
-
             const uniqueKey = dieta.nomeDietaTemplate
               ? `personalizzata-${dieta.id}`
               : `standard-${dieta.id}`
 
+            const isStandard = !dieta.nomeDietaTemplate
+            const dietaType = isStandard ? 'standard' : 'custom'
+
             return (
               <div key={uniqueKey} className="col-md-4 mb-3">
-                <div className="card h-100">
+                <div className="card">
                   <div className="card-body">
                     <h5 className="card-title">{nomeVisualizzato}</h5>
+
                     {dieta.nomeDietaTemplate ? (
-                      <span className="badge bg-success mb-2">Assegnata</span>
+                      <span className="badge bg-success me-2">Assegnata</span>
                     ) : (
-                      <span className="badge bg-primary mb-2">Standard</span>
+                      <span className="badge bg-primary me-2">Standard</span>
                     )}
+
                     {dieta.tipoDieta && (
-                      <span className="badge bg-info mb-2 ms-2">
+                      <span className="badge bg-info me-2">
                         {dieta.tipoDieta}
                       </span>
                     )}
+
                     {dieta.tipoDietaObiettivo && (
-                      <span className="badge bg-info mb-2 ms-2">
+                      <span className="badge bg-warning">
                         {dieta.tipoDietaObiettivo}
                       </span>
                     )}
-                    <p className="card-text">{descVisualizzata}</p>
+
+                    <p className="card-text mt-2">{descVisualizzata}</p>
                     <Link
-                      to={`/diete/${dieta.id}`}
-                      className="btn btn-outline-primary"
+                      to={`/diete/dettaglio/${dieta.id}?type=${dietaType}`}
+                      className="btn btn-primary"
                     >
                       Dettagli
                     </Link>

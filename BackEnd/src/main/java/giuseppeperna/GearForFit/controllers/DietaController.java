@@ -86,7 +86,15 @@ public class DietaController {
         Utente utenteLoggato = (Utente) authentication.getPrincipal();
         return dietaService.salvaCalcoloBMR(utenteLoggato.getId(), body);
     }
-
+    @GetMapping("/me/dieta/genera")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAnyAuthority('PIANO_PREMIUM', 'PIANO_GOLD', 'PIANO_SILVER')")
+    public DietaStandardDTO generaMiaDietaPreview(
+            @RequestParam TipoDieta tipoDieta,
+            Authentication authentication) {
+        Utente utenteLoggato = (Utente) authentication.getPrincipal();
+        CalcoloBMR bmr = calcoloBMRService.getCalcoloBMRByUtente(utenteLoggato.getId());
+        return dietaService.generaDietaStandardPersonalizzata(bmr, tipoDieta);
+    }
     @PostMapping("/me/dieta")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAuthority('ADMIN') or hasAnyAuthority('PIANO_PREMIUM', 'PIANO_GOLD', 'PIANO_SILVER')")
@@ -97,15 +105,7 @@ public class DietaController {
         return dietaService.assegnaDietaAdUtente(utenteLoggato, body.tipoDieta());
     }
 
-    @GetMapping("/me/dieta/genera")
-    @PreAuthorize("hasAuthority('ADMIN') or hasAnyAuthority('PIANO_PREMIUM', 'PIANO_GOLD', 'PIANO_SILVER')")
-    public DietaStandardDTO generaMiaDietaPreview(
-            @RequestParam TipoDieta tipoDieta,
-            Authentication authentication) {
-        Utente utenteLoggato = (Utente) authentication.getPrincipal();
-        CalcoloBMR bmr = calcoloBMRService.getCalcoloBMRByUtente(utenteLoggato.getId());
-        return dietaService.generaDietaStandardPersonalizzata(bmr, tipoDieta);
-    }
+
     @GetMapping("/me/dieta")
     @PreAuthorize("hasAuthority('ADMIN') or hasAnyAuthority('PIANO_PREMIUM', 'PIANO_GOLD', 'PIANO_SILVER')")
     public List<DietaUtenteDTO> getMieDieteAssegnate(Authentication authentication) {

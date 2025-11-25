@@ -6,9 +6,8 @@ import { API_BASE_URL, getAuthHeader } from '../../utils/apiConfig'
 
 type GiornoAllenamento = {
   id: number
-  numeroGiorno: number
-  nomeGiorno?: string
-  esercizi: EsercizioScheda[]
+  giornoSettimana: string // era "nomeGiorno"
+  serie: EsercizioScheda[] // era "esercizi"
 }
 
 type EsercizioScheda = {
@@ -34,7 +33,14 @@ type SchedaDettaglioDTO = {
   giorni: GiornoAllenamento[]
   utenteId?: number
 }
-
+type EsercizioScheda = {
+  id: number
+  esercizioId: number
+  nomeEsercizio: string
+  numeroSerie: number
+  numeroRipetizioni: number
+  tempoRecuperoSecondi: number
+}
 export default function SchedaDettaglio() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
@@ -113,57 +119,45 @@ export default function SchedaDettaglio() {
       <h3 className="mb-3">Programma di Allenamento</h3>
 
       {scheda.giorni && scheda.giorni.length > 0 ? (
-        scheda.giorni
-          .sort((a, b) => a.numeroGiorno - b.numeroGiorno)
-          .map((giorno) => (
-            <div key={giorno.id} className="card mb-3">
-              <div className="card-header bg-primary text-white">
-                <h5 className="mb-0">
-                  Giorno {giorno.numeroGiorno}
-                  {giorno.nomeGiorno && ` - ${giorno.nomeGiorno}`}
-                </h5>
-              </div>
-              <div className="card-body">
-                {giorno.esercizi && giorno.esercizi.length > 0 ? (
-                  <div className="table-responsive">
-                    <table className="table table-hover">
-                      <thead>
-                        <tr>
-                          <th>Esercizio</th>
-                          <th>Serie</th>
-                          <th>Ripetizioni</th>
-                          <th>Recupero (sec)</th>
-                          <th>Note</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {giorno.esercizi.map((es) => (
-                          <tr key={es.id}>
-                            <td>
-                              <strong>{es.esercizio.nome}</strong>
-                              {es.esercizio.descrizione && (
-                                <div className="text-muted small">
-                                  {es.esercizio.descrizione}
-                                </div>
-                              )}
-                            </td>
-                            <td>{es.serie}</td>
-                            <td>{es.ripetizioni}</td>
-                            <td>{es.recupero}</td>
-                            <td>{es.note || '-'}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                ) : (
-                  <p className="text-muted">
-                    Nessun esercizio per questo giorno.
-                  </p>
-                )}
-              </div>
+        scheda.giorni.map((giorno) => (
+          <div key={giorno.id} className="card mb-3">
+            <div className="card-header bg-primary text-white">
+              <h5 className="mb-0">{giorno.giornoSettimana}</h5>
             </div>
-          ))
+            <div className="card-body">
+              {giorno.serie && giorno.serie.length > 0 ? (
+                <div className="table-responsive">
+                  <table className="table table-hover">
+                    <thead>
+                      <tr>
+                        <th>Esercizio</th>
+                        <th>Serie</th>
+                        <th>Ripetizioni</th>
+                        <th>Recupero (sec)</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {giorno.serie.map((es) => (
+                        <tr key={es.id}>
+                          <td>
+                            <strong>{es.nomeEsercizio}</strong>
+                          </td>
+                          <td>{es.numeroSerie}</td>
+                          <td>{es.numeroRipetizioni}</td>
+                          <td>{es.tempoRecuperoSecondi}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ) : (
+                <p className="text-muted">
+                  Nessun esercizio per questo giorno.
+                </p>
+              )}
+            </div>
+          </div>
+        ))
       ) : (
         <div className="alert alert-info">
           Questa scheda non ha ancora giorni programmati.

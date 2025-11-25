@@ -63,29 +63,29 @@ public class DietaService {
         return dietaStandardRepository.findById(id).map(this::convertToDTO);
     }
 
-  /*  public DietaStandardDTO getDietaStandardByTipo(TipoDieta tipoDieta) {
-        // 1. findByTipoDieta ora restituisce una List<DietaStandard>
+    /*  public DietaStandardDTO getDietaStandardByTipo(TipoDieta tipoDieta) {
+          // 1. findByTipoDieta ora restituisce una List<DietaStandard>
+          List<DietaStandard> dieteTrovate = dietaStandardRepository.findByTipoDieta(tipoDieta);
+
+          // 2. Controlla se la lista è vuota
+          if (dieteTrovate.isEmpty()) {
+              throw new RuntimeException("Nessuna dieta standard trovata per il tipo: " + tipoDieta);
+          }
+
+          // 3. Prendi il primo elemento della lista e convertilo in DTO
+          DietaStandard dietaDaRestituire = dieteTrovate.get(0);
+
+          return convertToDTO(dietaDaRestituire);
+      }*/
+    // Ottieni tutte le diete standard filtrate per TipoDieta
+    public List<DietaStandardDTO> getDieteStandardByTipo(TipoDieta tipoDieta) {
         List<DietaStandard> dieteTrovate = dietaStandardRepository.findByTipoDieta(tipoDieta);
 
-        // 2. Controlla se la lista è vuota
-        if (dieteTrovate.isEmpty()) {
-            throw new RuntimeException("Nessuna dieta standard trovata per il tipo: " + tipoDieta);
-        }
-
-        // 3. Prendi il primo elemento della lista e convertilo in DTO
-        DietaStandard dietaDaRestituire = dieteTrovate.get(0);
-
-        return convertToDTO(dietaDaRestituire);
-    }*/
-   // Ottieni tutte le diete standard filtrate per TipoDieta
-   public List<DietaStandardDTO> getDieteStandardByTipo(TipoDieta tipoDieta) {
-       List<DietaStandard> dieteTrovate = dietaStandardRepository.findByTipoDieta(tipoDieta);
-
-       // Converti tutte le diete trovate in DTO
-       return dieteTrovate.stream()
-               .map(this::convertToDTO)
-               .collect(Collectors.toList());
-   }
+        // Converti tutte le diete trovate in DTO
+        return dieteTrovate.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
 
     public List<Object> getAllDieteFiltered(Utente utente, String tipoFiltro) {
         List<Object> result = new ArrayList<>();
@@ -393,7 +393,7 @@ public class DietaService {
         return dietaSuggeritaDTO;
     }
 
-   //  Ritorna un elenco (DTO) di tutte le diete assegnate a un utente.
+    //  Ritorna un elenco (DTO) di tutte le diete assegnate a un utente.
 
     public List<DietaUtenteDTO> getDieteAssegnate(Utente utente) {
         return dietaUtenteRepository.findByUtenteId(utente.getId()).stream()
@@ -496,7 +496,7 @@ public class DietaService {
         // 4. Restituisce il DTO dell'assegnazione aggiornata.
         return convertDietaUtenteToDTO(dietaUtente);
     }
-   // Elimina un'assegnazione di dieta.
+    // Elimina un'assegnazione di dieta.
 
     public void eliminaDietaAssegnata(Long dietaUtenteId, Utente utente) {
         DietaUtente dietaDaEliminare = dietaUtenteRepository.findByIdAndUtenteId(dietaUtenteId, utente.getId())
@@ -536,6 +536,7 @@ public class DietaService {
         return new PastoStandardDTO(
                 pasto.getNomePasto(),
                 pasto.getOrdine(),
+                pasto.getGiornoSettimana(),
                 pasto.getAlimenti().stream()
                         .map(dsa -> convertAlimentoToDTOscalato(dsa, fattoreScala)) // Usa il metodo scalato
                         .collect(Collectors.toList())
@@ -624,6 +625,7 @@ public class DietaService {
         return new PastoStandardDTO(
                 pasto.getNomePasto(),
                 pasto.getOrdine(),
+                pasto.getGiornoSettimana(),
                 pasto.getAlimenti().stream().map(this::convertAlimentoToDTO).collect(Collectors.toList())
         );
     }

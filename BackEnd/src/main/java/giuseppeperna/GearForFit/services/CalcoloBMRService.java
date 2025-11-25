@@ -40,9 +40,9 @@ public class CalcoloBMRService {
 
     public Double adattaPerObiettivo(Double tdee, TipoDieta tipoDieta) {
         return switch (tipoDieta) {
-            case IPOCALORICA -> tdee - 300;
-            case IPERCALORICA -> tdee + 300;
+            case IPOCALORICA -> tdee * 0.85;
             case NORMOCALORICA -> tdee;
+            case IPERCALORICA -> tdee * 1.15;
         };
     }
     public CalcoloBMR getCalcoloBMRByUtente(Long utenteId) {

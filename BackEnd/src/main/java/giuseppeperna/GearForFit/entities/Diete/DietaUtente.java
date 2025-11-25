@@ -40,6 +40,6 @@ public class DietaUtente {
         this.dietaStandard = dietaStandard;
         this.tipoDietaObiettivo = tipoDietaObiettivo; // Salva l'obiettivo
         this.dataAssegnazione = LocalDate.now();
-        this.attiva = true; // La nuova dieta è sempre quella attiva
+        this.attiva = true; // La nuova dieta Ã¨ sempre quella attiva
     }
 }

@@ -22,4 +22,8 @@ public interface DietaUtenteRepository extends JpaRepository<DietaUtente, Long> 
 
     List<DietaUtente> findByUtenteIdAndTipoDietaObiettivo(Long utenteId, TipoDieta tipoDietaObiettivo);
 
+    boolean existsByDietaStandardIdAndIdNot(Long dietaStandardId, Long dietaUtenteId);
+
+    long countByDietaStandardId(Long dietaStandardId);
+
 }

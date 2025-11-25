@@ -16,4 +16,6 @@ public interface EsercizioRepository extends JpaRepository<Esercizio, Long> {
     List<Esercizio> findByIsCompostoTrue();
 
     List<Esercizio> findByNomeContainingIgnoreCase(String nome);
+
+
 }

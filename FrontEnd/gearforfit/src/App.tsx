@@ -44,7 +44,7 @@ export default function App() {
             }
           />
           <Route
-            path="/diete/:id"
+            path="/diete/dettaglio/:id"
             element={
               <ProtectedRoute>
                 <DietaDettaglio />

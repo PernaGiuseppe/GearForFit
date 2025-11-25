@@ -24,6 +24,10 @@ public class PastoStandard {
 
     private Integer ordine; // Ordine del pasto nella giornata
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "giorno_settimana", nullable = false)
+    private GiornoSettimana giornoSettimana;
+
     @ManyToOne
     @JoinColumn(name = "dieta_standard_id", nullable = false)
     @JsonIgnore
