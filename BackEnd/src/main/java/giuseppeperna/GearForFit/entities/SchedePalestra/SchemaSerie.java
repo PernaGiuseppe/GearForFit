@@ -22,10 +22,6 @@ public class SchemaSerie {
     @Column(nullable = false, unique = true)
     private String nome;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private TipoAllenamento tipoAllenamento;
-
     @Column(nullable = false)
     private Integer serie;
 

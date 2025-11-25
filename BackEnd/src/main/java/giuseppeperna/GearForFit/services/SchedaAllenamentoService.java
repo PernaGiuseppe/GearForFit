@@ -38,7 +38,6 @@ public class SchedaAllenamentoService {
         scheda.setNome(body.nome());
         scheda.setDescrizione(body.descrizione());
         scheda.setObiettivo(body.obiettivo());
-        scheda.setTipoAllenamento(body.tipoAllenamento());
         scheda.setDurataSettimane(body.durataSettimane());
 
         scheda.setIsStandard(true);
@@ -99,7 +98,6 @@ public class SchedaAllenamentoService {
         scheda.setNome(body.nome());
         scheda.setDescrizione(body.descrizione());
         scheda.setObiettivo(body.obiettivo());
-        scheda.setTipoAllenamento(body.tipoAllenamento());
         scheda.setDurataSettimane(body.durataSettimane());
 
         scheda.setIsStandard(true);
@@ -182,7 +180,6 @@ public class SchedaAllenamentoService {
         scheda.setNome(body.nome());
         scheda.setDescrizione(body.descrizione());
         scheda.setObiettivo(body.obiettivo());
-        scheda.setTipoAllenamento(body.tipoAllenamento());
         scheda.setDurataSettimane(body.durataSettimane());
 
         // Pulisce i giorni e le serie esistenti
@@ -236,7 +233,6 @@ public class SchedaAllenamentoService {
         scheda.setNome(body.nome());
         scheda.setDescrizione(body.descrizione());
         scheda.setObiettivo(body.obiettivo());
-        scheda.setTipoAllenamento(body.tipoAllenamento());
         scheda.setDurataSettimane(body.durataSettimane());
         scheda.setIsStandard(false);
         scheda.setUtente(utente);
@@ -295,7 +291,6 @@ public class SchedaAllenamentoService {
         scheda.setNome(body.nome());
         scheda.setDescrizione(body.descrizione());
         scheda.setObiettivo(body.obiettivo());
-        scheda.setTipoAllenamento(body.tipoAllenamento());
         scheda.setDurataSettimane(body.durataSettimane());
 
         // Svuota i giorni esistenti (grazie a orphanRemoval=true verranno cancellati)
@@ -492,7 +487,6 @@ public class SchedaAllenamentoService {
               scheda.getNome(),
               scheda.getDescrizione(),
               scheda.getObiettivo(),
-              scheda.getTipoAllenamento(),
               scheda.getDurataSettimane(),
               scheda.getIsStandard(),
               scheda.getUtente() != null ? scheda.getUtente().getId() : null,
@@ -508,7 +502,6 @@ public class SchedaAllenamentoService {
                 scheda.getNome(),
                 scheda.getDescrizione(),
                 scheda.getObiettivo(),
-                scheda.getTipoAllenamento(),
                 scheda.getDurataSettimane(),
                 scheda.getIsStandard(),
                 scheda.getUtente() != null ? scheda.getUtente().getId() : null,

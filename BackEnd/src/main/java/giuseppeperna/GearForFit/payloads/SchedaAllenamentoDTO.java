@@ -1,7 +1,7 @@
 package giuseppeperna.GearForFit.payloads;
 
 import giuseppeperna.GearForFit.entities.SchedePalestra.ObiettivoAllenamento;
-import giuseppeperna.GearForFit.entities.SchedePalestra.TipoAllenamento;
+
 import java.util.List;
 
 public record SchedaAllenamentoDTO(
@@ -9,8 +9,6 @@ public record SchedaAllenamentoDTO(
         String nome,
         String descrizione,
         ObiettivoAllenamento obiettivo,
-        // enum da togliere
-        TipoAllenamento tipoAllenamento,
         Integer durataSettimane,
         Boolean isStandard,
         Long utenteId,

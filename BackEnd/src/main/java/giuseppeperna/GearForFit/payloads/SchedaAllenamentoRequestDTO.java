@@ -1,7 +1,6 @@
 package giuseppeperna.GearForFit.payloads;
 
 import giuseppeperna.GearForFit.entities.SchedePalestra.ObiettivoAllenamento;
-import giuseppeperna.GearForFit.entities.SchedePalestra.TipoAllenamento;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -14,8 +13,6 @@ public record SchedaAllenamentoRequestDTO(
 
         @NotNull(message = "L'obiettivo è obbligatorio")
         ObiettivoAllenamento obiettivo,
-// ernum da togliere
-        TipoAllenamento tipoAllenamento,
 
         Integer frequenzaSettimanale,
 
