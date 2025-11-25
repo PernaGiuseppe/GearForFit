@@ -1,5 +1,6 @@
 package giuseppeperna.GearForFit.controllers;
 
+import giuseppeperna.GearForFit.entities.SchedePalestra.Esercizio;
 import giuseppeperna.GearForFit.entities.SchedePalestra.ObiettivoAllenamento;
 import giuseppeperna.GearForFit.entities.SchedePalestra.SchedaAllenamento;
 import giuseppeperna.GearForFit.entities.Utente.Utente;
@@ -10,9 +11,12 @@ import giuseppeperna.GearForFit.payloads.SchedaAllenamentoRequestDTO;
 import giuseppeperna.GearForFit.entities.SchedePalestra.ObiettivoAllenamento;
 import giuseppeperna.GearForFit.entities.Utente.TipoUtente;
 import giuseppeperna.GearForFit.payloads.SchedaPersonalizzataRequestDTO;
+import giuseppeperna.GearForFit.repositories.EsercizioRepository;
 import giuseppeperna.GearForFit.repositories.SchedaAllenamentoRepository;
+import giuseppeperna.GearForFit.services.EsercizioService;
 import giuseppeperna.GearForFit.services.SchedaAllenamentoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -32,8 +36,18 @@ public class SchedaAllenamentoController {
     private SchedaAllenamentoService schedaService;
     @Autowired
     private SchedaAllenamentoRepository schedaRepository;
+    @Autowired
+    private EsercizioRepository esercizioRepository;
 
 
+    // ========== SCHEDE STANDARD (ADMIN) ==========
+
+    //Utente da GOLD in su ottiene tutti gli esercizi per creare schede custom
+    @GetMapping("/esercizi")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAnyAuthority('PIANO_PREMIUM', 'PIANO_GOLD')")
+    public List<Esercizio> getAllEsercizi() {
+        return esercizioRepository.findAll(Sort.by(Sort.Direction.ASC, "id"));
+    }
     // ========== SCHEDE STANDARD (ADMIN) ==========
 
     // Ottieni tutte le schede standard

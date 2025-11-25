@@ -10,6 +10,8 @@ import giuseppeperna.GearForFit.repositories.PastoStandardRepository;
 import giuseppeperna.GearForFit.repositories.DietaStandardAlimentoRepository;
 import giuseppeperna.GearForFit.repositories.AlimentoRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,11 +23,16 @@ import java.util.stream.Collectors;
 @Transactional
 public class DietaService {
 
-    private final DietaRepository dietaRepository;
-    private final PastoStandardRepository pastoStandardRepository;
-    private final DietaStandardAlimentoRepository dietaStandardAlimentoRepository;
-    private final AlimentoRepository alimentoRepository;
-    private final CalcoloBMRService calcoloBMRService;
+    @Autowired
+    private DietaRepository dietaRepository;
+    @Autowired
+    private PastoStandardRepository pastoStandardRepository;
+    @Autowired
+    private DietaStandardAlimentoRepository dietaStandardAlimentoRepository;
+    @Autowired
+    private AlimentoRepository alimentoRepository;
+    @Autowired
+    private CalcoloBMRService calcoloBMRService;
 
     // ===== ADMIN: CRUD DIETE STANDARD =====
 
@@ -197,7 +204,7 @@ public class DietaService {
 
     @Transactional(readOnly = true)
     public List<DietaDTO> getAllDiete() {
-        List<Dieta> diete = dietaRepository.findAll();
+        List<Dieta> diete = dietaRepository.findAll(Sort.by(Sort.Direction.ASC, "id"));
 
         if (diete.isEmpty()) {
             throw new NotFoundException("Nessuna dieta trovata nel sistema");

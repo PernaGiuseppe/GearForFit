@@ -2,6 +2,8 @@ package giuseppeperna.GearForFit.repositories;
 
 import giuseppeperna.GearForFit.entities.Diete.Dieta;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -11,10 +13,12 @@ import java.util.Optional;  // ← CORRETTO!
 public interface DietaRepository extends JpaRepository<Dieta, Long> {
 
     // Template standard
+    @Query("SELECT d FROM Dieta d WHERE d.isStandard = true ORDER BY d.id ASC")
     List<Dieta> findAllByIsStandardTrue();
 
     // Diete custom dell'utente
-    List<Dieta> findByUtenteIdAndIsStandardFalse(Long utenteId);
+    @Query("SELECT d FROM Dieta d WHERE d.utente.id = :utenteId AND d.isStandard = false ORDER BY d.id ASC")
+    List<Dieta> findByUtenteIdAndIsStandardFalse(@Param("utenteId") Long utenteId);
 
     // Verifica se attiva
     Optional<Dieta> findByIdAndUtenteIdAndIsAttivaTrueAndIsStandardFalse(Long id, Long utenteId);

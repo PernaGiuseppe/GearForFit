@@ -13,22 +13,24 @@ import org.springframework.data.repository.query.Param;
 @Repository
 public interface SchedaAllenamentoRepository extends JpaRepository<SchedaAllenamento, Long> {
 
-    List<SchedaAllenamento> findByObiettivo(ObiettivoAllenamento obiettivo);
+    @Query("SELECT s FROM SchedaAllenamento s WHERE s.obiettivo = :obiettivo ORDER BY s.id ASC")
+    List<SchedaAllenamento> findByObiettivo(@Param("obiettivo") ObiettivoAllenamento obiettivo);
 
-    // Schede standard (admin)
+    @Query("SELECT s FROM SchedaAllenamento s WHERE s.isStandard = true ORDER BY s.id ASC")
     List<SchedaAllenamento> findByIsStandardTrue();
 
-    List<SchedaAllenamento> findByIsStandardTrueAndObiettivo(ObiettivoAllenamento obiettivo);
+    @Query("SELECT s FROM SchedaAllenamento s WHERE s.isStandard = true AND s.obiettivo = :obiettivo ORDER BY s.id ASC")
+    List<SchedaAllenamento> findByIsStandardTrueAndObiettivo(@Param("obiettivo") ObiettivoAllenamento obiettivo);
 
+    @Query("SELECT s FROM SchedaAllenamento s WHERE s.utente.id = :utenteId ORDER BY s.id ASC")
+    List<SchedaAllenamento> findByUtenteId(@Param("utenteId") Long utenteId);
 
-    // Schede personalizzate (utente)
-    List<SchedaAllenamento> findByUtenteId(Long utenteId);
+    @Query("SELECT s FROM SchedaAllenamento s WHERE s.utente.id = :utenteId AND s.obiettivo = :obiettivo ORDER BY s.id ASC")
+    List<SchedaAllenamento> findByUtenteIdAndObiettivo(@Param("utenteId") Long utenteId, @Param("obiettivo") ObiettivoAllenamento obiettivo);
 
-    List<SchedaAllenamento> findByUtenteIdAndObiettivo(Long utenteId, ObiettivoAllenamento obiettivo);
-
-
-    @Query("SELECT s FROM SchedaAllenamento s WHERE s.isStandard = true OR s.utente.id = :utenteId")
+    @Query("SELECT s FROM SchedaAllenamento s WHERE s.isStandard = true OR s.utente.id = :utenteId ORDER BY s.id ASC")
     List<SchedaAllenamento> findSchedeVisibiliPerUtente(@Param("utenteId") Long utenteId);
+
 
     Optional<SchedaAllenamento> findByIdAndUtenteId(Long id, Long utenteId);
 

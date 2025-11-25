@@ -11,6 +11,7 @@ import giuseppeperna.GearForFit.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -150,7 +151,7 @@ public class SchedaAllenamentoService {
 
     // Metodo per l'admin per ottenere tutte le schede come lista
     public List<SchedaAllenamentoDTO> getAllSchedeAsList() {
-        List<SchedaAllenamento> schede = schedaRepository.findAll();
+        List<SchedaAllenamento> schede = schedaRepository.findAll(Sort.by(Sort.Direction.ASC, "id"));
         return schede.stream()
                 .map(this::mapToDTO)
                 .collect(Collectors.toList());
