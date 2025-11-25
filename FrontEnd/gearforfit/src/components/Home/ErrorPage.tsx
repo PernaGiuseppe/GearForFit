@@ -28,7 +28,7 @@ export default function ErrorPage() {
         </div>
 
         <h1 className="error-title">Ooops, looks like a ghost!</h1>
-        <Link to="/" className="btn btn-primary">
+        <Link to="/" className="btn btn-primary mt-2">
           Torna alla homepage
         </Link>
       </div>

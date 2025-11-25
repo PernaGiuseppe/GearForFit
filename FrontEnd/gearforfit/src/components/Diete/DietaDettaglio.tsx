@@ -27,12 +27,14 @@ type DietaDettaglioDTO = {
   descrizione?: string
   tipoDieta: string
   durataSettimane?: number
+  isStandard: boolean
   pasti: Pasto[]
 }
 
 export default function DietaDettaglio() {
   const { id } = useParams<{ id: string }>()
   const [searchParams] = useSearchParams()
+  // type può essere 'custom' o 'standard' passato dalla pagina precedente
   const type = searchParams.get('type')
   const user = useSelector((s: RootState) => s.auth.user)
 
@@ -46,9 +48,12 @@ export default function DietaDettaglio() {
     setLoading(true)
     setError(null)
 
+    // Logica aggiornata in base al nuovo DietaController:
+    // GET /diete/custom/{id} -> per diete utente
+    // GET /diete/standard/{id} -> per diete standard
     const endpoint =
       type === 'custom'
-        ? `${API_BASE_URL}/diete/me/dieta/${id}`
+        ? `${API_BASE_URL}/diete/custom/${id}`
         : `${API_BASE_URL}/diete/standard/${id}`
 
     fetch(endpoint, {
@@ -112,7 +117,8 @@ export default function DietaDettaglio() {
       <div className="card mb-4">
         <div className="card-body">
           <div className="mb-3">
-            {type === 'custom' ? (
+            {/* Controllo isStandard invece del vecchio check sul type */}
+            {!dieta.isStandard ? (
               <span className="badge bg-success me-2">Assegnata</span>
             ) : (
               <span className="badge bg-primary me-2">Standard</span>

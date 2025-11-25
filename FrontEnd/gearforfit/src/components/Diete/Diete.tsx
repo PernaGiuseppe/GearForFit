@@ -4,14 +4,14 @@ import { Link } from 'react-router-dom'
 import { RootState } from '../../app/store'
 import { API_BASE_URL, getAuthHeader } from '../../utils/apiConfig'
 
+// Aggiornato il DTO per rispecchiare il backend unificato
 type DietaDTO = {
   id: number
-  nome?: string
-  nomeDietaTemplate?: string
+  nome: string
   descrizione?: string
-  tipoDieta?: string
-  tipoDietaObiettivo?: string
-  isStandard?: boolean
+  tipoDieta: string // IPOCALORICA, NORMOCALORICA, ecc.
+  isStandard: boolean
+  isAttiva?: boolean
 }
 
 type FilterType = 'STANDARD' | 'PERSONALIZZATE' | 'ALL'
@@ -45,51 +45,52 @@ export default function Diete() {
       try {
         let result: DietaDTO[] = []
 
-        if (filter === 'ALL') {
-          if (tipoDietaFilter !== 'ALL') {
-            const resStandard = await fetch(
-              `${API_BASE_URL}/diete/standard/tipo?tipoDieta=${tipoDietaFilter}`,
-              { headers: getAuthHeader() }
-            )
-            if (!resStandard.ok)
-              throw new Error('Errore caricamento diete standard')
-            const standard = await resStandard.json()
-            result.push(...standard)
+        // Array di promesse per gestire le chiamate parallele se serve
+        const promises = []
 
-            if (canViewPersonalized) {
-              const resPersonal = await fetch(
-                `${API_BASE_URL}/diete/me/dieta/tipo/${tipoDietaFilter}`,
-                { headers: getAuthHeader() }
-              )
-              if (resPersonal.ok) {
-                const personal = await resPersonal.json()
-                result.push(...personal)
-              }
-            }
-          } else {
-            const res = await fetch(`${API_BASE_URL}/diete?filtro=ALL`, {
+        // 1. Logica per caricare DIETE STANDARD
+        if (filter === 'ALL' || filter === 'STANDARD') {
+          promises.push(
+            fetch(`${API_BASE_URL}/diete/standard`, {
               headers: getAuthHeader(),
+            }).then((res) => {
+              if (!res.ok) throw new Error('Errore caricamento diete standard')
+              return res.json()
             })
-            if (!res.ok) throw new Error('Errore caricamento diete')
-            result = await res.json()
+          )
+        }
+
+        // 2. Logica per caricare DIETE PERSONALIZZATE (CUSTOM)
+        // Solo se l'utente ha i permessi e il filtro lo richiede
+        if (
+          canViewPersonalized &&
+          (filter === 'ALL' || filter === 'PERSONALIZZATE')
+        ) {
+          promises.push(
+            fetch(`${API_BASE_URL}/diete/custom`, {
+              headers: getAuthHeader(),
+            }).then((res) => {
+              if (!res.ok)
+                throw new Error('Errore caricamento diete personalizzate')
+              return res.json()
+            })
+          )
+        }
+
+        // Eseguiamo le chiamate
+        const responses = await Promise.all(promises)
+
+        // Uniamo i risultati (standard + custom se presenti)
+        responses.forEach((data) => {
+          if (Array.isArray(data)) {
+            result = [...result, ...data]
           }
-        } else if (filter === 'STANDARD') {
-          const url =
-            tipoDietaFilter === 'ALL'
-              ? `${API_BASE_URL}/diete/standard`
-              : `${API_BASE_URL}/diete/standard/tipo?tipoDieta=${tipoDietaFilter}`
-          const res = await fetch(url, { headers: getAuthHeader() })
-          if (!res.ok) throw new Error('Errore caricamento diete standard')
-          result = await res.json()
-        } else if (filter === 'PERSONALIZZATE') {
-          const url =
-            tipoDietaFilter === 'ALL'
-              ? `${API_BASE_URL}/diete/me/dieta`
-              : `${API_BASE_URL}/diete/me/dieta/tipo/${tipoDietaFilter}`
-          const res = await fetch(url, { headers: getAuthHeader() })
-          if (!res.ok)
-            throw new Error('Errore caricamento diete personalizzate')
-          result = await res.json()
+        })
+
+        // 3. Filtraggio Lato Client (Client-side filtering)
+        // Il backend non espone endpoint di filtro per tipo, lo facciamo qui.
+        if (tipoDietaFilter !== 'ALL') {
+          result = result.filter((d) => d.tipoDieta === tipoDietaFilter)
         }
 
         setDiete(result)
@@ -105,6 +106,7 @@ export default function Diete() {
     fetchDiete()
   }, [user, filter, tipoDietaFilter, canViewPersonalized])
 
+  // Reset del filtro tipo quando cambio categoria principale
   useEffect(() => {
     setTipoDietaFilter('ALL')
   }, [filter])
@@ -116,9 +118,11 @@ export default function Diete() {
       <h1>Catalogo Diete</h1>
       <p>Piano attivo: {user.tipoPiano}</p>
 
-      <div className="row mb-4">
+      <div className="row mb-3">
         <div className="col-md-6">
-          <label>Filtra per categoria:</label>
+          <label htmlFor="filter-select" className="form-label">
+            Filtra per categoria:
+          </label>
           <select
             className="form-select"
             value={filter}
@@ -134,7 +138,9 @@ export default function Diete() {
         </div>
 
         <div className="col-md-6">
-          <label>Filtra per obiettivo:</label>
+          <label htmlFor="filter-select" className="form-label">
+            Filtra per obiettivo:
+          </label>
           <select
             className="form-select"
             value={tipoDietaFilter}
@@ -164,19 +170,16 @@ export default function Diete() {
       {!loading && diete.length > 0 && (
         <div className="row">
           {diete.map((dieta) => {
-            const nomeVisualizzato =
-              dieta.nome || dieta.nomeDietaTemplate || 'Dieta senza nome'
-            const descVisualizzata =
-              dieta.descrizione ||
-              (dieta.tipoDietaObiettivo
-                ? `Obiettivo: ${dieta.tipoDietaObiettivo}`
-                : '')
-            const uniqueKey = dieta.nomeDietaTemplate
-              ? `personalizzata-${dieta.id}`
-              : `standard-${dieta.id}`
+            // Nel nuovo sistema il nome è sempre in 'nome'.
+            // isStandard determina se è standard o custom.
+            const nomeVisualizzato = dieta.nome || 'Dieta senza nome'
+            const descVisualizzata = dieta.descrizione || ''
 
-            const isStandard = !dieta.nomeDietaTemplate
-            const dietaType = isStandard ? 'standard' : 'custom'
+            // Chiave unica combinando ID e tipo per evitare conflitti React
+            const uniqueKey = `${dieta.isStandard ? 'std' : 'cust'}-${dieta.id}`
+
+            // Definiamo il type param per la navigazione
+            const queryType = dieta.isStandard ? 'standard' : 'custom'
 
             return (
               <div key={uniqueKey} className="col-md-4 mb-3">
@@ -184,7 +187,7 @@ export default function Diete() {
                   <div className="card-body">
                     <h5 className="card-title">{nomeVisualizzato}</h5>
 
-                    {dieta.nomeDietaTemplate ? (
+                    {!dieta.isStandard ? (
                       <span className="badge bg-success me-2">Assegnata</span>
                     ) : (
                       <span className="badge bg-primary me-2">Standard</span>
@@ -196,15 +199,15 @@ export default function Diete() {
                       </span>
                     )}
 
-                    {dieta.tipoDietaObiettivo && (
-                      <span className="badge bg-warning">
-                        {dieta.tipoDietaObiettivo}
+                    {dieta.isAttiva && (
+                      <span className="badge bg-warning text-dark ms-1">
+                        Attiva
                       </span>
                     )}
 
                     <p className="card-text mt-2">{descVisualizzata}</p>
                     <Link
-                      to={`/diete/dettaglio/${dieta.id}?type=${dietaType}`}
+                      to={`/diete/dettaglio/${dieta.id}?type=${queryType}`}
                       className="btn btn-primary"
                     >
                       Dettagli

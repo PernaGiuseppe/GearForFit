@@ -100,7 +100,6 @@ export default function Schede() {
       <p>Piano attivo: {user.tipoPiano}</p>
 
       <div className="row mb-3">
-        {/* Primo dropdown: Tutte/Standard/Personalizzate */}
         <div className="col-md-6">
           <label htmlFor="filter-select" className="form-label">
             Filtra per categoria:
