@@ -99,24 +99,7 @@ export default function App() {
               </ProtectedRoute>
             }
           />
-          <Route
-            path="/chat"
-            element={
-              <ProtectedRoute>
-                <Chat />
-              </ProtectedRoute>
-            }
-          />
-
-          {/* Route protette SOLO per ADMIN */}
-          <Route
-            path="/admin"
-            element={
-              <ProtectedRoute adminOnly>
-                <AdminDashboard />
-              </ProtectedRoute>
-            }
-          />
+          {/* Route solo per ADMIN gestione utenti */}
           <Route
             path="/utenti"
             element={

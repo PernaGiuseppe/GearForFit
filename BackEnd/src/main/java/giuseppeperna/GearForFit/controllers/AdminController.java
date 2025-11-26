@@ -53,22 +53,6 @@ public class AdminController {
 
 // ========== GESTIONE ALIMENTI ==========
 
-  /*  @PostMapping("/alimenti/carne")
-    @ResponseStatus(HttpStatus.CREATED)
-    public Carne creaAlimentoCarne(@RequestBody @Valid AlimentoRequestDTO body) {
-        Carne carne = new Carne();
-        mappaAlimento(carne, body);
-        return alimentoService.saveCarne(carne);
-    }*/
-/*    private void mappaAlimento(Alimento alimento, AlimentoRequestDTO body) {
-        alimento.setNome(body.nome());
-        alimento.setCaloriePer100g(body.caloriePer100g());
-        alimento.setProteinePer100g(body.proteinePer100g());
-        alimento.setCarboidratiPer100g(body.carboidratiPer100g());
-        alimento.setGrassiPer100g(body.grassiPer100g());
-        alimento.setFibrePer100g(body.fibrePer100g());
-    }*/
-
     @GetMapping("/alimenti")
     public List<Alimento> getTuttiAlimenti() {
         return alimentoService.findAllAlimenti();
@@ -87,15 +71,6 @@ public class AdminController {
     }
 
 // ========== GESTIONE DIETE ==========
-
-    // Admin visualizza TUTTE le diete (standard + custom di tutti gli utenti)
-
-    @GetMapping("/diete/all")
-    @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<List<DietaDTO>> adminGetAllDiete() {
-        List<DietaDTO> diete = dietaService.getAllDiete();
-        return ResponseEntity.ok(diete);
-    }
 
     //Admin crea una nuova dieta standard
 
@@ -121,7 +96,14 @@ public class AdminController {
         DietaDTO dietaDTO = dietaService.modificaDietaStandard(id, request);
         return ResponseEntity.ok(dietaDTO);
     }
+    // Admin visualizza TUTTE le diete (standard + custom di tutti gli utenti)
 
+    @GetMapping("/diete/all")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<List<DietaDTO>> adminGetAllDiete() {
+        List<DietaDTO> diete = dietaService.getAllDiete();
+        return ResponseEntity.ok(diete);
+    }
 
     // Admin visualizza qualsiasi dieta (standard o custom) per ID
 

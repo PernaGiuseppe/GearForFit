@@ -67,29 +67,33 @@ export default function SchedaDettaglio() {
     type: 'success' | 'error'
     text: string
   } | null>(null)
-
   useEffect(() => {
     if (!id || !user) return
+
     setLoading(true)
     setError(null)
 
-    fetch(`${API_BASE_URL}/schede-allenamento/${id}`, {
-      headers: getAuthHeader(),
-    })
+    // Se l' admin è loggato, usa endpoint admin. Altrimenti usa logica utenti
+    const endpoint =
+      user.tipoUtente === 'ADMIN'
+        ? `${API_BASE_URL}/admin/schede/${id}`
+        : `${API_BASE_URL}/schede-allenamento/${id}`
+
+    fetch(endpoint, { headers: getAuthHeader() })
       .then((res) => {
         if (!res.ok) throw new Error('Errore nel caricamento della scheda')
         return res.json()
       })
-      .then((data: SchedaDettaglioDTO) => setScheda(data))
+      .then((data) => setScheda(data))
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false))
   }, [id, user])
 
-  // --- HANDLER ATTIVAZIONE (omesso per brevità, è nel tuo codice originale) ---
+  // --- HANDLER ATTIVAZIONE
   const handleToggleAttiva = async (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
-    // ... codice esistente ...
+
     if (!scheda || scheda.isStandard) return
 
     try {
@@ -112,10 +116,9 @@ export default function SchedaDettaglio() {
     }
   }
 
-  // --- HANDLER ELIMINAZIONE (omesso per brevità, è nel tuo codice originale) ---
+  // --- LOGICA ELIMINAZIONE ---
   const handleDelete = async () => {
-    // ... codice esistente ...
-    if (!scheda || scheda.isStandard) return
+    if (!scheda) return
 
     if (
       !window.confirm(
@@ -126,19 +129,22 @@ export default function SchedaDettaglio() {
     }
 
     try {
-      const res = await fetch(
-        `${API_BASE_URL}/schede-allenamento/me/${scheda.id}`,
-        {
-          method: 'DELETE',
-          headers: getAuthHeader(),
-        }
-      )
+      // **NEW: Admin usa endpoint /admin/schede/{id}**
+      const endpoint =
+        user?.tipoUtente === 'ADMIN'
+          ? `${API_BASE_URL}/admin/schede/${scheda.id}`
+          : `${API_BASE_URL}/schede-allenamento/me/${scheda.id}`
+
+      const res = await fetch(endpoint, {
+        method: 'DELETE',
+        headers: getAuthHeader(),
+      })
 
       if (res.ok || res.status === 204) {
         alert('Scheda eliminata con successo')
         navigate('/schede')
       } else {
-        alert("Errore durante l'eliminazione")
+        alert("Errore durante l'eliminazione della scheda")
       }
     } catch (err) {
       console.error('Errore delete:', err)
@@ -284,9 +290,8 @@ export default function SchedaDettaglio() {
       <div className="row align-items-center mb-4">
         <div className="col-12 col-md-8 d-flex align-items-center">
           <h1 className="fw-bold mb-2 me-3">{scheda.nome}</h1>
-
-          {/* STELLA (Solo per personalizzate) */}
-          {!scheda.isStandard && (
+          {/* Logica Stella attiva */}
+          {scheda && !scheda.isStandard && user?.tipoUtente !== 'ADMIN' && (
             <>
               {scheda.attiva ? (
                 <BsStarFill
@@ -306,10 +311,8 @@ export default function SchedaDettaglio() {
             </>
           )}
         </div>
-
         <div className="col-12 col-md-4 text-md-end mt-3 mt-md-0">
-          {/* DELETE BUTTON (Solo per personalizzate) */}
-          {!scheda.isStandard && (
+          {(user?.tipoUtente === 'ADMIN' || !scheda?.isStandard) && (
             <button
               className="btn btn-outline-danger me-2"
               onClick={handleDelete}

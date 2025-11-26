@@ -40,24 +40,29 @@ export default function Schede() {
 
     let fetchUrl = ''
 
-    // Logica per determinare l'URL corretto
-    if (filter === 'ALL') {
-      if (obiettivoFilter === 'ALL') {
-        fetchUrl = `${API_BASE_URL}/schede-allenamento?filtro=ALL`
-      } else {
-        fetchUrl = `${API_BASE_URL}/schede-allenamento/schede?filtro=ALL&obiettivo=${obiettivoFilter}`
-      }
-    } else if (filter === 'STANDARD') {
-      if (obiettivoFilter === 'ALL') {
-        fetchUrl = `${API_BASE_URL}/schede-allenamento/standard`
-      } else {
-        fetchUrl = `${API_BASE_URL}/schede-allenamento/standard/obiettivo/${obiettivoFilter}`
-      }
-    } else if (filter === 'PERSONALIZZATE') {
-      if (obiettivoFilter === 'ALL') {
-        fetchUrl = `${API_BASE_URL}/schede-allenamento/me`
-      } else {
-        fetchUrl = `${API_BASE_URL}/schede-allenamento/me/obiettivo/${obiettivoFilter}`
+    // Admin per tutte le schede**
+    if (user.tipoUtente === 'ADMIN') {
+      fetchUrl = `${API_BASE_URL}/admin/schede`
+    } else {
+      // In caso contrario filtri vari
+      if (filter === 'ALL') {
+        if (obiettivoFilter === 'ALL') {
+          fetchUrl = `${API_BASE_URL}/schede-allenamento?filtro=ALL`
+        } else {
+          fetchUrl = `${API_BASE_URL}/schede-allenamento/schede?filtro=ALL&obiettivo=${obiettivoFilter}`
+        }
+      } else if (filter === 'STANDARD') {
+        if (obiettivoFilter === 'ALL') {
+          fetchUrl = `${API_BASE_URL}/schede-allenamento/standard`
+        } else {
+          fetchUrl = `${API_BASE_URL}/schede-allenamento/standard/obiettivo/${obiettivoFilter}`
+        }
+      } else if (filter === 'PERSONALIZZATE') {
+        if (obiettivoFilter === 'ALL') {
+          fetchUrl = `${API_BASE_URL}/schede-allenamento/me`
+        } else {
+          fetchUrl = `${API_BASE_URL}/schede-allenamento/me/obiettivo/${obiettivoFilter}`
+        }
       }
     }
 
@@ -134,6 +139,7 @@ export default function Schede() {
   }
 
   // --- LOGICA ELIMINAZIONE ---
+
   const handleDelete = async (
     e: React.MouseEvent,
     schedaId: number,
@@ -147,16 +153,18 @@ export default function Schede() {
     }
 
     try {
-      const res = await fetch(
-        `${API_BASE_URL}/schede-allenamento/me/${schedaId}`,
-        {
-          method: 'DELETE',
-          headers: getAuthHeader(),
-        }
-      )
+      // Admin usa endpoint per eliminare qualsiasi scheda**
+      const endpoint =
+        user?.tipoUtente === 'ADMIN'
+          ? `${API_BASE_URL}/admin/schede/${schedaId}`
+          : `${API_BASE_URL}/schede-allenamento/me/${schedaId}`
+
+      const res = await fetch(endpoint, {
+        method: 'DELETE',
+        headers: getAuthHeader(),
+      })
 
       if (res.ok || res.status === 204) {
-        // Rimuovi dalla lista locale
         setSchede((prev) => prev.filter((s) => s.id !== schedaId))
       } else {
         alert("Errore durante l'eliminazione della scheda")
@@ -239,8 +247,8 @@ export default function Schede() {
             return (
               <div key={uniqueKey} className="col-md-4 mb-4">
                 <div className="card h-100 position-relative">
-                  {/* BUTTON DELETE (Solo per personalizzate) */}
-                  {!scheda.isStandard && (
+                  {/* BUTTON DELETE */}
+                  {(!scheda.isStandard || user?.tipoUtente === 'ADMIN') && (
                     <button
                       className="btn-delete-card"
                       onClick={(e) =>
@@ -259,7 +267,7 @@ export default function Schede() {
                       </h5>
 
                       {/* STELLA (Solo per personalizzate) */}
-                      {!scheda.isStandard && (
+                      {!scheda.isStandard && user?.tipoUtente !== 'ADMIN' && (
                         <>
                           {scheda.attiva ? (
                             <BsStarFill

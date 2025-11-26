@@ -188,7 +188,7 @@ export default function DietaDettaglio() {
         </div>
 
         <div className="col-12 col-md-4 text-md-end mt-3 mt-md-0">
-          {/* DELETE BUTTON (Solo per custom) */}
+          {/* DELETE BUTTON */}
           {(user?.tipoUtente === 'ADMIN' || !dieta?.isStandard) && (
             <button
               className="btn btn-outline-danger me-2"

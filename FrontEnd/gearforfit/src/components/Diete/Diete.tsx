@@ -267,7 +267,7 @@ export default function Diete() {
               <div key={uniqueKey} className="col-md-4 mb-4">
                 {/* Aggiunta classe card-diet-wrapper per posizionamento relativo del bottone delete */}
                 <div className="card h-100 card-diet-wrapper">
-                  {/* BUTTON DELETE (Solo per custom) */}
+                  {/* BUTTON DELETE  */}
                   {(user?.tipoUtente === 'ADMIN' || !dieta?.isStandard) && (
                     <button
                       className="btn-delete-card"

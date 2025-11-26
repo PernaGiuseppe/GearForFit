@@ -112,15 +112,6 @@ export default function Navbar() {
                     </Link>
                   </li>
                 )}
-
-                {/* Admin Dashboard - SOLO PER ADMIN */}
-                {user.tipoUtente === 'ADMIN' && (
-                  <li className="nav-item">
-                    <Link className="nav-link" to="/admin">
-                      Dashboard Admin
-                    </Link>
-                  </li>
-                )}
               </>
             )}
           </ul>
