@@ -3,8 +3,8 @@ import { useParams, useSearchParams, Link, useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../app/store'
 import { API_BASE_URL, getAuthHeader } from '../../utils/apiConfig'
-// Importiamo lo stile per la stella che è in SchedaDettaglio.css
-import '../../css/DietaDettaglio.css'
+import { BsStar, BsStarFill } from 'react-icons/bs'
+import '../../css/Dieta.css'
 
 type AlimentoPasto = {
   nome: string
@@ -29,7 +29,7 @@ type DietaDettaglioDTO = {
   tipoDieta: string
   durataSettimane?: number
   isStandard: boolean
-  isAttiva?: boolean // Aggiunto campo
+  isAttiva?: boolean
   pasti: Pasto[]
 }
 
@@ -65,7 +65,10 @@ export default function DietaDettaglio() {
   }, [id, type, user])
 
   // --- HANDLER ATTIVAZIONE ---
-  const handleToggleAttiva = async () => {
+  const handleToggleAttiva = async (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+
     if (!dieta || dieta.isStandard) return
 
     try {
@@ -162,22 +165,27 @@ export default function DietaDettaglio() {
       {/* Intestazione */}
       <div className="row align-items-center mb-4">
         <div className="col-12 col-md-8 d-flex align-items-center">
-          <h1 className="fw-bold mb-1 me-3">{dieta.nome}</h1>
+          <h1 className="fw-bold mb-2 me-3">{dieta.nome}</h1>
 
           {/* STELLA (Solo per custom) */}
           {!dieta.isStandard && (
-            <i
-              className={`bi bi-star${
-                dieta.isAttiva ? '-fill star-active' : ' star-inactive'
-              } fs-2`}
-              onClick={handleToggleAttiva}
-              style={{ cursor: 'pointer' }}
-              title={
-                dieta.isAttiva
-                  ? 'Dieta attiva - Clicca per disattivare'
-                  : 'Clicca per attivare'
-              }
-            ></i>
+            <>
+              {dieta.isAttiva ? (
+                <BsStarFill
+                  className="stella-dettaglio star-active"
+                  onClick={handleToggleAttiva}
+                  title="Dieta attiva - Clicca per disattivare"
+                  style={{ cursor: 'pointer' }}
+                />
+              ) : (
+                <BsStar
+                  className="stella-dettaglio star-inactive"
+                  onClick={handleToggleAttiva}
+                  title="Clicca per attivare questa dieta"
+                  style={{ cursor: 'pointer' }}
+                />
+              )}
+            </>
           )}
         </div>
 
@@ -200,7 +208,7 @@ export default function DietaDettaglio() {
 
       <div className="row">
         <div className="col-12">
-          <p className="text-muted">Piano nutrizionale dettagliato</p>
+          <p>Piano nutrizionale dettagliato</p>
         </div>
       </div>
 
@@ -223,10 +231,9 @@ export default function DietaDettaglio() {
                     {dieta.durataSettimane} settimane
                   </span>
                 )}
-                {/* Rimosso badge 'Attiva', ora c'è la stella */}
               </div>
               {dieta.descrizione && (
-                <p className="card-text text-secondary border-top pt-3">
+                <p className="card-text  border-top pt-3">
                   {dieta.descrizione}
                 </p>
               )}

@@ -19,6 +19,11 @@ export type AuthState = {
   isLoading: boolean
   error: string | null
 }
+// logica per chat ADMIN/PREMIUM access
+export const canUserAccessChat = (user: User | null): boolean => {
+  if (!user) return false
+  return user.tipoUtente === 'ADMIN' || user.tipoPiano === 'PREMIUM'
+}
 
 // Funzione per caricare lo stato iniziale da localStorage
 const loadUserFromStorage = (): User | null => {

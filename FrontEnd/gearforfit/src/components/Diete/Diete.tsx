@@ -3,8 +3,8 @@ import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { RootState } from '../../app/store'
 import { API_BASE_URL, getAuthHeader } from '../../utils/apiConfig'
-// Importiamo il CSS aggiornato che contiene le classi per la stella e il delete
-import '../../css/DietaDettaglio.css'
+import { BsTrash, BsStar, BsStarFill } from 'react-icons/bs'
+import '../../css/Dieta.css'
 
 type DietaDTO = {
   id: number
@@ -262,7 +262,7 @@ export default function Diete() {
                       }
                       title="Elimina dieta"
                     >
-                      <i className="bi bi-trash-fill"></i>
+                      <BsTrash />
                     </button>
                   )}
 
@@ -274,21 +274,27 @@ export default function Diete() {
 
                       {/* STELLA (Solo per custom) */}
                       {!dieta.isStandard && (
-                        <i
-                          className={`bi bi-star${
-                            dieta.isAttiva
-                              ? '-fill star-active'
-                              : ' star-inactive'
-                          } fs-4 ms-2`}
-                          onClick={(e) =>
-                            handleToggleAttiva(e, dieta.id, !!dieta.isAttiva)
-                          }
-                          title={
-                            dieta.isAttiva
-                              ? 'Dieta attiva - Clicca per disattivare'
-                              : 'Clicca per attivare questa dieta'
-                          }
-                        ></i>
+                        <>
+                          {dieta.isAttiva ? (
+                            <BsStarFill
+                              className="star-active fs-4 ms-2"
+                              onClick={(e) =>
+                                handleToggleAttiva(e, dieta.id, true)
+                              }
+                              title="Dieta attiva - Clicca per disattivare"
+                              style={{ cursor: 'pointer' }}
+                            />
+                          ) : (
+                            <BsStar
+                              className="star-inactive fs-4 ms-2"
+                              onClick={(e) =>
+                                handleToggleAttiva(e, dieta.id, false)
+                              }
+                              title="Clicca per attivare questa dieta"
+                              style={{ cursor: 'pointer' }}
+                            />
+                          )}
+                        </>
                       )}
                     </div>
 
@@ -306,17 +312,16 @@ export default function Diete() {
                       )}
                     </div>
 
-                    <p className="card-text text-muted small">
+                    <p className="card-text">
                       {descVisualizzata.length > 100
                         ? descVisualizzata.substring(0, 100) + '...'
                         : descVisualizzata}
                     </p>
-
                     <Link
                       to={`/diete/dettaglio/${dieta.id}?type=${queryType}`}
-                      className="btn btn-outline-primary w-100 mt-auto"
+                      className="btn btn-outline-primary"
                     >
-                      Visualizza Dettagli
+                      Dettagli
                     </Link>
                   </div>
                 </div>

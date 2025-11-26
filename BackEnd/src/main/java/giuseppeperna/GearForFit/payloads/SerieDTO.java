@@ -3,9 +3,10 @@ package giuseppeperna.GearForFit.payloads;
 public record SerieDTO(
         Long id,
         Long esercizioId,
-        String nomeEsercizio, // Molto utile per il frontend
+        String nomeEsercizio,
         Integer numeroSerie,
         Integer numeroRipetizioni,
-        Integer tempoRecuperoSecondi
+        Integer tempoRecuperoSecondi,
+        String peso
 ) {
 }

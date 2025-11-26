@@ -388,23 +388,6 @@ public class AdminController {
         return schedaAllenamentoService.creaSchedaPersonalizzata(utenteId, body);
     }
 
-
-    @PutMapping("/schede/utente/{utenteId}/{schedaId}")
-    public SchedaAllenamentoDTO modificaSchedaPerUtente(
-            @PathVariable Long utenteId,
-            @PathVariable Long schedaId,
-            @RequestBody @Valid SchedaPersonalizzataRequestDTO body,
-            BindingResult validationResult) {
-
-        if (validationResult.hasErrors()) {
-            List<String> errorMessages = validationResult.getFieldErrors().stream()
-                    .map(fieldError -> fieldError.getField() + " : " + fieldError.getDefaultMessage())
-                    .toList();
-            throw new NotValidException(errorMessages);
-        }
-
-        return schedaAllenamentoService.adminModificaSchedaPersonalizzata(utenteId, schedaId, body);
-    }
     @GetMapping("/schede/utente/{utenteId}")
     public List<SchedaAllenamentoDTO> getSchedeByUtente(@PathVariable Long utenteId) {
         return schedaAllenamentoService.getSchedeByUtente(utenteId);

@@ -1,15 +1,14 @@
-// src/components/ProtectedRoute.tsx
 import { useSelector } from 'react-redux'
-import { RootState } from '../app/store' // Assicurati che l'import sia corretto
+import { RootState } from '../app/store'
 import { Navigate } from 'react-router-dom'
-import { UserData } from '../features/auth/authSlice' // Importa il tipo UserData aggiornato
+import { UserData } from '../features/auth/authSlice'
 
 type Piano = UserData['tipoPiano']
 
 type Props = {
   children: JSX.Element
-  requireAdmin?: boolean // Richiede esplicitamente l'essere ADMIN
-  requirePiani?: Piano[] // Richiede uno specifico piano o l'admin per accedere
+  requireAdmin?: boolean
+  requirePiani?: Piano[]
 }
 
 export default function ProtectedRoute({

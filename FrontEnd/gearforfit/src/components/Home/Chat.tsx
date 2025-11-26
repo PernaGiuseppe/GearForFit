@@ -9,15 +9,14 @@ import {
 } from '../../features/chat/qeaSlice'
 import '../../css/chat.css'
 
-// Tipi di risposta del backend
 type QeAResponseDTO = {
   id: number
   domanda: string
-  risposta: string // Presente nel DTO completo (/qea)
+  risposta: string
 }
 type QeARispostaDTO = {
   id: number
-  risposta: string // Presente nel DTO risposta singola (/{id}/risposta)
+  risposta: string
 }
 
 export default function Chat() {

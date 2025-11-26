@@ -3,12 +3,15 @@ import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { RootState } from '../../app/store'
 import { API_BASE_URL, getAuthHeader } from '../../utils/apiConfig'
+import { BsTrash, BsStar, BsStarFill } from 'react-icons/bs'
+import '../../css/Schede.css'
 
 type SchedaDTO = {
   id: number
   nome: string
   obiettivo: string
   isStandard: boolean
+  attiva?: boolean
   utenteId?: number | null
 }
 
@@ -39,24 +42,18 @@ export default function Schede() {
 
     // Logica per determinare l'URL corretto
     if (filter === 'ALL') {
-      // Con "Tutte" consideriamo anche il filtro obiettivo
       if (obiettivoFilter === 'ALL') {
-        // Nessun filtro obiettivo: mostra tutte le schede
         fetchUrl = `${API_BASE_URL}/schede-allenamento?filtro=ALL`
       } else {
-        // Con filtro obiettivo: usiamo il filtro sui parametri
-        // ATTENZIONE: dobbiamo creare questo endpoint nel backend
         fetchUrl = `${API_BASE_URL}/schede-allenamento/schede?filtro=ALL&obiettivo=${obiettivoFilter}`
       }
     } else if (filter === 'STANDARD') {
-      // Schede standard con o senza filtro obiettivo
       if (obiettivoFilter === 'ALL') {
         fetchUrl = `${API_BASE_URL}/schede-allenamento/standard`
       } else {
         fetchUrl = `${API_BASE_URL}/schede-allenamento/standard/obiettivo/${obiettivoFilter}`
       }
     } else if (filter === 'PERSONALIZZATE') {
-      // Schede personalizzate con o senza filtro obiettivo
       if (obiettivoFilter === 'ALL') {
         fetchUrl = `${API_BASE_URL}/schede-allenamento/me`
       } else {
@@ -92,6 +89,84 @@ export default function Schede() {
     setObiettivoFilter('ALL')
   }, [filter])
 
+  // --- LOGICA ATTIVAZIONE ---
+  const handleToggleAttiva = async (
+    e: React.MouseEvent,
+    schedaId: number,
+    currentState: boolean
+  ) => {
+    e.preventDefault()
+    e.stopPropagation()
+
+    try {
+      const res = await fetch(
+        `${API_BASE_URL}/schede-allenamento/me/schede/${schedaId}/attiva`,
+        {
+          method: 'PUT',
+          headers: getAuthHeader(),
+        }
+      )
+
+      if (res.ok) {
+        // Aggiorna lo stato locale
+        setSchede((prevSchede) =>
+          prevSchede.map((s) => {
+            // Se stiamo attivando questa scheda (currentState era false),
+            // allora questa diventa true e TUTTE le altre personalizzate diventano false.
+            if (!currentState) {
+              if (s.id === schedaId) return { ...s, attiva: true }
+              if (!s.isStandard) return { ...s, attiva: false }
+              return s
+            } else {
+              // Se stiamo disattivando questa scheda
+              if (s.id === schedaId) return { ...s, attiva: false }
+              return s
+            }
+          })
+        )
+      } else {
+        alert("Errore durante l'aggiornamento dello stato")
+      }
+    } catch (err) {
+      console.error('Errore toggle attiva:', err)
+      alert('Errore di connessione')
+    }
+  }
+
+  // --- LOGICA ELIMINAZIONE ---
+  const handleDelete = async (
+    e: React.MouseEvent,
+    schedaId: number,
+    nome: string
+  ) => {
+    e.preventDefault()
+    e.stopPropagation()
+
+    if (!window.confirm(`Sei sicuro di voler eliminare la scheda "${nome}"?`)) {
+      return
+    }
+
+    try {
+      const res = await fetch(
+        `${API_BASE_URL}/schede-allenamento/me/${schedaId}`,
+        {
+          method: 'DELETE',
+          headers: getAuthHeader(),
+        }
+      )
+
+      if (res.ok || res.status === 204) {
+        // Rimuovi dalla lista locale
+        setSchede((prev) => prev.filter((s) => s.id !== schedaId))
+      } else {
+        alert("Errore durante l'eliminazione della scheda")
+      }
+    } catch (err) {
+      console.error('Errore delete:', err)
+      alert('Errore di connessione')
+    }
+  }
+
   if (!user) return <div>Devi essere loggato per accedere alle schede.</div>
 
   return (
@@ -126,7 +201,6 @@ export default function Schede() {
           </select>
         </div>
 
-        {/* Secondo dropdown: Filtro per obiettivo - SEMPRE VISIBILE */}
         <div className="col-md-6">
           <label htmlFor="obiettivo-filter" className="form-label">
             Filtra per obiettivo:
@@ -155,31 +229,86 @@ export default function Schede() {
       )}
 
       {!loading && schede.length > 0 && (
-        <div className="row">
-          {schede.map((scheda) => (
-            <div key={scheda.id} className="col-md-4 mb-3">
-              <div className="card h-100">
-                <div className="card-body">
-                  <h5 className="card-title">{scheda.nome}</h5>
-                  {!scheda.isStandard ? (
-                    <span className="badge bg-success mb-2">Personale</span>
-                  ) : (
-                    <span className="badge bg-primary mb-2">Standard</span>
+        <div className="row pt-2">
+          {schede.map((scheda) => {
+            const nomeVisualizzato = scheda.nome || 'Scheda senza nome'
+            const uniqueKey = `${scheda.isStandard ? 'std' : 'cust'}-${
+              scheda.id
+            }`
+
+            return (
+              <div key={uniqueKey} className="col-md-4 mb-4">
+                <div className="card h-100 position-relative">
+                  {/* BUTTON DELETE (Solo per personalizzate) */}
+                  {!scheda.isStandard && (
+                    <button
+                      className="btn-delete-card"
+                      onClick={(e) =>
+                        handleDelete(e, scheda.id, nomeVisualizzato)
+                      }
+                      title="Elimina scheda"
+                    >
+                      <BsTrash />
+                    </button>
                   )}
-                  <span className="badge bg-info mb-2 ms-2">
-                    {scheda.obiettivo}
-                  </span>
-                  <p className="card-text">Obiettivo: {scheda.obiettivo}</p>
-                  <Link
-                    to={`/schede/${scheda.id}`}
-                    className="btn btn-outline-primary"
-                  >
-                    Dettagli
-                  </Link>
+
+                  <div className="card-body">
+                    <div className="d-flex justify-content-between align-items-start mb-2">
+                      <h5 className="card-title fw-bold mb-0">
+                        {nomeVisualizzato}
+                      </h5>
+
+                      {/* STELLA (Solo per personalizzate) */}
+                      {!scheda.isStandard && (
+                        <>
+                          {scheda.attiva ? (
+                            <BsStarFill
+                              className="star-active fs-4 ms-2"
+                              onClick={(e) =>
+                                handleToggleAttiva(e, scheda.id, true)
+                              }
+                              title="Scheda attiva - Clicca per disattivare"
+                              style={{ cursor: 'pointer' }}
+                            />
+                          ) : (
+                            <BsStar
+                              className="star-inactive fs-4 ms-2"
+                              onClick={(e) =>
+                                handleToggleAttiva(e, scheda.id, false)
+                              }
+                              title="Clicca per attivare questa scheda"
+                              style={{ cursor: 'pointer' }}
+                            />
+                          )}
+                        </>
+                      )}
+                    </div>
+
+                    <div className="mb-3">
+                      {!scheda.isStandard ? (
+                        <span className="badge bg-success me-2">
+                          Personalizzata
+                        </span>
+                      ) : (
+                        <span className="badge bg-primary me-2">Standard</span>
+                      )}
+                      <span className="badge bg-info text-dark">
+                        {scheda.obiettivo}
+                      </span>
+                    </div>
+
+                    <p className="card-text">Obiettivo: {scheda.obiettivo}</p>
+                    <Link
+                      to={`/schede/${scheda.id}`}
+                      className="btn btn-outline-primary"
+                    >
+                      Dettagli
+                    </Link>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
       )}
     </div>

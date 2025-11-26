@@ -32,6 +32,9 @@ public class SchedaAllenamentoService {
     @Autowired
     private EsercizioRepository esercizioRepository;
 
+    @Autowired
+    private SerieRepository serieRepository;
+
     // ========== SCHEDE STANDARD (ADMIN) ==========
 
     public SchedaAllenamentoDTO creaSchedaStandard(SchedaPersonalizzataRequestDTO body) {
@@ -158,7 +161,7 @@ public class SchedaAllenamentoService {
     }
     // Admin modifica una scheda personalizzata di un utente
 
-    public SchedaAllenamentoDTO adminModificaSchedaPersonalizzata(Long utenteId, Long schedaId, SchedaPersonalizzataRequestDTO body) {
+   /* public SchedaAllenamentoDTO adminModificaSchedaPersonalizzata(Long utenteId, Long schedaId, SchedaPersonalizzataRequestDTO body) {
         // Trova l'utente per assicurarsi che esista
         Utente utente = utenteRepository.findById(utenteId)
                 .orElseThrow(() -> new NotFoundException("Utente non trovato con ID: " + utenteId));
@@ -216,7 +219,7 @@ public class SchedaAllenamentoService {
         SchedaAllenamento updated = schedaRepository.save(scheda);
         return mapToDTO(updated);
     }
-
+*/
     // Metodo per l'ADMIN per eliminare QUALSIASI scheda
     public void adminEliminaScheda(Long schedaId) {
         SchedaAllenamento scheda = schedaRepository.findById(schedaId)
@@ -278,7 +281,7 @@ public class SchedaAllenamentoService {
                 .collect(Collectors.toList());
     }
 
-    public SchedaAllenamentoDTO modificaSchedaPersonalizzata(Long schedaId, Long utenteId, SchedaPersonalizzataRequestDTO body) {
+    /*public SchedaAllenamentoDTO modificaSchedaPersonalizzata(Long schedaId, Long utenteId, SchedaPersonalizzataRequestDTO body) {
         SchedaAllenamento scheda = schedaRepository.findById(schedaId)
                 .orElseThrow(() -> new NotFoundException("Scheda non trovata"));
 
@@ -327,7 +330,38 @@ public class SchedaAllenamentoService {
 
         SchedaAllenamento updated = schedaRepository.save(scheda);
         return mapToDTO(updated);
+    }*/
+    @Transactional
+    public SerieDTO aggiornaPesoSerie(Long schedaId, Long serieId, String peso, Utente utenteLoggato) {
+        // 1. Verifica che la scheda appartenga all'utente loggato
+        SchedaAllenamento scheda = schedaRepository.findByIdAndUtenteId(schedaId, utenteLoggato.getId())
+                .orElseThrow(() -> new NotFoundException("Scheda allenamento non trovata o non autorizzato"));
+
+        // 2. Trova la serie nel database
+        Serie serie = serieRepository.findById(serieId)
+                .orElseThrow(() -> new NotFoundException("Serie non trovata"));
+
+        // 3. Verifica che la serie appartenga effettivamente a questa scheda
+        if (!serie.getGiorno().getScheda().getId().equals(schedaId)) {
+            throw new IllegalArgumentException("La serie non appartiene a questa scheda");
+        }
+
+        // 4. Aggiorna il peso
+        serie.setPeso(peso);
+        Serie salvata = serieRepository.save(serie);
+
+        // 5. Mappa a DTO e ritorna
+        return new SerieDTO(
+                salvata.getId(),
+                salvata.getEsercizio().getId(),
+                salvata.getEsercizio().getNome(),
+                salvata.getNumeroSerie(),
+                salvata.getNumeroRipetizioni(),
+                salvata.getTempoRecuperoSecondi(),
+                salvata.getPeso()
+        );
     }
+
 
     public void eliminaSchedaPersonalizzata(Long schedaId, Long utenteId) {
         SchedaAllenamento scheda = schedaRepository.findById(schedaId)
@@ -464,51 +498,7 @@ public class SchedaAllenamentoService {
         return convertToResponseDTO(salvata);
     }
 
-    // ========== UTILITY ==========
-  private SchedaAllenamentoDTO mapToDTO(SchedaAllenamento scheda) {
-      List<GiornoAllenamentoDTO> giorniDTO = scheda.getGiorni().stream()
-              .map(giorno -> {
-                  List<SerieDTO> serieDTO = giorno.getSerie().stream()
-                          .map(serie -> new SerieDTO(
-                                  serie.getId(),
-                                  serie.getEsercizio().getId(),
-                                  serie.getEsercizio().getNome(),
-                                  serie.getNumeroSerie(),
-                                  serie.getNumeroRipetizioni(),
-                                  serie.getTempoRecuperoSecondi()
-                          )).collect(Collectors.toList());
-                  return new GiornoAllenamentoDTO(
-                          giorno.getId(),
-                          giorno.getGiornoSettimana(),
-                          serieDTO
-                  );
-              }).collect(Collectors.toList());
-      return new SchedaAllenamentoDTO(
-              scheda.getId(),
-              scheda.getNome(),
-              scheda.getDescrizione(),
-              scheda.getObiettivo(),
-              scheda.getDurataSettimane(),
-              scheda.getIsStandard(),
-              scheda.getUtente() != null ? scheda.getUtente().getId() : null,
-              scheda.getAttiva(),
-              giorniDTO
-      );
-  }
-    private SchedaAllenamentoDTO convertToResponseDTO(SchedaAllenamento scheda) {
-        List<GiornoAllenamentoDTO> giorniDTO = new ArrayList<>();
 
-        return new SchedaAllenamentoDTO(
-                scheda.getId(),
-                scheda.getNome(),
-                scheda.getDescrizione(),
-                scheda.getObiettivo(),
-                scheda.getDurataSettimane(),
-                scheda.getIsStandard(),
-                scheda.getUtente() != null ? scheda.getUtente().getId() : null,
-                scheda.getAttiva(),
-                giorniDTO); // Ora la variabile `giorniDTO` è correttamente valorizzata
-    }
     public SchedaAllenamentoDTO getSchedaByIdAndUtente(Long schedaId, Long utenteId) {
         SchedaAllenamento scheda = schedaRepository.findById(schedaId)
                 .orElseThrow(() -> new NotFoundException("Scheda con id " + schedaId + " non trovata"));
@@ -532,5 +522,50 @@ public class SchedaAllenamentoService {
                 .orElseThrow(() -> new NotFoundException("Scheda con id " + id + " non trovata"));
         schedaRepository.delete(scheda);
     }
+    // ========== UTILITY ==========
+    private SchedaAllenamentoDTO mapToDTO(SchedaAllenamento scheda) {
+        List<GiornoAllenamentoDTO> giorniDTO = scheda.getGiorni().stream()
+                .map(giorno -> {
+                    List<SerieDTO> serieDTO = giorno.getSerie().stream()
+                            .map(serie -> new SerieDTO(
+                                    serie.getId(),
+                                    serie.getEsercizio().getId(),
+                                    serie.getEsercizio().getNome(),
+                                    serie.getNumeroSerie(),
+                                    serie.getNumeroRipetizioni(),
+                                    serie.getTempoRecuperoSecondi(),
+                                    serie.getPeso()
+                            )).collect(Collectors.toList());
+                    return new GiornoAllenamentoDTO(
+                            giorno.getId(),
+                            giorno.getGiornoSettimana(),
+                            serieDTO
+                    );
+                }).collect(Collectors.toList());
+        return new SchedaAllenamentoDTO(
+                scheda.getId(),
+                scheda.getNome(),
+                scheda.getDescrizione(),
+                scheda.getObiettivo(),
+                scheda.getDurataSettimane(),
+                scheda.getIsStandard(),
+                scheda.getUtente() != null ? scheda.getUtente().getId() : null,
+                scheda.getAttiva(),
+                giorniDTO
+        );
+    }
+    private SchedaAllenamentoDTO convertToResponseDTO(SchedaAllenamento scheda) {
+        List<GiornoAllenamentoDTO> giorniDTO = new ArrayList<>();
 
+        return new SchedaAllenamentoDTO(
+                scheda.getId(),
+                scheda.getNome(),
+                scheda.getDescrizione(),
+                scheda.getObiettivo(),
+                scheda.getDurataSettimane(),
+                scheda.getIsStandard(),
+                scheda.getUtente() != null ? scheda.getUtente().getId() : null,
+                scheda.getAttiva(),
+                giorniDTO); // Ora la variabile `giorniDTO` è correttamente valorizzata
+    }
 }

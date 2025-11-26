@@ -1,4 +1,3 @@
-// src/features/esercizi/eserciziSlice.js
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { API_BASE_URL, getAuthHeader } from '../../utils/apiConfig'
 

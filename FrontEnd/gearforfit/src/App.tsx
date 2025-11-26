@@ -21,14 +21,21 @@ import ProfiloUtente from './components/Login/ProfiloUtente'
 import SchedaCustom from './components/Schede/SchedaCustom'
 import DietaCustom from './components/Diete/DietaCustom'
 import GestioneUtenti from './components/Admin/GestioneUtenti'
+import { canUserAccessChat } from './features/auth/authSlice'
 
 export default function App() {
   const user = useSelector((s: RootState) => s.auth.user)
+  const canAccessChat = canUserAccessChat(user)
 
   return (
     <>
       <Navbar />
       <div className="container mt-4">
+        {canAccessChat && (
+          <div className="chat-global">
+            <Chat />
+          </div>
+        )}
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<LoginPage />} />
