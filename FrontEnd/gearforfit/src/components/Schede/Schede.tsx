@@ -96,8 +96,15 @@ export default function Schede() {
 
   return (
     <div className="container mt-4">
-      <h1>Catalogo Schede Allenamento</h1>
-      <p>Piano attivo: {user.tipoPiano}</p>
+      <div className="d-flex justify-content-between align-items-center mb-3">
+        <h1>Catalogo Schede Allenamento</h1>
+        {(user?.tipoPiano === 'GOLD' || user?.tipoPiano === 'PREMIUM') && (
+          <Link to="/schede/crea-custom" className="btn btn-success">
+            <i className="bi bi-plus-circle me-2"></i>
+            Crea scheda personalizzata
+          </Link>
+        )}
+      </div>
 
       <div className="row mb-3">
         <div className="col-md-6">

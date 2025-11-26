@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react'
-import { useParams, useSearchParams, Link } from 'react-router-dom'
+import { useParams, useSearchParams, Link, useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../app/store'
 import { API_BASE_URL, getAuthHeader } from '../../utils/apiConfig'
+// Importiamo lo stile per la stella che è in SchedaDettaglio.css
 import '../../css/DietaDettaglio.css'
 
 type AlimentoPasto = {
@@ -28,13 +29,14 @@ type DietaDettaglioDTO = {
   tipoDieta: string
   durataSettimane?: number
   isStandard: boolean
+  isAttiva?: boolean // Aggiunto campo
   pasti: Pasto[]
 }
 
 export default function DietaDettaglio() {
   const { id } = useParams<{ id: string }>()
+  const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  // type può essere 'custom' o 'standard' passato dalla pagina precedente
   const type = searchParams.get('type')
   const user = useSelector((s: RootState) => s.auth.user)
 
@@ -44,52 +46,102 @@ export default function DietaDettaglio() {
 
   useEffect(() => {
     if (!id || !user) return
-
     setLoading(true)
     setError(null)
 
-    // Logica aggiornata in base al nuovo DietaController:
-    // GET /diete/custom/{id} -> per diete utente
-    // GET /diete/standard/{id} -> per diete standard
     const endpoint =
       type === 'custom'
         ? `${API_BASE_URL}/diete/custom/${id}`
         : `${API_BASE_URL}/diete/standard/${id}`
 
-    fetch(endpoint, {
-      headers: getAuthHeader(),
-    })
+    fetch(endpoint, { headers: getAuthHeader() })
       .then((res) => {
-        if (!res.ok) {
-          return res.json().then((err) => {
-            throw new Error(err.message || 'Errore nel caricamento della dieta')
-          })
-        }
+        if (!res.ok) throw new Error('Errore nel caricamento della dieta')
         return res.json()
       })
-      .then((data) => {
-        console.log('Dieta caricata:', data)
-        setDieta(data)
-      })
-      .catch((err) => {
-        console.error(err)
-        setError(err.message)
-      })
-      .finally(() => {
-        setLoading(false)
-      })
+      .then((data) => setDieta(data))
+      .catch((err) => setError(err.message))
+      .finally(() => setLoading(false))
   }, [id, type, user])
 
-  if (loading) return <div className="container mt-4">Caricamento dieta...</div>
-  if (error)
-    return <div className="container mt-4 alert alert-danger">{error}</div>
-  if (!dieta) return <div className="container mt-4">Dieta non trovata.</div>
+  // --- HANDLER ATTIVAZIONE ---
+  const handleToggleAttiva = async () => {
+    if (!dieta || dieta.isStandard) return
 
+    try {
+      const res = await fetch(
+        `${API_BASE_URL}/diete/custom/${dieta.id}/attiva`,
+        {
+          method: 'PATCH',
+          headers: {
+            ...getAuthHeader(),
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ isAttiva: !dieta.isAttiva }),
+        }
+      )
+
+      if (res.ok) {
+        // Aggiorna solo lo stato corrente
+        setDieta((prev) =>
+          prev ? { ...prev, isAttiva: !prev.isAttiva } : null
+        )
+      } else {
+        alert("Errore durante l'aggiornamento")
+      }
+    } catch (err) {
+      console.error('Errore toggle:', err)
+      alert('Errore di connessione')
+    }
+  }
+
+  // --- HANDLER ELIMINAZIONE ---
+  const handleDelete = async () => {
+    if (!dieta || dieta.isStandard) return
+
+    if (
+      !window.confirm(`Sei sicuro di voler eliminare la dieta "${dieta.nome}"?`)
+    ) {
+      return
+    }
+
+    try {
+      const res = await fetch(`${API_BASE_URL}/diete/custom/${dieta.id}`, {
+        method: 'DELETE',
+        headers: getAuthHeader(),
+      })
+
+      if (res.ok) {
+        alert('Dieta eliminata con successo')
+        navigate('/diete')
+      } else {
+        alert("Errore durante l'eliminazione")
+      }
+    } catch (err) {
+      console.error('Errore delete:', err)
+      alert('Errore di connessione')
+    }
+  }
+
+  if (loading)
+    return (
+      <div className="container mt-5 text-center">
+        <div className="spinner-border text-primary"></div>
+      </div>
+    )
+  if (error)
+    return <div className="container mt-5 alert alert-danger">{error}</div>
+  if (!dieta)
+    return (
+      <div className="container mt-5 alert alert-warning">
+        Dieta non trovata.
+      </div>
+    )
+
+  // Raggruppamento dati
   const pastiPerGiorno = dieta.pasti.reduce((acc, pasto) => {
     const giorno = pasto.giornoSettimana
-    if (!acc[giorno]) {
-      acc[giorno] = []
-    }
+    if (!acc[giorno]) acc[giorno] = []
     acc[giorno].push(pasto)
     return acc
   }, {} as Record<string, Pasto[]>)
@@ -106,101 +158,206 @@ export default function DietaDettaglio() {
   const giorniPresenti = ordineGiorni.filter((g) => pastiPerGiorno[g])
 
   return (
-    <div className="container mt-4">
-      <div className="d-flex justify-content-between align-items-center mb-4">
-        <h1>{dieta.nome}</h1>
-        <Link to="/diete" className="btn btn-secondary">
-          ← Indietro
-        </Link>
-      </div>
+    <div className="container py-4">
+      {/* Intestazione */}
+      <div className="row align-items-center mb-4">
+        <div className="col-12 col-md-8 d-flex align-items-center">
+          <h1 className="fw-bold mb-1 me-3">{dieta.nome}</h1>
 
-      <div className="card mb-4">
-        <div className="card-body">
-          <div className="mb-3">
-            {/* Controllo isStandard invece del vecchio check sul type */}
-            {!dieta.isStandard ? (
-              <span className="badge bg-success me-2">Assegnata</span>
-            ) : (
-              <span className="badge bg-primary me-2">Standard</span>
-            )}
-            <span className="badge bg-info me-2">{dieta.tipoDieta}</span>
-            {dieta.durataSettimane && (
-              <span className="badge bg-secondary">
-                {dieta.durataSettimane} settimane
-              </span>
-            )}
-          </div>
-
-          {dieta.descrizione && (
-            <p className="card-text">{dieta.descrizione}</p>
+          {/* STELLA (Solo per custom) */}
+          {!dieta.isStandard && (
+            <i
+              className={`bi bi-star${
+                dieta.isAttiva ? '-fill star-active' : ' star-inactive'
+              } fs-2`}
+              onClick={handleToggleAttiva}
+              style={{ cursor: 'pointer' }}
+              title={
+                dieta.isAttiva
+                  ? 'Dieta attiva - Clicca per disattivare'
+                  : 'Clicca per attivare'
+              }
+            ></i>
           )}
         </div>
+
+        <div className="col-12 col-md-4 text-md-end mt-3 mt-md-0">
+          {/* DELETE BUTTON (Solo per custom) */}
+          {!dieta.isStandard && (
+            <button
+              className="btn btn-outline-danger me-2"
+              onClick={handleDelete}
+            >
+              <i className="bi bi-trash me-2"></i>Elimina
+            </button>
+          )}
+
+          <Link to="/diete" className="btn btn-outline-secondary">
+            <i className="bi bi-arrow-left me-2"></i>Indietro
+          </Link>
+        </div>
       </div>
 
-      <h3 className="mb-3">Piano Alimentare Settimanale</h3>
+      <div className="row">
+        <div className="col-12">
+          <p className="text-muted">Piano nutrizionale dettagliato</p>
+        </div>
+      </div>
 
-      {giorniPresenti.length > 0 ? (
-        giorniPresenti.map((giorno) => (
-          <div key={giorno} className="card mb-3">
-            <div className="card-header bg-primary text-white">
-              <h5 className="mb-0">{giorno}</h5>
-            </div>
-            <div className="card-body">
-              {pastiPerGiorno[giorno]
-                .sort((a, b) => a.ordine - b.ordine)
-                .map((pasto, idx) => (
-                  <div
-                    key={`${giorno}-${pasto.nomePasto}-${idx}`}
-                    className="mb-4"
-                  >
-                    <h6 className="text-primary mb-2">
-                      <i className="bi bi-clock me-2"></i>
-                      {pasto.nomePasto}
-                    </h6>
-                    {pasto.alimenti && pasto.alimenti.length > 0 ? (
-                      <div className="table-responsive">
-                        <table className="table table-sm table-hover table-pasto">
-                          <thead>
-                            <tr>
-                              <th>Alimento</th>
-                              <th>Quantità</th>
-                              <th>Proteine</th>
-                              <th>Carboidrati</th>
-                              <th>Grassi</th>
-                              <th>Calorie</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {pasto.alimenti.map((alimento, aIdx) => (
-                              <tr key={aIdx}>
-                                <td>
-                                  <strong>{alimento.nome}</strong>
-                                </td>
-                                <td>{alimento.grammi}g</td>
-                                <td>{alimento.proteine.toFixed(1)}g</td>
-                                <td>{alimento.carboidrati.toFixed(1)}g</td>
-                                <td>{alimento.grassi.toFixed(1)}g</td>
-                                <td>{alimento.calorie.toFixed(0)} kcal</td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-                    ) : (
-                      <p className="text-muted">
-                        Nessun alimento per questo pasto.
-                      </p>
-                    )}
-                  </div>
-                ))}
+      {/* Info Card */}
+      <div className="row mb-5">
+        <div className="col-12">
+          <div className="card shadow-sm border-0 bg-white">
+            <div className="card-body p-4">
+              <div className="d-flex flex-wrap gap-2 mb-3">
+                {!dieta.isStandard ? (
+                  <span className="badge bg-success p-2">Assegnata</span>
+                ) : (
+                  <span className="badge bg-primary p-2">Standard</span>
+                )}
+                <span className="badge bg-info text-dark p-2">
+                  {dieta.tipoDieta}
+                </span>
+                {dieta.durataSettimane && (
+                  <span className="badge bg-secondary p-2">
+                    {dieta.durataSettimane} settimane
+                  </span>
+                )}
+                {/* Rimosso badge 'Attiva', ora c'è la stella */}
+              </div>
+              {dieta.descrizione && (
+                <p className="card-text text-secondary border-top pt-3">
+                  {dieta.descrizione}
+                </p>
+              )}
             </div>
           </div>
-        ))
-      ) : (
-        <div className="alert alert-info">
-          Questa dieta non ha ancora pasti programmati.
         </div>
-      )}
+      </div>
+
+      <div className="row mb-3">
+        <div className="col-12">
+          <h3 className="fw-bold text-primary">Piano Alimentare Settimanale</h3>
+        </div>
+      </div>
+
+      {/* Loop Giorni */}
+      <div className="row">
+        {giorniPresenti.length > 0 ? (
+          giorniPresenti.map((giorno) => (
+            <div key={giorno} className="col-12 mb-4">
+              <div className="card shadow-sm border-0 h-100">
+                <div className="card-header bg-primary text-white py-3">
+                  <h5 className="mb-0 text-uppercase fw-bold">{giorno}</h5>
+                </div>
+
+                <div className="card-body p-0">
+                  {pastiPerGiorno[giorno]
+                    .sort((a, b) => a.ordine - b.ordine)
+                    .map((pasto, idx) => (
+                      <div key={`${giorno}-${pasto.nomePasto}-${idx}`}>
+                        <div className="bg-light px-3 py-2 border-bottom border-top">
+                          <h6 className="text-success fw-bold mb-0 text-uppercase">
+                            {pasto.nomePasto}
+                          </h6>
+                        </div>
+
+                        {pasto.alimenti && pasto.alimenti.length > 0 ? (
+                          <div className="table-responsive">
+                            <table className="table table-striped table-hover mb-0 align-middle">
+                              <thead className="table-light">
+                                <tr>
+                                  <th
+                                    scope="col"
+                                    className="ps-3"
+                                    style={{ width: '40%' }}
+                                  >
+                                    Alimento
+                                  </th>
+                                  <th
+                                    scope="col"
+                                    className="text-center"
+                                    style={{ width: '12%' }}
+                                  >
+                                    Q.tà
+                                  </th>
+                                  <th
+                                    scope="col"
+                                    className="text-center"
+                                    style={{ width: '12%' }}
+                                  >
+                                    Pro
+                                  </th>
+                                  <th
+                                    scope="col"
+                                    className="text-center"
+                                    style={{ width: '12%' }}
+                                  >
+                                    Carbo
+                                  </th>
+                                  <th
+                                    scope="col"
+                                    className="text-center"
+                                    style={{ width: '12%' }}
+                                  >
+                                    Grassi
+                                  </th>
+                                  <th
+                                    scope="col"
+                                    className="text-center"
+                                    style={{ width: '12%' }}
+                                  >
+                                    Kcal
+                                  </th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {pasto.alimenti.map((alimento, aIdx) => (
+                                  <tr key={aIdx}>
+                                    <td className="ps-3 fw-semibold text-primary">
+                                      {alimento.nome}
+                                    </td>
+                                    <td className="text-center">
+                                      <span className="badge bg-light text-dark border">
+                                        {alimento.grammi}g
+                                      </span>
+                                    </td>
+                                    <td className="text-center text-muted small">
+                                      {alimento.proteine.toFixed(1)}
+                                    </td>
+                                    <td className="text-center text-muted small">
+                                      {alimento.carboidrati.toFixed(1)}
+                                    </td>
+                                    <td className="text-center text-muted small">
+                                      {alimento.grassi.toFixed(1)}
+                                    </td>
+                                    <td className="text-center fw-bold text-dark">
+                                      {alimento.calorie.toFixed(0)}
+                                    </td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        ) : (
+                          <div className="p-3 text-muted small fst-italic">
+                            Nessun alimento inserito.
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                </div>
+              </div>
+            </div>
+          ))
+        ) : (
+          <div className="col-12">
+            <div className="alert alert-info">
+              Questa dieta non ha ancora pasti programmati.
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   )
 }

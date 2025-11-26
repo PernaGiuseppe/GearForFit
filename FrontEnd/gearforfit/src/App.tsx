@@ -18,7 +18,8 @@ import ErrorPage from './components/Home/ErrorPage'
 import Navbar from './components/Home/Navbar'
 import Footer from './components/Home/Footer'
 import ProfiloUtente from './components/Login/ProfiloUtente'
-// NUOVO IMPORT
+import SchedaCustom from './components/Schede/SchedaCustom'
+import DietaCustom from './components/Diete/DietaCustom'
 import GestioneUtenti from './components/Admin/GestioneUtenti'
 
 export default function App() {
@@ -52,6 +53,14 @@ export default function App() {
             }
           />
           <Route
+            path="/diete/crea-custom"
+            element={
+              <ProtectedRoute>
+                <DietaCustom />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/schede"
             element={
               <ProtectedRoute>
@@ -64,6 +73,14 @@ export default function App() {
             element={
               <ProtectedRoute>
                 <SchedaDettaglio />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/schede/crea-custom"
+            element={
+              <ProtectedRoute>
+                <SchedaCustom />
               </ProtectedRoute>
             }
           />

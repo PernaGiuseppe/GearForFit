@@ -3,13 +3,14 @@ import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { RootState } from '../../app/store'
 import { API_BASE_URL, getAuthHeader } from '../../utils/apiConfig'
+// Importiamo il CSS aggiornato che contiene le classi per la stella e il delete
+import '../../css/DietaDettaglio.css'
 
-// Aggiornato il DTO per rispecchiare il backend unificato
 type DietaDTO = {
   id: number
   nome: string
   descrizione?: string
-  tipoDieta: string // IPOCALORICA, NORMOCALORICA, ecc.
+  tipoDieta: string
   isStandard: boolean
   isAttiva?: boolean
 }
@@ -44,11 +45,8 @@ export default function Diete() {
     const fetchDiete = async () => {
       try {
         let result: DietaDTO[] = []
-
-        // Array di promesse per gestire le chiamate parallele se serve
         const promises = []
 
-        // 1. Logica per caricare DIETE STANDARD
         if (filter === 'ALL' || filter === 'STANDARD') {
           promises.push(
             fetch(`${API_BASE_URL}/diete/standard`, {
@@ -60,8 +58,6 @@ export default function Diete() {
           )
         }
 
-        // 2. Logica per caricare DIETE PERSONALIZZATE (CUSTOM)
-        // Solo se l'utente ha i permessi e il filtro lo richiede
         if (
           canViewPersonalized &&
           (filter === 'ALL' || filter === 'PERSONALIZZATE')
@@ -77,18 +73,13 @@ export default function Diete() {
           )
         }
 
-        // Eseguiamo le chiamate
         const responses = await Promise.all(promises)
-
-        // Uniamo i risultati (standard + custom se presenti)
         responses.forEach((data) => {
           if (Array.isArray(data)) {
             result = [...result, ...data]
           }
         })
 
-        // 3. Filtraggio Lato Client (Client-side filtering)
-        // Il backend non espone endpoint di filtro per tipo, lo facciamo qui.
         if (tipoDietaFilter !== 'ALL') {
           result = result.filter((d) => d.tipoDieta === tipoDietaFilter)
         }
@@ -106,23 +97,109 @@ export default function Diete() {
     fetchDiete()
   }, [user, filter, tipoDietaFilter, canViewPersonalized])
 
-  // Reset del filtro tipo quando cambio categoria principale
   useEffect(() => {
     setTipoDietaFilter('ALL')
   }, [filter])
+
+  // --- LOGICA ATTIVAZIONE ---
+  const handleToggleAttiva = async (
+    e: React.MouseEvent,
+    dietaId: number,
+    currentState: boolean
+  ) => {
+    e.preventDefault() // Previeni navigazione Link
+    e.stopPropagation()
+
+    try {
+      const res = await fetch(
+        `${API_BASE_URL}/diete/custom/${dietaId}/attiva`,
+        {
+          method: 'PATCH',
+          headers: {
+            ...getAuthHeader(),
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ isAttiva: !currentState }),
+        }
+      )
+
+      if (res.ok) {
+        // Aggiorna lo stato locale
+        setDiete((prevDiete) =>
+          prevDiete.map((d) => {
+            // Se stiamo attivando questa dieta (currentState era false),
+            // allora questa diventa true e TUTTE le altre custom diventano false.
+            if (!currentState) {
+              if (d.id === dietaId) return { ...d, isAttiva: true }
+              if (!d.isStandard) return { ...d, isAttiva: false }
+              return d
+            } else {
+              // Se stiamo disattivando questa dieta
+              if (d.id === dietaId) return { ...d, isAttiva: false }
+              return d
+            }
+          })
+        )
+      } else {
+        alert("Errore durante l'aggiornamento dello stato")
+      }
+    } catch (err) {
+      console.error('Errore toggle attiva:', err)
+      alert('Errore di connessione')
+    }
+  }
+
+  // --- LOGICA ELIMINAZIONE ---
+  const handleDelete = async (
+    e: React.MouseEvent,
+    dietaId: number,
+    nome: string
+  ) => {
+    e.preventDefault()
+    e.stopPropagation()
+
+    if (!window.confirm(`Sei sicuro di voler eliminare la dieta "${nome}"?`)) {
+      return
+    }
+
+    try {
+      const res = await fetch(`${API_BASE_URL}/diete/custom/${dietaId}`, {
+        method: 'DELETE',
+        headers: getAuthHeader(),
+      })
+
+      if (res.ok) {
+        // Rimuovi dalla lista locale
+        setDiete((prev) => prev.filter((d) => d.id !== dietaId))
+      } else {
+        alert("Errore durante l'eliminazione della dieta")
+      }
+    } catch (err) {
+      console.error('Errore delete:', err)
+      alert('Errore di connessione')
+    }
+  }
 
   if (!user) return <div>Devi essere loggato per vedere le diete.</div>
 
   return (
     <div className="container mt-4">
-      <h1>Catalogo Diete</h1>
-      <p>Piano attivo: {user.tipoPiano}</p>
+      <div className="d-flex justify-content-between align-items-center mb-3">
+        <h1>Catalogo Diete</h1>
+        {(user?.tipoPiano === 'SILVER' ||
+          user?.tipoPiano === 'GOLD' ||
+          user?.tipoPiano === 'PREMIUM') && (
+          <Link to="/diete/crea-custom" className="btn btn-success">
+            <i className="bi bi-plus-circle me-2"></i>
+            Crea Dieta Custom
+          </Link>
+        )}
+      </div>
 
+      {/* Filtri */}
       <div className="row mb-3">
         <div className="col-md-6">
-          <label htmlFor="filter-select" className="form-label">
-            Filtra per categoria:
-          </label>
+          <label className="form-label">Filtra per categoria:</label>
           <select
             className="form-select"
             value={filter}
@@ -138,9 +215,7 @@ export default function Diete() {
         </div>
 
         <div className="col-md-6">
-          <label htmlFor="filter-select" className="form-label">
-            Filtra per obiettivo:
-          </label>
+          <label className="form-label">Filtra per obiettivo:</label>
           <select
             className="form-select"
             value={tipoDietaFilter}
@@ -158,59 +233,90 @@ export default function Diete() {
       </div>
 
       {error && <div className="alert alert-danger">{error}</div>}
-
       {loading && <div>Caricamento diete...</div>}
-
       {!loading && !error && diete.length === 0 && (
         <div className="alert alert-info">
           Nessuna dieta trovata per i filtri selezionati.
         </div>
       )}
 
+      {/* Lista Cards */}
       {!loading && diete.length > 0 && (
-        <div className="row">
+        <div className="row pt-2">
           {diete.map((dieta) => {
-            // Nel nuovo sistema il nome è sempre in 'nome'.
-            // isStandard determina se è standard o custom.
             const nomeVisualizzato = dieta.nome || 'Dieta senza nome'
             const descVisualizzata = dieta.descrizione || ''
-
-            // Chiave unica combinando ID e tipo per evitare conflitti React
             const uniqueKey = `${dieta.isStandard ? 'std' : 'cust'}-${dieta.id}`
-
-            // Definiamo il type param per la navigazione
             const queryType = dieta.isStandard ? 'standard' : 'custom'
 
             return (
-              <div key={uniqueKey} className="col-md-4 mb-3">
-                <div className="card">
+              <div key={uniqueKey} className="col-md-4 mb-4">
+                {/* Aggiunta classe card-diet-wrapper per posizionamento relativo del bottone delete */}
+                <div className="card h-100 card-diet-wrapper">
+                  {/* BUTTON DELETE (Solo per custom) */}
+                  {!dieta.isStandard && (
+                    <button
+                      className="btn-delete-card"
+                      onClick={(e) =>
+                        handleDelete(e, dieta.id, nomeVisualizzato)
+                      }
+                      title="Elimina dieta"
+                    >
+                      <i className="bi bi-trash-fill"></i>
+                    </button>
+                  )}
+
                   <div className="card-body">
-                    <h5 className="card-title">{nomeVisualizzato}</h5>
+                    <div className="d-flex justify-content-between align-items-start mb-2">
+                      <h5 className="card-title fw-bold mb-0">
+                        {nomeVisualizzato}
+                      </h5>
 
-                    {!dieta.isStandard ? (
-                      <span className="badge bg-success me-2">Assegnata</span>
-                    ) : (
-                      <span className="badge bg-primary me-2">Standard</span>
-                    )}
+                      {/* STELLA (Solo per custom) */}
+                      {!dieta.isStandard && (
+                        <i
+                          className={`bi bi-star${
+                            dieta.isAttiva
+                              ? '-fill star-active'
+                              : ' star-inactive'
+                          } fs-4 ms-2`}
+                          onClick={(e) =>
+                            handleToggleAttiva(e, dieta.id, !!dieta.isAttiva)
+                          }
+                          title={
+                            dieta.isAttiva
+                              ? 'Dieta attiva - Clicca per disattivare'
+                              : 'Clicca per attivare questa dieta'
+                          }
+                        ></i>
+                      )}
+                    </div>
 
-                    {dieta.tipoDieta && (
-                      <span className="badge bg-info me-2">
-                        {dieta.tipoDieta}
-                      </span>
-                    )}
+                    <div className="mb-3">
+                      {!dieta.isStandard ? (
+                        <span className="badge bg-success me-2">Assegnata</span>
+                      ) : (
+                        <span className="badge bg-primary me-2">Standard</span>
+                      )}
 
-                    {dieta.isAttiva && (
-                      <span className="badge bg-warning text-dark ms-1">
-                        Attiva
-                      </span>
-                    )}
+                      {dieta.tipoDieta && (
+                        <span className="badge bg-info text-dark">
+                          {dieta.tipoDieta}
+                        </span>
+                      )}
+                    </div>
 
-                    <p className="card-text mt-2">{descVisualizzata}</p>
+                    <p className="card-text text-muted small">
+                      {descVisualizzata.length > 100
+                        ? descVisualizzata.substring(0, 100) + '...'
+                        : descVisualizzata}
+                    </p>
+
                     <Link
                       to={`/diete/dettaglio/${dieta.id}?type=${queryType}`}
-                      className="btn btn-primary"
+                      className="btn btn-outline-primary w-100 mt-auto"
                     >
-                      Dettagli
+                      Visualizza Dettagli
                     </Link>
                   </div>
                 </div>
