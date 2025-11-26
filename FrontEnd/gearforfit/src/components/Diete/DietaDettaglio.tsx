@@ -3,7 +3,6 @@ import { useParams, useSearchParams, Link, useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../app/store'
 import { API_BASE_URL, getAuthHeader } from '../../utils/apiConfig'
-import { BsStar, BsStarFill } from 'react-icons/bs'
 import '../../css/Dieta.css'
 
 type AlimentoPasto = {
@@ -29,7 +28,7 @@ type DietaDettaglioDTO = {
   tipoDieta: string
   durataSettimane?: number
   isStandard: boolean
-  isAttiva?: boolean
+  isAttiva?: boolean // Aggiunto campo
   pasti: Pasto[]
 }
 
@@ -50,7 +49,9 @@ export default function DietaDettaglio() {
     setError(null)
 
     const endpoint =
-      type === 'custom'
+      user.tipoUtente === 'ADMIN'
+        ? `${API_BASE_URL}/admin/diete/${id}`
+        : type === 'custom'
         ? `${API_BASE_URL}/diete/custom/${id}`
         : `${API_BASE_URL}/diete/standard/${id}`
 
@@ -65,10 +66,7 @@ export default function DietaDettaglio() {
   }, [id, type, user])
 
   // --- HANDLER ATTIVAZIONE ---
-  const handleToggleAttiva = async (e: React.MouseEvent) => {
-    e.preventDefault()
-    e.stopPropagation()
-
+  const handleToggleAttiva = async () => {
     if (!dieta || dieta.isStandard) return
 
     try {
@@ -100,7 +98,7 @@ export default function DietaDettaglio() {
 
   // --- HANDLER ELIMINAZIONE ---
   const handleDelete = async () => {
-    if (!dieta || dieta.isStandard) return
+    if (!dieta) return
 
     if (
       !window.confirm(`Sei sicuro di voler eliminare la dieta "${dieta.nome}"?`)
@@ -109,7 +107,12 @@ export default function DietaDettaglio() {
     }
 
     try {
-      const res = await fetch(`${API_BASE_URL}/diete/custom/${dieta.id}`, {
+      const endpoint =
+        user?.tipoUtente === 'ADMIN'
+          ? `${API_BASE_URL}/admin/diete/${dieta.id}`
+          : `${API_BASE_URL}/diete/custom/${dieta.id}`
+
+      const res = await fetch(endpoint, {
         method: 'DELETE',
         headers: getAuthHeader(),
       })
@@ -118,7 +121,7 @@ export default function DietaDettaglio() {
         alert('Dieta eliminata con successo')
         navigate('/diete')
       } else {
-        alert("Errore durante l'eliminazione")
+        alert("Errore durante l'eliminazione della dieta")
       }
     } catch (err) {
       console.error('Errore delete:', err)
@@ -168,30 +171,25 @@ export default function DietaDettaglio() {
           <h1 className="fw-bold mb-2 me-3">{dieta.nome}</h1>
 
           {/* STELLA (Solo per custom) */}
-          {!dieta.isStandard && (
-            <>
-              {dieta.isAttiva ? (
-                <BsStarFill
-                  className="stella-dettaglio star-active"
-                  onClick={handleToggleAttiva}
-                  title="Dieta attiva - Clicca per disattivare"
-                  style={{ cursor: 'pointer' }}
-                />
-              ) : (
-                <BsStar
-                  className="stella-dettaglio star-inactive"
-                  onClick={handleToggleAttiva}
-                  title="Clicca per attivare questa dieta"
-                  style={{ cursor: 'pointer' }}
-                />
-              )}
-            </>
+          {!dieta.isStandard && user?.tipoUtente !== 'ADMIN' && (
+            <i
+              className={`bi bi-star${
+                dieta.isAttiva ? '-fill star-active' : ' star-inactive'
+              } fs-2`}
+              onClick={handleToggleAttiva}
+              style={{ cursor: 'pointer' }}
+              title={
+                dieta.isAttiva
+                  ? 'Dieta attiva - Clicca per disattivare'
+                  : 'Clicca per attivare'
+              }
+            ></i>
           )}
         </div>
 
         <div className="col-12 col-md-4 text-md-end mt-3 mt-md-0">
           {/* DELETE BUTTON (Solo per custom) */}
-          {!dieta.isStandard && (
+          {(user?.tipoUtente === 'ADMIN' || !dieta?.isStandard) && (
             <button
               className="btn btn-outline-danger me-2"
               onClick={handleDelete}
@@ -231,6 +229,7 @@ export default function DietaDettaglio() {
                     {dieta.durataSettimane} settimane
                   </span>
                 )}
+                {/* Rimosso badge 'Attiva', ora c'è la stella */}
               </div>
               {dieta.descrizione && (
                 <p className="card-text  border-top pt-3">

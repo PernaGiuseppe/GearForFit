@@ -47,38 +47,48 @@ export default function Diete() {
         let result: DietaDTO[] = []
         const promises = []
 
-        if (filter === 'ALL' || filter === 'STANDARD') {
-          promises.push(
-            fetch(`${API_BASE_URL}/diete/standard`, {
-              headers: getAuthHeader(),
-            }).then((res) => {
-              if (!res.ok) throw new Error('Errore caricamento diete standard')
-              return res.json()
-            })
-          )
-        }
-
-        if (
-          canViewPersonalized &&
-          (filter === 'ALL' || filter === 'PERSONALIZZATE')
-        ) {
-          promises.push(
-            fetch(`${API_BASE_URL}/diete/custom`, {
-              headers: getAuthHeader(),
-            }).then((res) => {
-              if (!res.ok)
-                throw new Error('Errore caricamento diete personalizzate')
-              return res.json()
-            })
-          )
-        }
-
-        const responses = await Promise.all(promises)
-        responses.forEach((data) => {
-          if (Array.isArray(data)) {
-            result = [...result, ...data]
+        if (user?.tipoUtente === 'ADMIN') {
+          const res = await fetch(`${API_BASE_URL}/admin/diete/all`, {
+            headers: getAuthHeader(),
+          })
+          if (!res.ok) throw new Error('Errore caricamento diete')
+          const data = await res.json()
+          result = Array.isArray(data) ? data : []
+        } else {
+          if (filter === 'ALL' || filter === 'STANDARD') {
+            promises.push(
+              fetch(`${API_BASE_URL}/diete/standard`, {
+                headers: getAuthHeader(),
+              }).then((res) => {
+                if (!res.ok)
+                  throw new Error('Errore caricamento diete standard')
+                return res.json()
+              })
+            )
           }
-        })
+
+          if (
+            canViewPersonalized &&
+            (filter === 'ALL' || filter === 'PERSONALIZZATE')
+          ) {
+            promises.push(
+              fetch(`${API_BASE_URL}/diete/custom`, {
+                headers: getAuthHeader(),
+              }).then((res) => {
+                if (!res.ok)
+                  throw new Error('Errore caricamento diete personalizzate')
+                return res.json()
+              })
+            )
+          }
+
+          const responses = await Promise.all(promises)
+          responses.forEach((data) => {
+            if (Array.isArray(data)) {
+              result = [...result, ...data]
+            }
+          })
+        }
 
         if (tipoDietaFilter !== 'ALL') {
           result = result.filter((d) => d.tipoDieta === tipoDietaFilter)
@@ -107,7 +117,7 @@ export default function Diete() {
     dietaId: number,
     currentState: boolean
   ) => {
-    e.preventDefault() // Previeni navigazione Link
+    e.preventDefault()
     e.stopPropagation()
 
     try {
@@ -163,13 +173,17 @@ export default function Diete() {
     }
 
     try {
-      const res = await fetch(`${API_BASE_URL}/diete/custom/${dietaId}`, {
+      const endpoint =
+        user?.tipoUtente === 'ADMIN'
+          ? `${API_BASE_URL}/admin/diete/${dietaId}`
+          : `${API_BASE_URL}/diete/custom/${dietaId}`
+
+      const res = await fetch(endpoint, {
         method: 'DELETE',
         headers: getAuthHeader(),
       })
 
       if (res.ok) {
-        // Rimuovi dalla lista locale
         setDiete((prev) => prev.filter((d) => d.id !== dietaId))
       } else {
         alert("Errore durante l'eliminazione della dieta")
@@ -254,7 +268,7 @@ export default function Diete() {
                 {/* Aggiunta classe card-diet-wrapper per posizionamento relativo del bottone delete */}
                 <div className="card h-100 card-diet-wrapper">
                   {/* BUTTON DELETE (Solo per custom) */}
-                  {!dieta.isStandard && (
+                  {(user?.tipoUtente === 'ADMIN' || !dieta?.isStandard) && (
                     <button
                       className="btn-delete-card"
                       onClick={(e) =>
@@ -273,7 +287,7 @@ export default function Diete() {
                       </h5>
 
                       {/* STELLA (Solo per custom) */}
-                      {!dieta.isStandard && (
+                      {!dieta.isStandard && user?.tipoUtente !== 'ADMIN' && (
                         <>
                           {dieta.isAttiva ? (
                             <BsStarFill
