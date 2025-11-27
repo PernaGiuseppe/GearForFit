@@ -10,7 +10,6 @@ import Schede from './components/Schede/Schede'
 import Chat from './components/Home/Chat'
 import Home from './components/Home/Home'
 import RegisterPage from './components/Login/RegisterPage'
-import ArticoloDettaglio from './components/Home/ArticoloDettaglio'
 import SchedaDettaglio from './components/Schede/SchedaDettaglio'
 import DietaDettaglio from './components/Diete/DietaDettaglio'
 import ErrorPage from './components/Home/ErrorPage'
@@ -41,7 +40,6 @@ export default function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
-          <Route path="/articoli/:id" element={<ArticoloDettaglio />} />
 
           {/* Route protette per tutti gli utenti loggati */}
           <Route

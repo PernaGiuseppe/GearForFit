@@ -1,53 +1,82 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../app/store'
 import { API_BASE_URL, getAuthHeader } from '../../utils/apiConfig'
-import '../../css/SchedaCustom.css'
+import '../../css/SchedeAdmin.css'
 
 type Esercizio = {
-  nomeEsercizio: string
+  id: number
+  nome: string
+  descrizione: string
+  urlImmagine: string
+  gruppoMuscolare: {
+    id: number
+    nome: string
+  }
+  attrezzo: {
+    id: number
+    nome: string
+  }
+}
+
+type SerieConfig = {
+  esercizioId: number
   numeroSerie: number
   numeroRipetizioni: number
   tempoRecuperoSecondi: number
 }
 
-type Giorno = {
-  nomeGiorno: string
-  esercizi: Esercizio[]
-}
-
-type SchedaPersonalizzataRequestDTO = {
-  nome: string
-  descrizione: string
-  obiettivo: 'MASSA' | 'MANTENIMENTO' | 'DEFINIZIONE'
-  giorni: Giorno[]
+type GiornoAllenamento = {
+  giornoSettimana: string
+  serie: SerieConfig[]
 }
 
 export default function SchedaStandardAdmin() {
   const navigate = useNavigate()
   const user = useSelector((s: RootState) => s.auth.user)
 
-  const [nome, setNome] = useState('')
-  const [descrizione, setDescrizione] = useState('')
-  const [obiettivo, setObiettivo] = useState<
-    'MASSA' | 'MANTENIMENTO' | 'DEFINIZIONE'
-  >('MASSA')
-  const [giorni, setGiorni] = useState<Giorno[]>([
-    {
-      nomeGiorno: 'Lunedì',
-      esercizi: [
-        {
-          nomeEsercizio: '',
-          numeroSerie: 3,
-          numeroRipetizioni: 8,
-          tempoRecuperoSecondi: 60,
-        },
-      ],
-    },
-  ])
+  // State per configurazione iniziale
+  const [nomeScheda, setNomeScheda] = useState<string>('')
+  const [descrizioneScheda, setDescrizioneScheda] = useState<string>('')
+  const [obiettivo, setObiettivo] = useState<string>('MASSA')
+  const [durataSettimane, setDurataSettimane] = useState<number>(6)
+  const [numeroGiorni, setNumeroGiorni] = useState<number>(3)
+  const [giorniSelezionati, setGiorniSelezionati] = useState<string[]>([])
+
+  // State per wizard multi-step
+  const [currentStep, setCurrentStep] = useState<number>(0) // 0 = config, 1+ = giorni
+  const [currentDayIndex, setCurrentDayIndex] = useState<number>(0)
+
+  // State per esercizi
+  const [esercizi, setEsercizi] = useState<Esercizio[]>([])
   const [loading, setLoading] = useState(false)
+
+  // State per selezione esercizi del giorno corrente
+  const [maxEserciziGiorno, setMaxEserciziGiorno] = useState<number>(6)
+  const [eserciziSelezionati, setEserciziSelezionati] = useState<number[]>([])
+  const [configurazioniSerie, setConfigurazioniSerie] = useState<
+    Map<number, SerieConfig>
+  >(new Map())
+
+  // State per salvare i giorni completati
+  const [giorniCompletati, setGiorniCompletati] = useState<GiornoAllenamento[]>(
+    []
+  )
+
+  // State per loading submit
+  const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
+  const giorniSettimana = [
+    'LUNEDI',
+    'MARTEDI',
+    'MERCOLEDI',
+    'GIOVEDI',
+    'VENERDI',
+    'SABATO',
+  ]
+  const obiettivi = ['MASSA', 'DEFINIZIONE', 'MANTENIMENTO']
 
   if (user?.tipoUtente !== 'ADMIN') {
     return (
@@ -57,312 +86,433 @@ export default function SchedaStandardAdmin() {
     )
   }
 
-  const aggiungiGiorno = () => {
-    setGiorni([
-      ...giorni,
-      {
-        nomeGiorno: `Giorno ${giorni.length + 1}`,
-        esercizi: [
-          {
-            nomeEsercizio: '',
-            numeroSerie: 3,
-            numeroRipetizioni: 8,
-            tempoRecuperoSecondi: 60,
-          },
-        ],
-      },
-    ])
-  }
-
-  const rimuoviGiorno = (index: number) => {
-    if (giorni.length > 1) setGiorni(giorni.filter((_, i) => i !== index))
-  }
-
-  const aggiungiEsercizio = (giornoIndex: number) => {
-    const newGiorni = [...giorni]
-    newGiorni[giornoIndex].esercizi.push({
-      nomeEsercizio: '',
-      numeroSerie: 3,
-      numeroRipetizioni: 8,
-      tempoRecuperoSecondi: 60,
-    })
-    setGiorni(newGiorni)
-  }
-
-  const rimuoviEsercizio = (giornoIndex: number, esercizioIndex: number) => {
-    const newGiorni = [...giorni]
-    if (newGiorni[giornoIndex].esercizi.length > 1) {
-      newGiorni[giornoIndex].esercizi = newGiorni[giornoIndex].esercizi.filter(
-        (_, i) => i !== esercizioIndex
-      )
-      setGiorni(newGiorni)
+  useEffect(() => {
+    if (currentStep > 0) {
+      fetchEsercizi()
     }
-  }
+  }, [currentStep])
 
-  const updateEsercizio = (
-    giornoIndex: number,
-    esercizioIndex: number,
-    field: string,
-    value: any
-  ) => {
-    const newGiorni = [...giorni]
-    newGiorni[giornoIndex].esercizi[esercizioIndex] = {
-      ...newGiorni[giornoIndex].esercizi[esercizioIndex],
-      [field]: value,
+  useEffect(() => {
+    if (giorniSelezionati.length > numeroGiorni) {
+      setGiorniSelezionati([])
     }
-    setGiorni(newGiorni)
-  }
+  }, [numeroGiorni])
 
-  const updateGiorno = (index: number, field: string, value: any) => {
-    const newGiorni = [...giorni]
-    newGiorni[index] = { ...newGiorni[index], [field]: value }
-    setGiorni(newGiorni)
-  }
+  useEffect(() => {
+    if (eserciziSelezionati.length > maxEserciziGiorno) {
+      setEserciziSelezionati([])
+      setConfigurazioniSerie(new Map())
+    }
+  }, [maxEserciziGiorno])
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+  const fetchEsercizi = async () => {
     setLoading(true)
-    setError(null)
-
     try {
-      const body: SchedaPersonalizzataRequestDTO = {
-        nome,
-        descrizione,
-        obiettivo,
-        giorni,
-      }
-
-      const res = await fetch(`${API_BASE_URL}/admin/schede/standard`, {
-        method: 'POST',
-        headers: {
-          ...getAuthHeader(),
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(body),
+      const res = await fetch(`${API_BASE_URL}/schede-allenamento/esercizi`, {
+        headers: getAuthHeader(),
       })
-
-      if (!res.ok) {
-        const errorData = await res.json()
-        throw new Error(
-          errorData.message || 'Errore nella creazione della scheda'
-        )
+      if (res.ok) {
+        const data = await res.json()
+        setEsercizi(data)
       }
-
-      alert('Scheda standard creata con successo!')
-      navigate('/schede')
-    } catch (err: any) {
-      console.error('Errore submit:', err)
-      setError(err.message)
+    } catch (err) {
+      console.error('Errore caricamento esercizi:', err)
     } finally {
       setLoading(false)
     }
   }
 
-  return (
-    <div className="container scheda-custom-container">
-      <div className="scheda-custom-header">
+  const handleGiornoToggle = (giorno: string) => {
+    if (giorniSelezionati.includes(giorno)) {
+      setGiorniSelezionati(giorniSelezionati.filter((g) => g !== giorno))
+    } else if (giorniSelezionati.length < numeroGiorni) {
+      setGiorniSelezionati([...giorniSelezionati, giorno])
+    }
+  }
+
+  const handleStartCreation = () => {
+    if (!nomeScheda.trim()) {
+      alert('Inserisci il nome della scheda')
+      return
+    }
+    if (!obiettivo || giorniSelezionati.length !== numeroGiorni) {
+      alert('Completa tutti i campi prima di proseguire')
+      return
+    }
+    const giorniOrdinati = giorniSettimana.filter((g) =>
+      giorniSelezionati.includes(g)
+    )
+    setGiorniSelezionati(giorniOrdinati)
+    setCurrentStep(1)
+    setCurrentDayIndex(0)
+  }
+
+  const handleEsercizioToggle = (id: number) => {
+    if (eserciziSelezionati.includes(id)) {
+      setEserciziSelezionati(eserciziSelezionati.filter((e) => e !== id))
+      const newConfig = new Map(configurazioniSerie)
+      newConfig.delete(id)
+      setConfigurazioniSerie(newConfig)
+    } else if (eserciziSelezionati.length < maxEserciziGiorno) {
+      setEserciziSelezionati([...eserciziSelezionati, id])
+      const newConfig = new Map(configurazioniSerie)
+      newConfig.set(id, {
+        esercizioId: id,
+        numeroSerie: 3,
+        numeroRipetizioni: 10,
+        tempoRecuperoSecondi: 90,
+      })
+      setConfigurazioniSerie(newConfig)
+    }
+  }
+
+  const handleConfigChange = (
+    esercizioId: number,
+    field: string,
+    value: number
+  ) => {
+    const newConfig = new Map(configurazioniSerie)
+    const current = newConfig.get(esercizioId)
+    if (current) {
+      newConfig.set(esercizioId, { ...current, [field]: value })
+      setConfigurazioniSerie(newConfig)
+    }
+  }
+
+  const handleNextDay = async () => {
+    if (eserciziSelezionati.length === 0) {
+      alert('Seleziona almeno un esercizio per questo giorno')
+      return
+    }
+
+    const serieGiorno: SerieConfig[] = eserciziSelezionati.map(
+      (id) => configurazioniSerie.get(id)!
+    )
+    const giornoAllenamento: GiornoAllenamento = {
+      giornoSettimana: giorniSelezionati[currentDayIndex],
+      serie: serieGiorno,
+    }
+
+    const giorniAggiornati = [...giorniCompletati, giornoAllenamento]
+
+    if (currentDayIndex < giorniSelezionati.length - 1) {
+      setGiorniCompletati(giorniAggiornati)
+      setCurrentDayIndex(currentDayIndex + 1)
+      setEserciziSelezionati([])
+      setConfigurazioniSerie(new Map())
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    } else {
+      setSubmitting(true)
+      const payloadFinale = {
+        nome: nomeScheda,
+        descrizione: descrizioneScheda || undefined,
+        obiettivo: obiettivo,
+        durataSettimane: durataSettimane,
+        giorni: giorniAggiornati,
+      }
+
+      try {
+        const res = await fetch(`${API_BASE_URL}/admin/schede/standard`, {
+          method: 'POST',
+          headers: {
+            ...getAuthHeader(),
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(payloadFinale),
+        })
+
+        if (res.ok) {
+          alert('Scheda standard creata con successo!')
+          navigate('/schede')
+        } else {
+          const error = await res.text()
+          alert(`Errore: ${error}`)
+        }
+      } catch (err) {
+        console.error('Errore creazione scheda:', err)
+        alert('Errore durante la creazione della scheda')
+      } finally {
+        setSubmitting(false)
+      }
+    }
+  }
+
+  const isEsercizioDisabled = (id: number) => {
+    return (
+      !eserciziSelezionati.includes(id) &&
+      eserciziSelezionati.length >= maxEserciziGiorno
+    )
+  }
+
+  if (currentStep === 0) {
+    return (
+      <div className="container mt-4">
         <h1>Crea Scheda Standard</h1>
-        <p>Configura una nuova scheda di allenamento standard</p>
-      </div>
+        <p className="text-muted">
+          Configura una nuova scheda di allenamento standard
+        </p>
 
-      <form onSubmit={handleSubmit} className="scheda-custom-form">
-        {error && <div className="alert alert-danger">{error}</div>}
+        {error && <div className="alert alert-danger mt-3">{error}</div>}
 
-        {/* Sezione Informazioni Principali */}
-        <div className="form-section">
-          <h2>Informazioni Scheda</h2>
-
-          <div className="form-row">
-            <div className="form-group">
-              <label htmlFor="nome">Nome Scheda *</label>
-              <input
-                id="nome"
-                type="text"
-                value={nome}
-                onChange={(e) => setNome(e.target.value)}
-                required
-                placeholder="Es: Full Body Monday"
-                className="form-control"
-              />
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="obiettivo">Obiettivo *</label>
-              <select
-                id="obiettivo"
-                value={obiettivo}
-                onChange={(e) => setObiettivo(e.target.value as any)}
-                className="form-control"
-              >
-                <option value="MASSA">Massa</option>
-                <option value="MANTENIMENTO">Mantenimento</option>
-                <option value="DEFINIZIONE">Definizione</option>
-              </select>
-            </div>
+        <div className="row mt-4">
+          <div className="col-md-6">
+            <label className="form-label">Nome Scheda *</label>
+            <input
+              type="text"
+              className="form-control"
+              value={nomeScheda}
+              onChange={(e) => setNomeScheda(e.target.value)}
+              placeholder="Es. Scheda Forza Upper/Lower"
+            />
           </div>
 
-          <div className="form-group">
-            <label htmlFor="descrizione">Descrizione</label>
+          <div className="col-md-6">
+            <label className="form-label">Obiettivo *</label>
+            <select
+              className="form-select"
+              value={obiettivo}
+              onChange={(e) => setObiettivo(e.target.value)}
+            >
+              {obiettivi.map((o) => (
+                <option key={o} value={o}>
+                  {o}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        <div className="row mt-3">
+          <div className="col-md-12">
+            <label className="form-label">Descrizione (opzionale)</label>
             <textarea
-              id="descrizione"
-              value={descrizione}
-              onChange={(e) => setDescrizione(e.target.value)}
-              rows={3}
-              placeholder="Descrivi questa scheda..."
               className="form-control"
+              rows={3}
+              value={descrizioneScheda}
+              onChange={(e) => setDescrizioneScheda(e.target.value)}
+              placeholder="Descrivi la scheda..."
             />
           </div>
         </div>
 
-        {/* Sezione Giorni di Allenamento */}
-        <div className="form-section">
-          <div className="section-header">
-            <h2>Giorni di Allenamento</h2>
-            <button
-              type="button"
-              onClick={aggiungiGiorno}
-              className="btn btn-secondary btn-sm"
+        <div className="row mt-3">
+          <div className="col-md-6">
+            <label className="form-label">Durata (settimane) *</label>
+            <select
+              className="form-select"
+              value={durataSettimane}
+              onChange={(e) => setDurataSettimane(Number(e.target.value))}
             >
-              + Aggiungi Giorno
-            </button>
+              {Array.from({ length: 17 }, (_, i) => i + 4).map((n) => (
+                <option key={n} value={n}>
+                  {n} settimane
+                </option>
+              ))}
+            </select>
           </div>
 
-          <div className="giorni-list">
-            {giorni.map((giorno, giornoIndex) => (
-              <div key={giornoIndex} className="giorno-card">
-                <div className="giorno-header-row">
-                  <input
-                    type="text"
-                    value={giorno.nomeGiorno}
-                    onChange={(e) =>
-                      updateGiorno(giornoIndex, 'nomeGiorno', e.target.value)
-                    }
-                    placeholder="Es: Lunedì"
-                    className="form-control giorno-input"
-                  />
-                  {giorni.length > 1 && (
-                    <button
-                      type="button"
-                      onClick={() => rimuoviGiorno(giornoIndex)}
-                      className="btn btn-danger btn-sm"
-                    >
-                      Rimuovi Giorno
-                    </button>
-                  )}
-                </div>
+          <div className="col-md-6">
+            <label className="form-label">Numero di giorni *</label>
+            <select
+              className="form-select"
+              value={numeroGiorni}
+              onChange={(e) => setNumeroGiorni(Number(e.target.value))}
+            >
+              {Array.from({ length: 6 }, (_, i) => i + 1).map((n) => (
+                <option key={n} value={n}>
+                  {n} giorni
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
 
-                {/* Esercizi */}
-                <div className="esercizi-container">
-                  <div className="esercizi-header">
-                    <span>Esercizi</span>
-                    <button
-                      type="button"
-                      onClick={() => aggiungiEsercizio(giornoIndex)}
-                      className="btn btn-secondary btn-sm"
-                    >
-                      + Esercizio
-                    </button>
-                  </div>
+        <div className="mt-4">
+          <label className="form-label">
+            Seleziona {numeroGiorni} giorni della settimana *
+          </label>
+          <div className="d-flex gap-2 flex-wrap">
+            {giorniSettimana.map((giorno) => (
+              <button
+                key={giorno}
+                type="button"
+                className={`btn ${
+                  giorniSelezionati.includes(giorno)
+                    ? 'btn-success'
+                    : 'btn-outline-secondary'
+                }`}
+                onClick={() => handleGiornoToggle(giorno)}
+                disabled={
+                  !giorniSelezionati.includes(giorno) &&
+                  giorniSelezionati.length >= numeroGiorni
+                }
+              >
+                {giorno}
+              </button>
+            ))}
+          </div>
+          <small className="text-muted">
+            Selezionati: {giorniSelezionati.length}/{numeroGiorni}
+          </small>
+        </div>
 
-                  {giorno.esercizi.map((esercizio, esercizioIndex) => (
-                    <div key={esercizioIndex} className="esercizio-input-row">
-                      <input
-                        type="text"
-                        value={esercizio.nomeEsercizio}
+        <button className="btn btn-primary mt-4" onClick={handleStartCreation}>
+          Inizia Creazione
+        </button>
+      </div>
+    )
+  }
+
+  return (
+    <div className="container mt-4">
+      <h1>Giorno: {giorniSelezionati[currentDayIndex]}</h1>
+      <p className="text-muted">
+        Giorno {currentDayIndex + 1} di {giorniSelezionati.length}
+      </p>
+
+      <div className="mb-3">
+        <label className="form-label">
+          Numero massimo di esercizi per questo giorno
+        </label>
+        <select
+          className="form-select w-auto"
+          value={maxEserciziGiorno}
+          onChange={(e) => setMaxEserciziGiorno(Number(e.target.value))}
+        >
+          {Array.from({ length: 8 }, (_, i) => i + 1).map((n) => (
+            <option key={n} value={n}>
+              {n} esercizi
+            </option>
+          ))}
+        </select>
+        <small className="text-muted">
+          Selezionati: {eserciziSelezionati.length}/{maxEserciziGiorno}
+        </small>
+      </div>
+
+      {loading && <p>Caricamento esercizi...</p>}
+
+      <div className="row">
+        {esercizi.map((esercizio) => {
+          const isSelected = eserciziSelezionati.includes(esercizio.id)
+          const isDisabled = isEsercizioDisabled(esercizio.id)
+          const config = configurazioniSerie.get(esercizio.id)
+
+          return (
+            <div
+              key={esercizio.id}
+              className="col-lg-2 col-md-3 col-sm-4 col-6 mb-4"
+            >
+              <div
+                className={`card h-100 esercizio-card ${
+                  isSelected ? 'selected' : ''
+                } ${isDisabled ? 'disabled' : ''}`}
+                onClick={() =>
+                  !isDisabled && handleEsercizioToggle(esercizio.id)
+                }
+              >
+                <img
+                  src={esercizio.urlImmagine}
+                  className="card-img-top"
+                  alt={esercizio.nome}
+                  style={{ height: '150px', objectFit: 'cover' }}
+                />
+                <div className="card-body p-2">
+                  <h6 className="card-title">{esercizio.nome}</h6>
+                  <p className="card-text small">{esercizio.descrizione}</p>
+                  <p className="card-text small mb-1">
+                    <strong>Gruppo:</strong> {esercizio.gruppoMuscolare.nome}
+                  </p>
+                  <p className="card-text small">
+                    <strong>Attrezzo:</strong> {esercizio.attrezzo.nome}
+                  </p>
+
+                  {isSelected && config && (
+                    <div className="mt-2" onClick={(e) => e.stopPropagation()}>
+                      <label className="form-label small mb-1">Serie</label>
+                      <select
+                        className="form-select form-select-sm mb-2"
+                        value={config.numeroSerie}
                         onChange={(e) =>
-                          updateEsercizio(
-                            giornoIndex,
-                            esercizioIndex,
-                            'nomeEsercizio',
-                            e.target.value
-                          )
-                        }
-                        placeholder="Nome esercizio"
-                        required
-                        className="form-control esercizio-nome"
-                      />
-                      <input
-                        type="number"
-                        value={esercizio.numeroSerie}
-                        onChange={(e) =>
-                          updateEsercizio(
-                            giornoIndex,
-                            esercizioIndex,
+                          handleConfigChange(
+                            esercizio.id,
                             'numeroSerie',
                             Number(e.target.value)
                           )
                         }
-                        placeholder="Serie"
-                        min="1"
-                        className="form-control esercizio-numero"
-                      />
-                      <input
-                        type="number"
-                        value={esercizio.numeroRipetizioni}
+                      >
+                        {Array.from({ length: 6 }, (_, i) => i + 1).map((n) => (
+                          <option key={n} value={n}>
+                            {n}
+                          </option>
+                        ))}
+                      </select>
+
+                      <label className="form-label small mb-1">
+                        Ripetizioni
+                      </label>
+                      <select
+                        className="form-select form-select-sm mb-2"
+                        value={config.numeroRipetizioni}
                         onChange={(e) =>
-                          updateEsercizio(
-                            giornoIndex,
-                            esercizioIndex,
+                          handleConfigChange(
+                            esercizio.id,
                             'numeroRipetizioni',
                             Number(e.target.value)
                           )
                         }
-                        placeholder="Reps"
-                        min="1"
-                        className="form-control esercizio-numero"
-                      />
-                      <input
-                        type="number"
-                        value={esercizio.tempoRecuperoSecondi}
+                      >
+                        {Array.from({ length: 17 }, (_, i) => i + 4).map(
+                          (n) => (
+                            <option key={n} value={n}>
+                              {n}
+                            </option>
+                          )
+                        )}
+                      </select>
+
+                      <label className="form-label small mb-1">
+                        Recupero (sec)
+                      </label>
+                      <select
+                        className="form-select form-select-sm"
+                        value={config.tempoRecuperoSecondi}
                         onChange={(e) =>
-                          updateEsercizio(
-                            giornoIndex,
-                            esercizioIndex,
+                          handleConfigChange(
+                            esercizio.id,
                             'tempoRecuperoSecondi',
                             Number(e.target.value)
                           )
                         }
-                        placeholder="Recupero (s)"
-                        min="0"
-                        className="form-control esercizio-numero"
-                      />
-                      {giorno.esercizi.length > 1 && (
-                        <button
-                          type="button"
-                          onClick={() =>
-                            rimuoviEsercizio(giornoIndex, esercizioIndex)
-                          }
-                          className="btn btn-danger btn-sm"
-                        >
-                          Rimuovi
-                        </button>
-                      )}
+                      >
+                        {Array.from({ length: 11 }, (_, i) => 30 + i * 15).map(
+                          (n) => (
+                            <option key={n} value={n}>
+                              {n}s
+                            </option>
+                          )
+                        )}
+                      </select>
                     </div>
-                  ))}
+                  )}
                 </div>
               </div>
-            ))}
-          </div>
-        </div>
+            </div>
+          )
+        })}
+      </div>
 
-        {/* Pulsanti Azione */}
-        <div className="form-actions">
-          <button
-            type="submit"
-            disabled={loading}
-            className="btn btn-primary btn-lg"
-          >
-            {loading ? 'Creazione in corso...' : 'Crea Scheda Standard'}
-          </button>
-          <button
-            type="button"
-            onClick={() => navigate('/schede')}
-            className="btn btn-outline btn-lg"
-          >
-            Annulla
-          </button>
-        </div>
-      </form>
+      <button
+        className="btn btn-success mt-4 mb-5"
+        onClick={handleNextDay}
+        disabled={submitting}
+      >
+        {submitting
+          ? 'Salvataggio...'
+          : currentDayIndex < giorniSelezionati.length - 1
+          ? 'Avanti al prossimo giorno'
+          : 'Completa Scheda'}
+      </button>
     </div>
   )
 }

@@ -40,7 +40,7 @@ export default function SchedaCustom() {
   const [nomeScheda, setNomeScheda] = useState<string>('')
   const [descrizioneScheda, setDescrizioneScheda] = useState<string>('')
   const [obiettivo, setObiettivo] = useState<string>('')
-  const [durataSettimane, setDurataSettimane] = useState<number>(8)
+  const [durataSettimane, setDurataSettimane] = useState<number>(6)
   const [numeroGiorni, setNumeroGiorni] = useState<number>(3)
   const [giorniSelezionati, setGiorniSelezionati] = useState<string[]>([])
 

@@ -50,7 +50,6 @@ public class AuthController {
         );
     }
 
-    // AGGIUNGI QUESTO METODO
     // Registrazione pubblica (utente si registra da solo)
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)

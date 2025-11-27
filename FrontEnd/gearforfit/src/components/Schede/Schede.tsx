@@ -194,10 +194,10 @@ export default function Schede() {
                 to="/schede/standard-admin"
                 className="btn btn-primary me-2"
               >
-                + Crea Scheda Standard
+                Crea scheda standard
               </Link>
               <Link to="/schede/custom-admin" className="btn btn-info">
-                + Crea Scheda Custom per Utente
+                Crea scheda custom per Utente
               </Link>
             </div>
           </>

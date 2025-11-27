@@ -120,7 +120,7 @@ public class UtenteService {
     }
 
 
-    // ← METODO OVERLOAD (per admin - con piano ADMIN)
+   /* // ← METODO OVERLOAD (per admin - con piano ADMIN)
     public Utente creaUtenteConPiano(String email, String password, String nome, String cognome, TipoUtente tipoUtente, TipoPiano tipoPiano) {
 
         // CONTROLLO EMAIL VUOTA
@@ -174,7 +174,7 @@ public class UtenteService {
 
         return utenteRepository.save(nuovoUtente);
     }
-
+*/
     // Aggiorna un utente
     public Utente aggiornaUtente(Long id, String nome, String cognome, String email) {
 
@@ -245,7 +245,7 @@ public class UtenteService {
         return utenteRepository.save(utente);
     }
 
-    // Cambia il ruolo di un utente (solo ADMIN)
+    /*// Cambia il ruolo di un utente (solo ADMIN)
     public Utente cambiaRuolo(Long id, TipoUtente nuovoRuolo) {
 
         // CONTROLLO ID
@@ -262,7 +262,7 @@ public class UtenteService {
         utente.setTipoUtente(nuovoRuolo);
 
         return utenteRepository.save(utente);
-    }
+    }*/
 
     // Cambia il piano di un utente
     public Utente cambiaPiano(Long id, TipoPiano nuovoPiano) {
