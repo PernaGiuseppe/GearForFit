@@ -164,7 +164,7 @@ export default function DietaDettaglio() {
   const giorniPresenti = ordineGiorni.filter((g) => pastiPerGiorno[g])
 
   return (
-    <div className="container py-4">
+    <div className="container py-4 page-content-custom">
       {/* Intestazione */}
       <div className="row align-items-center mb-4">
         <div className="col-12 col-md-8 d-flex align-items-center">

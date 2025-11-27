@@ -26,25 +26,45 @@ export default function Schede() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
+  const isAdmin = user?.tipoUtente === 'ADMIN'
+
   const canViewPersonalized = useMemo(() => {
     if (!user) return false
     const p = user.tipoPiano
-    return p === 'GOLD' || p === 'PREMIUM' || user.tipoUtente === 'ADMIN'
+    return p === 'GOLD' || p === 'PREMIUM'
   }, [user])
 
   useEffect(() => {
     if (!user) return
-
     setLoading(true)
     setError(null)
 
     let fetchUrl = ''
 
-    // Admin per tutte le schede**
-    if (user.tipoUtente === 'ADMIN') {
-      fetchUrl = `${API_BASE_URL}/admin/schede`
+    if (isAdmin) {
+      // ADMIN: Applica filtri con endpoint dedicati
+      if (filter === 'STANDARD') {
+        if (obiettivoFilter === 'ALL') {
+          fetchUrl = `${API_BASE_URL}/admin/schede/standard`
+        } else {
+          fetchUrl = `${API_BASE_URL}/admin/schede/standard/obiettivo/${obiettivoFilter}`
+        }
+      } else if (filter === 'PERSONALIZZATE') {
+        if (obiettivoFilter === 'ALL') {
+          fetchUrl = `${API_BASE_URL}/admin/schede/custom`
+        } else {
+          fetchUrl = `${API_BASE_URL}/admin/schede/custom/obiettivo/${obiettivoFilter}`
+        }
+      } else {
+        // filter === 'ALL'
+        if (obiettivoFilter === 'ALL') {
+          fetchUrl = `${API_BASE_URL}/admin/schede`
+        } else {
+          fetchUrl = `${API_BASE_URL}/admin/schede/obiettivo/${obiettivoFilter}`
+        }
+      }
     } else {
-      // In caso contrario filtri vari
+      // UTENTI NORMALI
       if (filter === 'ALL') {
         if (obiettivoFilter === 'ALL') {
           fetchUrl = `${API_BASE_URL}/schede-allenamento?filtro=ALL`
@@ -87,9 +107,8 @@ export default function Schede() {
       .finally(() => {
         setLoading(false)
       })
-  }, [user, filter, obiettivoFilter])
+  }, [user, filter, obiettivoFilter, isAdmin])
 
-  // Reset del filtro obiettivo quando cambia il filtro principale
   useEffect(() => {
     setObiettivoFilter('ALL')
   }, [filter])
@@ -153,7 +172,7 @@ export default function Schede() {
     }
 
     try {
-      // Admin usa endpoint per eliminare qualsiasi scheda**
+      // Admin usa endpoint per eliminare qualsiasi scheda
       const endpoint =
         user?.tipoUtente === 'ADMIN'
           ? `${API_BASE_URL}/admin/schede/${schedaId}`
@@ -178,7 +197,7 @@ export default function Schede() {
   if (!user) return <div>Devi essere loggato per accedere alle schede.</div>
 
   return (
-    <div className="container mt-4">
+    <div className="container mt-4 page-content-custom">
       <div className="d-flex justify-content-between align-items-center mb-3">
         <h1>Catalogo Schede Allenamento</h1>
         {(user?.tipoPiano === 'GOLD' || user?.tipoPiano === 'PREMIUM') && (
@@ -187,16 +206,19 @@ export default function Schede() {
             Crea scheda personalizzata
           </Link>
         )}
-        {user?.tipoUtente === 'ADMIN' && (
+        {isAdmin && (
           <>
             <div className="admin-buttons">
               <Link
                 to="/schede/standard-admin"
-                className="btn btn-primary me-2"
+                className="btn btn-primary mb-3 ms-2"
               >
                 Crea scheda standard
               </Link>
-              <Link to="/schede/custom-admin" className="btn btn-info">
+              <Link
+                to="/schede/custom-admin"
+                className="btn btn-info mb-3 ms-2"
+              >
                 Crea scheda custom per Utente
               </Link>
             </div>
@@ -216,10 +238,17 @@ export default function Schede() {
             onChange={(e) => setFilter(e.target.value as FilterType)}
             disabled={loading}
           >
-            {canViewPersonalized && <option value="ALL">Tutte</option>}
+            {(canViewPersonalized || isAdmin) && (
+              <option value="ALL">Tutte</option>
+            )}
             <option value="STANDARD">Standard</option>
-            {canViewPersonalized && (
+            {/* Nasconde "Le mie Schede" per ADMIN perché non ne ha */}
+            {canViewPersonalized && !isAdmin && (
               <option value="PERSONALIZZATE">Le mie Schede</option>
+            )}
+            {/* ADMIN vede schede Custom */}
+            {isAdmin && (
+              <option value="PERSONALIZZATE">Schede custom utenti</option>
             )}
           </select>
         </div>
@@ -248,7 +277,9 @@ export default function Schede() {
       {error && <div className="alert alert-danger">{error}</div>}
       {loading && <p>Caricamento schede...</p>}
       {!loading && !error && schede.length === 0 && (
-        <p>Nessuna scheda trovata per i filtri selezionati.</p>
+        <div className="alert alert-info">
+          Nessuna scheda trovata per i filtri selezionati.
+        </div>
       )}
 
       {!loading && schede.length > 0 && (

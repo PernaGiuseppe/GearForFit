@@ -214,6 +214,27 @@ public class DietaService {
                 .map(this::convertToDTO)
                 .toList();
     }
+    // Ottieni TUTTE le diete custom di TUTTI gli utenti (per ADMIN)
+    @Transactional(readOnly = true)
+    public List<DietaDTO> getAllDieteCustom() {
+        List<Dieta> diete = dietaRepository.findAllByIsStandardFalse();
+
+        // Non lanciare eccezione se vuota - è normale per l'admin
+        return diete.stream()
+                .map(this::convertToDTO)
+                .toList();
+    }
+
+    // Ottieni TUTTE le diete standard (per ADMIN)
+    @Transactional(readOnly = true)
+    public List<DietaDTO> getDieteStandardAdmin() {
+        List<Dieta> diete = dietaRepository.findAllByIsStandardTrue();
+
+        return diete.stream()
+                .map(this::convertToDTO)
+                .toList();
+    }
+
     // ===== UTENTE: GESTIONE DIETE CUSTOM =====
 
     public DietaDTO creaDialogDietaCustom(Long dietaStandardId, DietaCreateRequestDTO request, Utente utente) {

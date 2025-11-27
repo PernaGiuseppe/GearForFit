@@ -23,6 +23,7 @@ import { canUserAccessChat } from './features/auth/authSlice'
 import SchedaCustomAdmin from './components/Admin/SchedaCustomAdmin'
 import SchedaStandardAdmin from './components/Admin/SchedaStandardAdmin'
 import ArticoliDettaglio from './components/Home/ArticoliDettaglio'
+import './App.css'
 
 export default function App() {
   const user = useSelector((s: RootState) => s.auth.user)

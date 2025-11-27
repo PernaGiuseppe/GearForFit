@@ -287,7 +287,7 @@ export default function SchedaCustomAdmin() {
 
   if (currentStep === 0) {
     return (
-      <div className="container mt-4">
+      <div className="container mt-4 page-content-custom ">
         <h1>Crea Scheda Custom per Utente</h1>
         <p className="text-muted">
           Configura una nuova scheda personalizzata e assegnala a un utente
@@ -427,7 +427,7 @@ export default function SchedaCustomAdmin() {
             </div>
 
             <button
-              className="btn btn-primary mt-4"
+              className="btn btn-primary mt-4 mb-3"
               onClick={handleStartCreation}
             >
               Inizia Creazione

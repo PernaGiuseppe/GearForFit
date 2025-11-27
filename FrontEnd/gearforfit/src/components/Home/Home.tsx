@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 
 export default function Home() {
   return (
-    <div className="mb-5">
+    <div className="mb-5 page-content">
       {/* ... TITOLO SEZIONE ... */}
       <div className="row align-items-center mb-4">
         <div className="col">

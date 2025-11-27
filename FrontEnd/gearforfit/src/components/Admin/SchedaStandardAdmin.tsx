@@ -246,7 +246,7 @@ export default function SchedaStandardAdmin() {
 
   if (currentStep === 0) {
     return (
-      <div className="container mt-4">
+      <div className="container mt-4 page-content-custom">
         <h1>Crea Scheda Standard</h1>
         <p className="text-muted">
           Configura una nuova scheda di allenamento standard
@@ -356,7 +356,10 @@ export default function SchedaStandardAdmin() {
           </small>
         </div>
 
-        <button className="btn btn-primary mt-4" onClick={handleStartCreation}>
+        <button
+          className="btn btn-primary mt-4 mb-3"
+          onClick={handleStartCreation}
+        >
           Inizia Creazione
         </button>
       </div>

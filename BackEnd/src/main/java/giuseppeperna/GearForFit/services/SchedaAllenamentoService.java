@@ -159,67 +159,7 @@ public class SchedaAllenamentoService {
                 .map(this::mapToDTO)
                 .collect(Collectors.toList());
     }
-    // Admin modifica una scheda personalizzata di un utente
 
-   /* public SchedaAllenamentoDTO adminModificaSchedaPersonalizzata(Long utenteId, Long schedaId, SchedaPersonalizzataRequestDTO body) {
-        // Trova l'utente per assicurarsi che esista
-        Utente utente = utenteRepository.findById(utenteId)
-                .orElseThrow(() -> new NotFoundException("Utente non trovato con ID: " + utenteId));
-
-        // Trova la scheda da modificare
-        SchedaAllenamento scheda = schedaRepository.findById(schedaId)
-                .orElseThrow(() -> new NotFoundException("Scheda non trovata con ID: " + schedaId));
-
-        // Controlla che la scheda appartenga all'utente specificato
-        if (scheda.getUtente() == null || !scheda.getUtente().getId().equals(utente.getId())) {
-            throw new UnauthorizedException("La scheda con ID " + schedaId + " non appartiene all'utente con ID " + utenteId);
-        }
-
-        // Controllo di sicurezza: assicura che sia una scheda personalizzata
-        if (scheda.getIsStandard()) {
-            throw new UnauthorizedException("Questa è una scheda standard e non può essere modificata per un utente.");
-        }
-
-        // Aggiornamento dei dati della scheda
-        scheda.setNome(body.nome());
-        scheda.setDescrizione(body.descrizione());
-        scheda.setObiettivo(body.obiettivo());
-        scheda.setDurataSettimane(body.durataSettimane());
-
-        // Pulisce i giorni e le serie esistenti
-        scheda.getGiorni().clear();
-
-        // Ricrea i giorni e le serie dalla richiesta
-        if (body.giorni() != null && !body.giorni().isEmpty()) {
-            List<GiornoAllenamento> nuoviGiorni = new ArrayList<>();
-            for (GiornoAllenamentoRequestDTO giornoDTO : body.giorni()) {
-                GiornoAllenamento giorno = new GiornoAllenamento();
-                giorno.setGiornoSettimana(giornoDTO.giornoSettimana());
-                giorno.setScheda(scheda);
-
-                List<Serie> serieList = new ArrayList<>();
-                for (SerieRequestDTO serieDTO : giornoDTO.serie()) {
-                    Esercizio esercizio = esercizioRepository.findById(serieDTO.esercizioId())
-                            .orElseThrow(() -> new NotFoundException("Esercizio con ID " + serieDTO.esercizioId() + " non trovato"));
-
-                    Serie serie = new Serie();
-                    serie.setEsercizio(esercizio);
-                    serie.setNumeroSerie(serieDTO.numeroSerie());
-                    serie.setNumeroRipetizioni(serieDTO.numeroRipetizioni());
-                    serie.setTempoRecuperoSecondi(serieDTO.tempoRecuperoSecondi());
-                    serie.setGiorno(giorno);
-                    serieList.add(serie);
-                }
-                giorno.setSerie(serieList);
-                nuoviGiorni.add(giorno);
-            }
-            scheda.getGiorni().addAll(nuoviGiorni);
-        }
-
-        SchedaAllenamento updated = schedaRepository.save(scheda);
-        return mapToDTO(updated);
-    }
-*/
     // Metodo per l'ADMIN per eliminare QUALSIASI scheda
     public void adminEliminaScheda(Long schedaId) {
         SchedaAllenamento scheda = schedaRepository.findById(schedaId)
@@ -281,56 +221,7 @@ public class SchedaAllenamentoService {
                 .collect(Collectors.toList());
     }
 
-    /*public SchedaAllenamentoDTO modificaSchedaPersonalizzata(Long schedaId, Long utenteId, SchedaPersonalizzataRequestDTO body) {
-        SchedaAllenamento scheda = schedaRepository.findById(schedaId)
-                .orElseThrow(() -> new NotFoundException("Scheda non trovata"));
 
-        if (scheda.getIsStandard()) {
-            throw new UnauthorizedException("Non puoi modificare una scheda standard");
-        }
-        if (scheda.getUtente() == null || !scheda.getUtente().getId().equals(utenteId)) {
-            throw new UnauthorizedException("Non puoi modificare questa scheda");
-        }
-
-        scheda.setNome(body.nome());
-        scheda.setDescrizione(body.descrizione());
-        scheda.setObiettivo(body.obiettivo());
-        scheda.setDurataSettimane(body.durataSettimane());
-
-        // Svuota i giorni esistenti (grazie a orphanRemoval=true verranno cancellati)
-        scheda.getGiorni().clear();
-
-        if (body.giorni() != null && !body.giorni().isEmpty()) {
-            List<GiornoAllenamento> nuoviGiorni = new ArrayList<>();
-            for (GiornoAllenamentoRequestDTO giornoDTO : body.giorni()) {
-                GiornoAllenamento giorno = new GiornoAllenamento();
-                giorno.setGiornoSettimana(giornoDTO.giornoSettimana());
-                giorno.setScheda(scheda);
-
-                List<Serie> serieList = new ArrayList<>();
-                for (SerieRequestDTO serieDTO : giornoDTO.serie()) {
-                    Esercizio esercizio = esercizioRepository.findById(serieDTO.esercizioId())
-                            .orElseThrow(() -> new NotFoundException("Esercizio con ID " + serieDTO.esercizioId() + " non trovato"));
-
-                    Serie serie = new Serie();
-                    serie.setEsercizio(esercizio);
-                    serie.setNumeroSerie(serieDTO.numeroSerie());
-                    serie.setNumeroRipetizioni(serieDTO.numeroRipetizioni());
-                    serie.setTempoRecuperoSecondi(serieDTO.tempoRecuperoSecondi());
-                    serie.setGiorno(giorno);
-                    serieList.add(serie);
-                }
-                giorno.setSerie(serieList);
-                nuoviGiorni.add(giorno);
-            }
-            // Aggiungi i nuovi giorni alla lista (che ora è gestita dalla sessione JPA)
-            scheda.getGiorni().addAll(nuoviGiorni);
-        }
-        // ===============================================
-
-        SchedaAllenamento updated = schedaRepository.save(scheda);
-        return mapToDTO(updated);
-    }*/
     @Transactional
     public SerieDTO aggiornaPesoSerie(Long schedaId, Long serieId, String peso, Utente utenteLoggato) {
         // 1. Verifica che la scheda appartenga all'utente loggato
@@ -521,6 +412,32 @@ public class SchedaAllenamentoService {
         SchedaAllenamento scheda = schedaRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Scheda con id " + id + " non trovata"));
         schedaRepository.delete(scheda);
+    }
+    // Ottieni tutte le schede custom (di tutti gli utenti)
+    public List<SchedaAllenamentoDTO> getAllSchedeCustom() {
+        List<SchedaAllenamento> schede = schedaRepository.findByIsStandardFalse();
+        return schede.stream().map(this::mapToDTO).toList();
+    }
+
+    // Ottieni schede standard filtrate per obiettivo
+    public List<SchedaAllenamentoDTO> getSchedeStandardPerObiettivo(ObiettivoAllenamento obiettivo) {
+        List<SchedaAllenamento> schede = schedaRepository
+                .findByIsStandardTrueAndObiettivo(obiettivo);
+        return schede.stream().map(this::mapToDTO).toList();
+    }
+
+    // Ottieni schede custom filtrate per obiettivo (di tutti gli utenti)
+    public List<SchedaAllenamentoDTO> getAllSchedeCustomPerObiettivo(ObiettivoAllenamento obiettivo) {
+        List<SchedaAllenamento> schede = schedaRepository
+                .findByIsStandardFalseAndObiettivo(obiettivo);
+        return schede.stream().map(this::mapToDTO).toList();
+    }
+
+    // Ottieni TUTTE le schede (standard + custom) filtrate per obiettivo
+    public List<SchedaAllenamentoDTO> getAllSchedePerObiettivo(ObiettivoAllenamento obiettivo) {
+        List<SchedaAllenamento> schede = schedaRepository
+                .findByObiettivo(obiettivo);
+        return schede.stream().map(this::mapToDTO).toList();
     }
     // ========== UTILITY ==========
     private SchedaAllenamentoDTO mapToDTO(SchedaAllenamento scheda) {

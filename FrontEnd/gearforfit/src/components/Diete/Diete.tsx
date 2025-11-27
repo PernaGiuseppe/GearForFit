@@ -26,15 +26,12 @@ export default function Diete() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
+  const isAdmin = user?.tipoUtente === 'ADMIN'
+
   const canViewPersonalized = useMemo(() => {
     if (!user) return false
     const p = user.tipoPiano
-    return (
-      p === 'SILVER' ||
-      p === 'GOLD' ||
-      p === 'PREMIUM' ||
-      user.tipoUtente === 'ADMIN'
-    )
+    return p === 'SILVER' || p === 'GOLD' || p === 'PREMIUM'
   }, [user])
 
   useEffect(() => {
@@ -45,16 +42,40 @@ export default function Diete() {
     const fetchDiete = async () => {
       try {
         let result: DietaDTO[] = []
-        const promises = []
+        const promises: Promise<DietaDTO[]>[] = []
 
-        if (user?.tipoUtente === 'ADMIN') {
-          const res = await fetch(`${API_BASE_URL}/admin/diete/all`, {
-            headers: getAuthHeader(),
+        if (isAdmin) {
+          if (filter === 'ALL' || filter === 'STANDARD') {
+            promises.push(
+              fetch(`${API_BASE_URL}/admin/diete/standard`, {
+                headers: getAuthHeader(),
+              }).then((res) => {
+                if (!res.ok)
+                  throw new Error('Errore caricamento diete standard')
+                return res.json()
+              })
+            )
+          }
+
+          if (filter === 'ALL' || filter === 'PERSONALIZZATE') {
+            promises.push(
+              fetch(`${API_BASE_URL}/admin/diete/custom`, {
+                headers: getAuthHeader(),
+              }).then((res) => {
+                if (!res.ok) throw new Error('Errore caricamento diete custom')
+                return res.json()
+              })
+            )
+          }
+
+          const responses = await Promise.all(promises)
+          responses.forEach((data) => {
+            if (Array.isArray(data)) {
+              result = [...result, ...data]
+            }
           })
-          if (!res.ok) throw new Error('Errore caricamento diete')
-          const data = await res.json()
-          result = Array.isArray(data) ? data : []
         } else {
+          // UTENTI NORMALI
           if (filter === 'ALL' || filter === 'STANDARD') {
             promises.push(
               fetch(`${API_BASE_URL}/diete/standard`, {
@@ -66,7 +87,6 @@ export default function Diete() {
               })
             )
           }
-
           if (
             canViewPersonalized &&
             (filter === 'ALL' || filter === 'PERSONALIZZATE')
@@ -89,7 +109,6 @@ export default function Diete() {
             }
           })
         }
-
         if (tipoDietaFilter !== 'ALL') {
           result = result.filter((d) => d.tipoDieta === tipoDietaFilter)
         }
@@ -105,7 +124,7 @@ export default function Diete() {
     }
 
     fetchDiete()
-  }, [user, filter, tipoDietaFilter, canViewPersonalized])
+  }, [user, filter, tipoDietaFilter, canViewPersonalized, isAdmin])
 
   useEffect(() => {
     setTipoDietaFilter('ALL')
@@ -203,8 +222,7 @@ export default function Diete() {
         {(user?.tipoPiano === 'SILVER' ||
           user?.tipoPiano === 'GOLD' ||
           user?.tipoPiano === 'PREMIUM') && (
-          <Link to="/diete/crea-custom" className="btn btn-success">
-            <i className="bi bi-plus-circle me-2"></i>
+          <Link to="/diete/crea-custom" className="btn btn-success mb-3">
             Crea Dieta Custom
           </Link>
         )}
@@ -220,10 +238,17 @@ export default function Diete() {
             onChange={(e) => setFilter(e.target.value as FilterType)}
             disabled={loading}
           >
-            {canViewPersonalized && <option value="ALL">Tutte</option>}
+            {(canViewPersonalized || isAdmin) && (
+              <option value="ALL">Tutte</option>
+            )}
             <option value="STANDARD">Standard</option>
-            {canViewPersonalized && (
+            {/* Nascondi "Le mie Diete" se è ADMIN perché non ne ha */}
+            {canViewPersonalized && !isAdmin && (
               <option value="PERSONALIZZATE">Le mie Diete</option>
+            )}
+            {/* ADMIN vede le diete custom utenti */}
+            {isAdmin && (
+              <option value="PERSONALIZZATE">Diete custom utenti</option>
             )}
           </select>
         </div>
@@ -247,7 +272,7 @@ export default function Diete() {
       </div>
 
       {error && <div className="alert alert-danger">{error}</div>}
-      {loading && <div>Caricamento diete...</div>}
+      {loading && <p>Caricamento diete...</p>}
       {!loading && !error && diete.length === 0 && (
         <div className="alert alert-info">
           Nessuna dieta trovata per i filtri selezionati.

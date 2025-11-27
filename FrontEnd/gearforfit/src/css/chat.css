@@ -2,7 +2,7 @@
   position: fixed;
   top: 60px;
   left: 5px;
-  width: 300px;
+  width: 280px;
   height: calc(100vh - 80px); /* Altezza dinamica */
   max-height: 85vh;
   background: #ffffff;
@@ -34,7 +34,7 @@
   font-size: 16px;
   background-color: #f3f2ef;
   border-radius: 12px 12px 0 0;
-  flex-shrink: 0; /* Non si comprime */
+  flex-shrink: 0;
 }
 
 .close-button {

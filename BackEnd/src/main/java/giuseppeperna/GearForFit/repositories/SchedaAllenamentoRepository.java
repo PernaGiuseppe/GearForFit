@@ -35,6 +35,9 @@ public interface SchedaAllenamentoRepository extends JpaRepository<SchedaAllenam
     Optional<SchedaAllenamento> findByIdAndUtenteId(Long id, Long utenteId);
 
     Optional<SchedaAllenamento> findByUtenteIdAndAttivaTrue(Long utenteId);
+    List<SchedaAllenamento> findByIsStandardFalse();
+    List<SchedaAllenamento> findByIsStandardFalseAndObiettivo(ObiettivoAllenamento obiettivo);
+
 
 
 }

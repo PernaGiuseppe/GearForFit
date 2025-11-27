@@ -15,6 +15,8 @@ public interface DietaRepository extends JpaRepository<Dieta, Long> {
     // Template standard
     @Query("SELECT d FROM Dieta d WHERE d.isStandard = true ORDER BY d.id ASC")
     List<Dieta> findAllByIsStandardTrue();
+    @Query("SELECT d FROM Dieta d WHERE d.isStandard = false ORDER BY d.id ASC")
+    List<Dieta> findAllByIsStandardFalse();
 
     // Diete custom dell'utente
     @Query("SELECT d FROM Dieta d WHERE d.utente.id = :utenteId AND d.isStandard = false ORDER BY d.id ASC")
@@ -28,4 +30,8 @@ public interface DietaRepository extends JpaRepository<Dieta, Long> {
 
     //Trova la dieta attiva di un utente (solo custom)
     Optional<Dieta> findByUtenteIdAndIsAttivaTrueAndIsStandardFalse(Long utenteId);
+
+    List<Dieta> findByIsStandardFalse();
+
+
 }
