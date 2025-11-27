@@ -129,7 +129,6 @@ export default function SchedaDettaglio() {
     }
 
     try {
-      // **NEW: Admin usa endpoint /admin/schede/{id}**
       const endpoint =
         user?.tipoUtente === 'ADMIN'
           ? `${API_BASE_URL}/admin/schede/${scheda.id}`
@@ -152,13 +151,13 @@ export default function SchedaDettaglio() {
     }
   }
 
-  // --- NUOVO HANDLER PER AGGIORNARE IL PESO ---
+  // --- HANDLER PER AGGIORNARE IL PESO ---
   const handleWeightUpdate = async (
     serie: EsercizioScheda,
     newWeight: string
   ) => {
     if (!scheda || scheda.isStandard) return
-    setUpdateMessage(null) // Rimuovi eventuali messaggi precedenti
+    setUpdateMessage(null)
 
     try {
       const res = await fetch(
@@ -267,19 +266,19 @@ export default function SchedaDettaglio() {
   // Rendering degli stati di caricamento/errore/non trovato (omesso per brevità, è nel tuo codice originale)
   if (loading)
     return (
-      <div className="container mt-5 text-center">
+      <div className="container mt-5 text-center page-content-custom">
         <div className="spinner-border text-primary" role="status"></div>
       </div>
     )
   if (error)
     return (
-      <div className="container mt-5">
+      <div className="container mt-5 page-content-custom">
         <div className="alert alert-danger">{error}</div>
       </div>
     )
   if (!scheda)
     return (
-      <div className="container mt-5">
+      <div className="container mt-5 page-content-custom">
         <div className="alert alert-warning">Scheda non trovata.</div>
       </div>
     )

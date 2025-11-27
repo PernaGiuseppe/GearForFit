@@ -198,32 +198,34 @@ export default function Schede() {
 
   return (
     <div className="container mt-4 page-content-custom">
-      <div className="d-flex justify-content-between align-items-center mb-3">
-        <h1>Catalogo Schede Allenamento</h1>
-        {(user?.tipoPiano === 'GOLD' || user?.tipoPiano === 'PREMIUM') && (
-          <Link to="/schede/crea-custom" className="btn btn-success">
-            <i className="bi bi-plus-circle me-2"></i>
-            Crea scheda personalizzata
-          </Link>
-        )}
-        {isAdmin && (
-          <>
-            <div className="admin-buttons">
-              <Link
-                to="/schede/standard-admin"
-                className="btn btn-primary mb-3 ms-2"
-              >
-                Crea scheda standard
-              </Link>
-              <Link
-                to="/schede/custom-admin"
-                className="btn btn-info mb-3 ms-2"
-              >
-                Crea scheda custom per Utente
-              </Link>
-            </div>
-          </>
-        )}
+      <div className="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-3 gap-2 gap-md-3">
+        <h1 className="mb-3 mb-md-0">Catalogo Schede Allenamento</h1>
+        <div className="d-flex flex-column flex-sm-row gap-2">
+          {(user?.tipoPiano === 'GOLD' || user?.tipoPiano === 'PREMIUM') && (
+            <Link to="/schede/crea-custom" className="btn btn-success">
+              <i className="bi bi-plus-circle me-2"></i>
+              Crea scheda personalizzata
+            </Link>
+          )}
+          {isAdmin && (
+            <>
+              <div className="admin-buttons">
+                <Link
+                  to="/schede/standard-admin"
+                  className="btn btn-primary mb-3 ms-2"
+                >
+                  Crea scheda standard
+                </Link>
+                <Link
+                  to="/schede/custom-admin"
+                  className="btn btn-info mb-3 ms-2"
+                >
+                  Crea scheda custom per Utente
+                </Link>
+              </div>
+            </>
+          )}
+        </div>
       </div>
 
       <div className="row mb-3">
@@ -291,7 +293,10 @@ export default function Schede() {
             }`
 
             return (
-              <div key={uniqueKey} className="col-md-4 mb-4">
+              <div
+                key={uniqueKey}
+                className="col-12 col-sm-6 col-lg-4 col-xxl-3 mb-4"
+              >
                 <div className="card h-100 position-relative">
                   {/* BUTTON DELETE */}
                   {(!scheda.isStandard || user?.tipoUtente === 'ADMIN') && (

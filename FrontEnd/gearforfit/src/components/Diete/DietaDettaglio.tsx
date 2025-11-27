@@ -131,16 +131,24 @@ export default function DietaDettaglio() {
 
   if (loading)
     return (
-      <div className="container mt-5 text-center">
+      <div className="container mt-5 text-center page-content-custom ">
         <div className="spinner-border text-primary"></div>
       </div>
     )
   if (error)
-    return <div className="container mt-5 alert alert-danger">{error}</div>
+    return (
+      <>
+        <div className="page-content-custom">
+          <div className="container mt-5 alert alert-danger ">{error}</div>
+        </div>
+      </>
+    )
   if (!dieta)
     return (
-      <div className="container mt-5 alert alert-warning">
-        Dieta non trovata.
+      <div className="page-content-custom">
+        <div className="container mt-5 alert alert-warning">
+          Dieta non trovata.
+        </div>
       </div>
     )
 
@@ -166,8 +174,8 @@ export default function DietaDettaglio() {
   return (
     <div className="container py-4 page-content-custom">
       {/* Intestazione */}
-      <div className="row align-items-center mb-4">
-        <div className="col-12 col-md-8 d-flex align-items-center">
+      <div className="row align-items-start align-items-md-center mb-4">
+        <div className="col-12 col-md-8 mb-3 mb-md-0">
           <h1 className="fw-bold mb-2 me-3">{dieta.nome}</h1>
 
           {/* STELLA (Solo per custom) */}
@@ -187,7 +195,7 @@ export default function DietaDettaglio() {
           )}
         </div>
 
-        <div className="col-12 col-md-4 text-md-end mt-3 mt-md-0">
+        <div className="col-12 col-md-4 text-start text-md-end">
           {/* DELETE BUTTON */}
           {(user?.tipoUtente === 'ADMIN' || !dieta?.isStandard) && (
             <button
@@ -197,7 +205,6 @@ export default function DietaDettaglio() {
               <i className="bi bi-trash me-2"></i>Elimina
             </button>
           )}
-
           <Link to="/diete" className="btn btn-outline-secondary">
             <i className="bi bi-arrow-left me-2"></i>Indietro
           </Link>

@@ -2,12 +2,17 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { RootState } from '../../app/store'
 import { logout } from '../../features/auth/authSlice'
+import { Navbar, Nav, Container } from 'react-bootstrap'
+import { useState } from 'react' // Aggiungi questo import
+
 import '../../css/navbar.css'
 
 export default function Navbar() {
   const user = useSelector((s: RootState) => s.auth.user)
   const dispatch = useDispatch()
   const navigate = useNavigate()
+
+  const [expanded, setExpanded] = useState(false)
 
   const handleLogout = () => {
     dispatch(logout())
@@ -55,24 +60,30 @@ export default function Navbar() {
         <button
           className="navbar-toggler"
           type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarNav"
+          onClick={() => setExpanded(!expanded)}
           aria-controls="navbarNav"
-          aria-expanded="false"
+          aria-expanded={expanded}
           aria-label="Toggle navigation"
         >
           <span className="navbar-toggler-icon"></span>
         </button>
 
-        <div className="collapse navbar-collapse" id="navbarNav">
+        <div
+          className={`collapse navbar-collapse ${expanded ? 'show' : ''}`}
+          id="navbarNav"
+        >
           <ul
             className={`navbar-nav me-auto mb-2 mb-lg-0 ${
               user ? 'nav-with-badge' : ''
             }`}
           >
             {/* Home Link */}
-            <li className="nav-item">
-              <Link className="nav-link" to="/">
+            <li className="nav-item ms-3 ms-lg-0 mt-2 mt-lg-0">
+              <Link
+                className="nav-link"
+                to="/"
+                onClick={() => setExpanded(false)}
+              >
                 Home
               </Link>
             </li>
@@ -81,8 +92,12 @@ export default function Navbar() {
               <>
                 {/* Link Utenti - SOLO PER ADMIN */}
                 {user.tipoUtente === 'ADMIN' && (
-                  <li className="nav-item">
-                    <Link className="nav-link" to="/utenti">
+                  <li className="nav-item ms-3 ms-lg-0">
+                    <Link
+                      className="nav-link"
+                      to="/utenti"
+                      onClick={() => setExpanded(false)}
+                    >
                       Utenti
                     </Link>
                   </li>
@@ -94,8 +109,12 @@ export default function Navbar() {
                   user.tipoPiano === 'GOLD' ||
                   user.tipoPiano === 'SILVER' ||
                   user.tipoPiano === 'FREE') && (
-                  <li className="nav-item">
-                    <Link className="nav-link" to="/diete">
+                  <li className="nav-item ms-3 ms-lg-0">
+                    <Link
+                      className="nav-link"
+                      to="/diete"
+                      onClick={() => setExpanded(false)}
+                    >
                       Diete
                     </Link>
                   </li>
@@ -106,8 +125,12 @@ export default function Navbar() {
                   user.tipoPiano === 'PREMIUM' ||
                   user.tipoPiano === 'GOLD' ||
                   user.tipoPiano === 'SILVER') && (
-                  <li className="nav-item">
-                    <Link className="nav-link" to="/schede">
+                  <li className="nav-item ms-3 ms-lg-0">
+                    <Link
+                      className="nav-link"
+                      to="/schede"
+                      onClick={() => setExpanded(false)}
+                    >
                       Schede
                     </Link>
                   </li>
@@ -116,11 +139,15 @@ export default function Navbar() {
             )}
           </ul>
 
-          <ul className="navbar-nav ms-auto">
+          <ul className="navbar-nav ms-auto me-1">
             {/* Link al Profilo - SOLO PER UTENTI NON ADMIN */}
             {user && user.tipoUtente !== 'ADMIN' && (
-              <li className="nav-item">
-                <Link className="nav-link" to="/profilo">
+              <li className="nav-item me-2 ms-3 ms-lg-0">
+                <Link
+                  className="nav-link"
+                  to="/profilo"
+                  onClick={() => setExpanded(false)}
+                >
                   Profilo
                 </Link>
               </li>
@@ -129,22 +156,33 @@ export default function Navbar() {
             {/* Login/Logout Buttons */}
             {!user ? (
               <>
-                <li className="nav-item">
-                  <Link className="btn btn-primary me-2" to="/login">
+                <li className="nav-item ms-3 ms-lg-0 my-2 my-lg-0">
+                  <Link
+                    className="btn btn-primary me-2"
+                    to="/login"
+                    onClick={() => setExpanded(false)}
+                  >
                     Accedi
                   </Link>
                 </li>
-                <li className="nav-item mx-2">
-                  <Link className="btn btn-outline-light" to="/register">
+                <li className="nav-item mx-2 ms-3 ms-lg-0 my-2 my-lg-0">
+                  <Link
+                    className="btn btn-outline-light"
+                    to="/register"
+                    onClick={() => setExpanded(false)}
+                  >
                     Registrati
                   </Link>
                 </li>
               </>
             ) : (
-              <li className="nav-item me-2">
+              <li className="nav-item me-2 ms-3 ms-lg-0 my-3 my-lg-0">
                 <button
                   className="btn btn-outline-light"
-                  onClick={handleLogout}
+                  onClick={() => {
+                    handleLogout()
+                    setExpanded(false)
+                  }}
                 >
                   Logout
                 </button>

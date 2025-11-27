@@ -216,7 +216,7 @@ export default function Diete() {
   if (!user) return <div>Devi essere loggato per vedere le diete.</div>
 
   return (
-    <div className="container mt-4">
+    <div className="container mt-4 page-content-custom">
       <div className="d-flex justify-content-between align-items-center mb-3">
         <h1>Catalogo Diete</h1>
         {(user?.tipoPiano === 'SILVER' ||
@@ -289,7 +289,10 @@ export default function Diete() {
             const queryType = dieta.isStandard ? 'standard' : 'custom'
 
             return (
-              <div key={uniqueKey} className="col-md-4 mb-4">
+              <div
+                key={uniqueKey}
+                className="col-12 col-sm-6 col-lg-4 col-xxl-3 mb-4"
+              >
                 {/* Aggiunta classe card-diet-wrapper per posizionamento relativo del bottone delete */}
                 <div className="card h-100 card-diet-wrapper">
                   {/* BUTTON DELETE  */}

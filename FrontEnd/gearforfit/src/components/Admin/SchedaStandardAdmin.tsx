@@ -416,19 +416,23 @@ export default function SchedaStandardAdmin() {
               >
                 <img
                   src={esercizio.urlImmagine}
-                  className="card-img-top"
+                  className="card-img-top mt-3"
                   alt={esercizio.nome}
-                  style={{ height: '150px', objectFit: 'cover' }}
+                  style={{ height: '180px', objectFit: 'cover' }}
                 />
-                <div className="card-body p-2">
+                <div className="card-body d-flex flex-column">
                   <h6 className="card-title">{esercizio.nome}</h6>
-                  <p className="card-text small">{esercizio.descrizione}</p>
-                  <p className="card-text small mb-1">
-                    <strong>Gruppo:</strong> {esercizio.gruppoMuscolare.nome}
+                  <p className="card-text small mb-3">
+                    {esercizio.descrizione}
                   </p>
-                  <p className="card-text small">
-                    <strong>Attrezzo:</strong> {esercizio.attrezzo.nome}
-                  </p>
+                  <div className="mt-auto">
+                    <p className="card-text small mb-1">
+                      <strong>Gruppo:</strong> {esercizio.gruppoMuscolare.nome}
+                    </p>
+                    <p className="card-text small mb-0">
+                      <strong>Attrezzo:</strong> {esercizio.attrezzo.nome}
+                    </p>
+                  </div>
 
                   {isSelected && config && (
                     <div className="mt-2" onClick={(e) => e.stopPropagation()}>

@@ -50,70 +50,72 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="card mx-auto" style={{ maxWidth: 520 }}>
-      <div className="card-body">
-        <h5 className="card-title">Registrazione</h5>
-        {/* Mostra errore o successo */}
-        {error && <div className="alert alert-danger">{error}</div>}
-        {successMessage && (
-          <div className="alert alert-success">{successMessage}</div>
-        )}
+    <div className="page-content-custom-2">
+      <div className="card mx-auto" style={{ maxWidth: 520 }}>
+        <div className="card-body">
+          <h5 className="card-title">Registrazione</h5>
+          {/* Mostra errore o successo */}
+          {error && <div className="alert alert-danger">{error}</div>}
+          {successMessage && (
+            <div className="alert alert-success">{successMessage}</div>
+          )}
 
-        <form onSubmit={handleSubmit}>
-          <div className="mb-2">
-            <label className="form-label">Nome</label>
-            <input
-              className="form-control"
-              value={nome}
-              onChange={(e) => setNome(e.target.value)}
-              required
-            />
-          </div>
+          <form onSubmit={handleSubmit}>
+            <div className="mb-2">
+              <label className="form-label">Nome</label>
+              <input
+                className="form-control"
+                value={nome}
+                onChange={(e) => setNome(e.target.value)}
+                required
+              />
+            </div>
 
-          <div className="mb-2">
-            <label className="form-label">Cognome</label>
-            <input
-              className="form-control"
-              value={cognome}
-              onChange={(e) => setCognome(e.target.value)}
-              required
-            />
-          </div>
+            <div className="mb-2">
+              <label className="form-label">Cognome</label>
+              <input
+                className="form-control"
+                value={cognome}
+                onChange={(e) => setCognome(e.target.value)}
+                required
+              />
+            </div>
 
-          <div className="mb-2">
-            <label className="form-label">Email</label>
-            <input
-              type="email"
-              className="form-control"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </div>
+            <div className="mb-2">
+              <label className="form-label">Email</label>
+              <input
+                type="email"
+                className="form-control"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
 
-          <div className="mb-3">
-            <label className="form-label">Password</label>
-            <input
-              type="password"
-              className="form-control"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </div>
+            <div className="mb-3">
+              <label className="form-label">Password</label>
+              <input
+                type="password"
+                className="form-control"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </div>
 
-          <button
-            type="submit"
-            className="btn btn-success"
-            disabled={isLoading}
-          >
-            {isLoading ? 'Registrazione in corso...' : 'Registrati'}
-          </button>
-        </form>
-        <hr />
-        <p className="text-center">
-          Sei già registrato? <Link to="/login">Accedi</Link>
-        </p>
+            <button
+              type="submit"
+              className="btn btn-success"
+              disabled={isLoading}
+            >
+              {isLoading ? 'Registrazione in corso...' : 'Registrati'}
+            </button>
+          </form>
+          <hr />
+          <p className="text-center">
+            Sei già registrato? <Link to="/login">Accedi</Link>
+          </p>
+        </div>
       </div>
     </div>
   )

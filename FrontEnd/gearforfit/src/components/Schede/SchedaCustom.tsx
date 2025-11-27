@@ -250,7 +250,7 @@ export default function SchedaCustom() {
 
   if (currentStep === 0) {
     return (
-      <div className="container mt-4">
+      <div className="container mt-4 page-content-custom">
         <h1>Crea la tua Scheda Custom</h1>
         <p className="text-muted">
           Configura la tua scheda di allenamento personalizzata
@@ -358,7 +358,7 @@ export default function SchedaCustom() {
           </small>
         </div>
 
-        <button className="btn btn-primary mt-4" onClick={handleStartCreation}>
+        <button className="btn btn-primary my-4" onClick={handleStartCreation}>
           Inizia Creazione
         </button>
       </div>
@@ -415,19 +415,23 @@ export default function SchedaCustom() {
               >
                 <img
                   src={esercizio.urlImmagine}
-                  className="card-img-top"
+                  className="card-img-top mt-3"
                   alt={esercizio.nome}
-                  style={{ height: '150px', objectFit: 'cover' }}
+                  style={{ height: '180px', objectFit: 'cover' }}
                 />
-                <div className="card-body p-2">
+                <div className="card-body d-flex flex-column">
                   <h6 className="card-title">{esercizio.nome}</h6>
-                  <p className="card-text small">{esercizio.descrizione}</p>
-                  <p className="card-text small mb-1">
-                    <strong>Gruppo:</strong> {esercizio.gruppoMuscolare.nome}
+                  <p className="card-text small mb-3">
+                    {esercizio.descrizione}
                   </p>
-                  <p className="card-text small">
-                    <strong>Attrezzo:</strong> {esercizio.attrezzo.nome}
-                  </p>
+                  <div className="mt-auto">
+                    <p className="card-text small mb-1">
+                      <strong>Gruppo:</strong> {esercizio.gruppoMuscolare.nome}
+                    </p>
+                    <p className="card-text small mb-0">
+                      <strong>Attrezzo:</strong> {esercizio.attrezzo.nome}
+                    </p>
+                  </div>
 
                   {isSelected && config && (
                     <div className="mt-2" onClick={(e) => e.stopPropagation()}>

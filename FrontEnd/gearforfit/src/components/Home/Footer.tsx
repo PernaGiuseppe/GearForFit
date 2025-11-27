@@ -29,7 +29,7 @@ export default function Footer() {
       fluid
       className="bg-dark text-light mt-2 border-top border-secondary"
     >
-      <Row className="px-md-5 px-3 py-5">
+      <Row className="px-md-3Z px-3 pt-5">
         {/* Colonna Logo */}
         <Col xs={12} md={3} className="mb-4 mb-md-0">
           <Link
@@ -48,8 +48,8 @@ export default function Footer() {
 
         {/* Colonne Link Dinamici */}
         {linkSections.map((section, sectionIndex) => (
-          <Col xs={6} md={2} key={sectionIndex}>
-            <ul className="list-unstyled">
+          <Col xs={6} md={3} lg={2} key={sectionIndex}>
+            <ul className="list-unstyled ms-3 ms-md-4 ms-lg-0">
               {section.map((link, linkIndex) => (
                 <li key={linkIndex} className="mb-2">
                   <Link
@@ -63,19 +63,6 @@ export default function Footer() {
             </ul>
           </Col>
         ))}
-
-        {/* 
-          <Form.Select
-            aria-label="Seleziona lingua"
-            className="bg-dark text-light border-secondary"
-          >
-            <option>Seleziona Lingua</option>
-            <option value="it">Italiano (Italiano)</option>
-            <option value="en">English (Inglese)</option>
-            <option value="fr">Français (Francese)</option>
-            <option value="es">Español (Spagnolo)</option>
-            <option value="de">Deutsch (Tedesco)</option>
-          </Form.Select> */}
       </Row>
       <Row className="border-top border-secondary mt-3">
         <Col className="text-center py-3">

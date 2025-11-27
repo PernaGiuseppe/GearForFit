@@ -128,19 +128,14 @@ export default function DietaCustom() {
   }
 
   return (
-    <div className="container mt-4">
+    <div className="container mt-4 page-content-custom">
       <h1>Crea la tua Dieta Personalizzata</h1>
-      <p className="text-muted">
-        Scegli una dieta standard come base e personalizzala secondo le tue
-        esigenze
-      </p>
-
       <form onSubmit={handleSubmit}>
         {/* Selezione dieta standard */}
         <div className="row mt-4">
           <div className="col-md-12">
             <label className="form-label">
-              Dieta Standard di riferimento *
+              Seleziona una dieta Standard di riferimento *
             </label>
             {loadingDiete ? (
               <p>Caricamento diete...</p>
@@ -159,10 +154,6 @@ export default function DietaCustom() {
                 ))}
               </select>
             )}
-            <small className="text-muted">
-              La dieta standard sarà utilizzata come modello per creare la tua
-              dieta personalizzata
-            </small>
           </div>
         </div>
 
@@ -211,7 +202,7 @@ export default function DietaCustom() {
         </div>
 
         <div className="row mt-3">
-          <div className="col-md-3">
+          <div className="col-12 col-sm-6 col-md-3 mb-3">
             <label className="form-label">Peso (kg) *</label>
             <input
               type="number"
@@ -225,7 +216,7 @@ export default function DietaCustom() {
               required
             />
           </div>
-          <div className="col-md-3">
+          <div className="col-12 col-sm-6 col-md-3 mb-3">
             <label className="form-label">Altezza (cm) *</label>
             <input
               type="number"
@@ -238,7 +229,7 @@ export default function DietaCustom() {
               required
             />
           </div>
-          <div className="col-md-3">
+          <div className="col-12 col-sm-6 col-md-3 mb-3">
             <label className="form-label">Età *</label>
             <input
               type="number"
@@ -251,7 +242,7 @@ export default function DietaCustom() {
               required
             />
           </div>
-          <div className="col-md-3">
+          <div className="col-12 col-sm-6 col-md-3 mb-3">
             <label className="form-label">Sesso *</label>
             <select
               className="form-select"
@@ -269,7 +260,9 @@ export default function DietaCustom() {
         {/* Livello attività */}
         <div className="row mt-3">
           <div className="col-md-12">
-            <label className="form-label">Livello di Attività Fisica *</label>
+            <label className="form-label">
+              Livello di Attività Fisica (serve al calcolo delle calorie) *
+            </label>
             <select
               className="form-select"
               value={livelloAttivita}
@@ -283,15 +276,11 @@ export default function DietaCustom() {
                 </option>
               ))}
             </select>
-            <small className="text-muted">
-              Il livello di attività sarà utilizzato per calcolare il tuo
-              fabbisogno calorico
-            </small>
           </div>
         </div>
 
         {/* Bottoni */}
-        <div className="mt-4 mb-5">
+        <div className="mt-4 mb-4">
           <button
             type="submit"
             className="btn btn-success me-2"

@@ -46,58 +46,60 @@ export default function LoginPage() {
   const displayError = getErrorMessage(error)
 
   return (
-    <div className="card mx-auto" style={{ maxWidth: 520 }}>
-      <div className="card-body">
-        <h5 className="card-title">Login</h5>
+    <div className="page-content-custom-2">
+      <div className="card mx-auto " style={{ maxWidth: 520 }}>
+        <div className="card-body">
+          <h5 className="card-title">Login</h5>
 
-        {/* Mostra Alert Errore */}
-        {displayError && (
-          <div
-            className={`alert ${
-              displayError.includes('non è attivo')
-                ? 'alert-warning'
-                : 'alert-danger'
-            }`}
-          >
-            {displayError}
-          </div>
-        )}
+          {/* Mostra Alert Errore */}
+          {displayError && (
+            <div
+              className={`alert ${
+                displayError.includes('non è attivo')
+                  ? 'alert-warning'
+                  : 'alert-danger'
+              }`}
+            >
+              {displayError}
+            </div>
+          )}
 
-        <form onSubmit={submit}>
-          <div className="mb-2">
-            <label className="form-label">Email</label>
-            <input
-              type="email"
-              className="form-control"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </div>
+          <form onSubmit={submit}>
+            <div className="mb-2">
+              <label className="form-label">Email</label>
+              <input
+                type="email"
+                className="form-control"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
 
-          <div className="mb-3">
-            <label className="form-label">Password</label>
-            <input
-              type="password"
-              className="form-control"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </div>
+            <div className="mb-3">
+              <label className="form-label">Password</label>
+              <input
+                type="password"
+                className="form-control"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </div>
 
-          <button
-            type="submit"
-            className="btn btn-primary"
-            disabled={isLoading}
-          >
-            {isLoading ? 'Accesso in corso...' : 'Login'}
-          </button>
-        </form>
-        <hr />
-        <p className="text-center">
-          Non hai un account? <Link to="/register">Registrati</Link>
-        </p>
+            <button
+              type="submit"
+              className="btn btn-primary"
+              disabled={isLoading}
+            >
+              {isLoading ? 'Accesso in corso...' : 'Login'}
+            </button>
+          </form>
+          <hr />
+          <p className="text-center">
+            Non hai un account? <Link to="/register">Registrati</Link>
+          </p>
+        </div>
       </div>
     </div>
   )

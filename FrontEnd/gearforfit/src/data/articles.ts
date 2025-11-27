@@ -97,7 +97,7 @@ La verità? Il miglior fisico nasce dall’unione di cardio e resistenza, non da
     image: 'Idratazione-e-sport',
     title: 'Idratazione e Performance',
     excerpt: 'Quanto bere?',
-    date: '01/01/2024',
+    date: '01/10/2024',
     author: 'Admin',
     content: `Spesso sottovalutata, l’idratazione è uno dei fattori più influenti sulle prestazioni sportive.
 
@@ -120,7 +120,7 @@ Bere non è un dettaglio: è una strategia di performance.`,
     image: 'Stretching-1',
     title: 'Importanza della Mobilità',
     excerpt: 'Evita infortuni.',
-    date: '01/01/2024',
+    date: '20/11/2024',
     author: 'Admin',
     content: `La mobilità non riguarda solo lo stretching: è la capacità del corpo di muoversi in modo efficiente, stabile e sicuro.
 
@@ -143,7 +143,7 @@ La mobilità è allenamento: trattala come tale.`,
     image: 'cibo-integratori',
     title: 'Pre-Workout: Cibo vs Integratori',
     excerpt: 'Cosa mangiare?',
-    date: '01/01/2024',
+    date: '09/08/2025',
     author: 'Admin',
     content: `Cosa assumere prima di un allenamento? La risposta dipende dal tuo obiettivo e dal tempo a disposizione.
 
@@ -167,7 +167,7 @@ Il cibo è la base, gli integratori sono un’opzione. Non il contrario.`,
     image: 'finestra-anabolica',
     title: 'Finestra Anabolica',
     excerpt: 'Mito o realtà?',
-    date: '01/01/2024',
+    date: '05/09/2025',
     author: 'Admin',
     content: `Per anni si è pensato che bisognasse assumere proteine entro 30 minuti dalla fine dell’allenamento. Ma è davvero così?
 
@@ -187,7 +187,7 @@ Conclusione: niente panico. Mangia in modo regolare durante la giornata e post-a
     image: 'circuito-principianti',
     title: 'Circuito per Principianti',
     excerpt: 'Veloce ed efficace.',
-    date: '01/01/2024',
+    date: '06/10/2025',
     author: 'Admin',
     content: `Un buon circuito total body è il punto di partenza ideale per chi vuole rimettersi in forma senza complicarsi la vita.
 
@@ -211,7 +211,7 @@ Un circuito semplice, efficace e adatto a tutti i livelli.`,
     image: 'stress',
     title: 'Stress e Cortisolo',
     excerpt: 'Nemici dei guadagni.',
-    date: '01/01/2024',
+    date: '10/10/2025',
     author: 'Admin',
     content: `Il cortisolo è spesso demonizzato, ma è un ormone fondamentale per la gestione delle energie. Il problema nasce quando rimane cronicamente elevato.
 
@@ -231,7 +231,7 @@ Un corpo stressato non cresce. Gestire il cortisolo è parte del processo di tra
     image: 'esercizi-composti',
     title: 'Esercizi Composti',
     excerpt: 'Le basi.',
-    date: '01/01/2024',
+    date: '10/11/2025',
     author: 'Admin',
     content: `Gli esercizi composti coinvolgono più articolazioni e gruppi muscolari, rendendoli indispensabili per forza e crescita.
 
@@ -255,7 +255,7 @@ Impara questi movimenti e vedrai progressi più rapidi e duraturi.`,
     image: 'progressi',
     title: 'Tracciare i Progressi',
     excerpt: 'Oltre la bilancia.',
-    date: '01/01/2024',
+    date: '19/11/2025',
     author: 'Admin',
     content: `La bilancia racconta solo una piccola parte della storia. Per valutare davvero i progressi serve un approccio più completo.
 

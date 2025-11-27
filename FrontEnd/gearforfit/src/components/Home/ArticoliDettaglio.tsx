@@ -8,14 +8,13 @@ export default function ArticoliDettaglio() {
   const navigate = useNavigate()
   const user = useSelector((state: RootState) => state.auth.user)
 
-  // Trova l'articolo corrispondente all'ID
   const article = articles.find((a) => a.id === Number(id))
 
   if (!article) {
     return (
-      <div className="container mt-5 text-center">
+      <div className="container mt-5 text-center page-content-custom">
         <h2>Articolo non trovato</h2>
-        <button className="btn btn-primary mt-3" onClick={() => navigate('/')}>
+        <button className="btn btn-primary my-3" onClick={() => navigate('/')}>
           Torna alla Home
         </button>
       </div>
@@ -26,7 +25,7 @@ export default function ArticoliDettaglio() {
     <div className="container mt-5 mb-5" style={{ maxWidth: '800px' }}>
       {/* Intestazione Articolo */}
       <div className="mb-4">
-        <button className="btn btn-primary mt-3" onClick={() => navigate('/')}>
+        <button className="btn btn-primary my-3" onClick={() => navigate('/')}>
           Torna alla Home
         </button>
         <h1 className="fw-bold display-5 mb-3">{article.title}</h1>
@@ -54,10 +53,12 @@ export default function ArticoliDettaglio() {
         />
       </div>
 
-      {/* Contenuto Articolo */}
       <div className="article-content fs-5 lh-lg mb-5">
-        {/* white-space: pre-line permette di mantenere gli a capo del testo */}
-        <p style={{ whiteSpace: 'pre-line' }}>{article.content}</p>
+        {article.content.split('\n\n').map((paragraph, index) => (
+          <p key={index} className="mb-2 fs-6">
+            {paragraph}
+          </p>
+        ))}
       </div>
 
       <hr className="my-5" />
@@ -73,17 +74,11 @@ export default function ArticoliDettaglio() {
               Accedi a <strong>GearForFit</strong> per ottenere piani di
               allenamento personalizzati, diete su misura e molto altro.
             </p>
-            <div className="d-flex justify-content-center gap-3">
-              <Link
-                to="/register"
-                className="btn btn-light btn-lg fw-bold px-4"
-              >
+            <div className="d-flex flex-column flex-sm-row justify-content-center gap-2 gap-md-3">
+              <Link to="/register" className="btn btn-light btn-lg">
                 Registrati
               </Link>
-              <Link
-                to="/login"
-                className="btn btn-outline-light btn-lg fw-bold px-4"
-              >
+              <Link to="/login" className="btn btn-outline-light btn-lg">
                 Accedi
               </Link>
             </div>
