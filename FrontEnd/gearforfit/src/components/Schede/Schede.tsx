@@ -187,6 +187,21 @@ export default function Schede() {
             Crea scheda personalizzata
           </Link>
         )}
+        {user?.tipoUtente === 'ADMIN' && (
+          <>
+            <div className="admin-buttons">
+              <Link
+                to="/schede/standard-admin"
+                className="btn btn-primary me-2"
+              >
+                + Crea Scheda Standard
+              </Link>
+              <Link to="/schede/custom-admin" className="btn btn-info">
+                + Crea Scheda Custom per Utente
+              </Link>
+            </div>
+          </>
+        )}
       </div>
 
       <div className="row mb-3">

@@ -8,7 +8,6 @@ import LoginPage from './components/Login/LoginPage'
 import Diete from './components/Diete/Diete'
 import Schede from './components/Schede/Schede'
 import Chat from './components/Home/Chat'
-import AdminDashboard from './components/Home/AdminDashboard'
 import Home from './components/Home/Home'
 import RegisterPage from './components/Login/RegisterPage'
 import ArticoloDettaglio from './components/Home/ArticoloDettaglio'
@@ -22,6 +21,8 @@ import SchedaCustom from './components/Schede/SchedaCustom'
 import DietaCustom from './components/Diete/DietaCustom'
 import GestioneUtenti from './components/Admin/GestioneUtenti'
 import { canUserAccessChat } from './features/auth/authSlice'
+import SchedaCustomAdmin from './components/Admin/SchedaCustomAdmin'
+import SchedaStandardAdmin from './components/Admin/SchedaStandardAdmin'
 
 export default function App() {
   const user = useSelector((s: RootState) => s.auth.user)
@@ -103,8 +104,24 @@ export default function App() {
           <Route
             path="/utenti"
             element={
-              <ProtectedRoute adminOnly>
+              <ProtectedRoute requireAdmin>
                 <GestioneUtenti />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/schede/standard-admin"
+            element={
+              <ProtectedRoute requireAdmin>
+                <SchedaStandardAdmin />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/schede/custom-admin"
+            element={
+              <ProtectedRoute requireAdmin>
+                <SchedaCustomAdmin />
               </ProtectedRoute>
             }
           />
