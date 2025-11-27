@@ -163,7 +163,7 @@ public class AdminController {
         utenteService.eliminaUtente(id);
     }
 
-    /* // Disattiva un utente
+    // Disattiva un utente
     @PutMapping("/utenti/{id}/disattiva")
     public Utente disattivaUtente(@PathVariable Long id) {
         return utenteService.disattivaUtente(id);
@@ -173,7 +173,7 @@ public class AdminController {
     @PutMapping("/utenti/{id}/attiva")
     public Utente attivaUtente(@PathVariable Long id) {
         return utenteService.attivaUtente(id);
-    }*/
+    }
 
     // ========== GRUPPI MUSCOLARI ==========
 

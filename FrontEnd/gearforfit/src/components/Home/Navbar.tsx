@@ -38,11 +38,11 @@ export default function Navbar() {
   }
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav className="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
       <div className="container-fluid">
         {/* Brand con Badge */}
         <div className="brand-container">
-          <Link className="navbar-brand" to="/">
+          <Link className="navbar-brand ms-2" to="/">
             GearForFit
           </Link>
           {user && (
@@ -134,14 +134,14 @@ export default function Navbar() {
                     Accedi
                   </Link>
                 </li>
-                <li className="nav-item">
+                <li className="nav-item mx-2">
                   <Link className="btn btn-outline-light" to="/register">
                     Registrati
                   </Link>
                 </li>
               </>
             ) : (
-              <li className="nav-item">
+              <li className="nav-item me-2">
                 <button
                   className="btn btn-outline-light"
                   onClick={handleLogout}

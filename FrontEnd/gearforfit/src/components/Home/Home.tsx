@@ -1,64 +1,54 @@
 import { articles } from '../../data/articles'
-import { carouselItems } from '../../data/carousel'
 import { Link } from 'react-router-dom'
 
 export default function Home() {
   return (
-    <div>
-      <div
-        id="heroCarousel"
-        className="carousel slide mb-4"
-        data-bs-ride="carousel"
-      >
-        <div className="carousel-inner">
-          {carouselItems.map((it, idx) => (
-            <div
-              className={`carousel-item ${idx === 0 ? 'active' : ''}`}
-              key={it.id}
-            >
-              <div
-                className="d-flex align-items-center justify-content-center"
-                style={{ height: 240, background: '#e9ecef' }}
-              >
-                <div className="text-center">
-                  <h3>{it.title}</h3>
-                  <p>{it.caption}</p>
-                </div>
-              </div>
-            </div>
-          ))}
+    <div className="mb-5">
+      {/* ... TITOLO SEZIONE ... */}
+      <div className="row align-items-center mb-4">
+        <div className="col">
+          <h3 className="fw-bold border-bottom pb-2">Articoli dal Blog</h3>
         </div>
-        <button
-          className="carousel-control-prev"
-          type="button"
-          data-bs-target="#heroCarousel"
-          data-bs-slide="prev"
-        >
-          <span className="carousel-control-prev-icon" />
-        </button>
-        <button
-          className="carousel-control-next"
-          type="button"
-          data-bs-target="#heroCarousel"
-          data-bs-slide="next"
-        >
-          <span className="carousel-control-next-icon" />
-        </button>
       </div>
 
-      <h4>Articoli Salute & Sport</h4>
-      <div className="row">
+      {/* GRIGLIA CARDS */}
+      <div className="row g-4">
         {articles.map((a) => (
-          <div className="col-md-4 mb-3" key={a.id}>
-            <div className="card h-100">
-              <div className="card-body">
-                <h5 className="card-title">{a.title}</h5>
-                <p className="card-text">{a.excerpt}</p>
+          <div className="col-12 col-sm-6 col-md-4 col-lg-3" key={a.id}>
+            <div className="card h-100 shadow-sm hover-card rounded-3">
+              <div
+                style={{
+                  height: '120px',
+                  backgroundColor: '#e9ecef',
+                  width: '100%',
+                  borderTopLeftRadius: 'var(--bs-border-radius-lg)',
+                  borderTopRightRadius: 'var(--bs-border-radius-lg)',
+                }}
+                className="d-flex align-items-center justify-content-center text-muted"
+              >
+                <img
+                  src={`/${a.image}.jpg`}
+                  alt={a.title}
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover',
+                    borderTopLeftRadius: 'var(--bs-border-radius-lg)',
+                    borderTopRightRadius: 'var(--bs-border-radius-lg)',
+                  }}
+                />
+              </div>
+
+              <div className="card-body d-flex flex-column">
+                <h5 className="card-title fw-bold">{a.title}</h5>
+                <p className="card-text text-muted small flex-grow-1">
+                  {a.excerpt}
+                </p>
                 <Link
                   to={`/articoli/${a.id}`}
-                  className="btn btn-sm btn-primary"
+                  className="btn btn-outline-primary w-100 mt-3 fw-semibold"
                 >
-                  Leggi
+                  Leggi articolo <i className="bi bi-arrow-right-short"></i>
                 </Link>
               </div>
             </div>

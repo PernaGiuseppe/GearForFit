@@ -22,6 +22,7 @@ import GestioneUtenti from './components/Admin/GestioneUtenti'
 import { canUserAccessChat } from './features/auth/authSlice'
 import SchedaCustomAdmin from './components/Admin/SchedaCustomAdmin'
 import SchedaStandardAdmin from './components/Admin/SchedaStandardAdmin'
+import ArticoliDettaglio from './components/Home/ArticoliDettaglio'
 
 export default function App() {
   const user = useSelector((s: RootState) => s.auth.user)
@@ -40,6 +41,7 @@ export default function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="/articoli/:id" element={<ArticoliDettaglio />} />
 
           {/* Route protette per tutti gli utenti loggati */}
           <Route

@@ -120,7 +120,7 @@ public class UtenteService {
     }
 
 
-   /* // ← METODO OVERLOAD (per admin - con piano ADMIN)
+
     public Utente creaUtenteConPiano(String email, String password, String nome, String cognome, TipoUtente tipoUtente, TipoPiano tipoPiano) {
 
         // CONTROLLO EMAIL VUOTA
@@ -174,7 +174,6 @@ public class UtenteService {
 
         return utenteRepository.save(nuovoUtente);
     }
-*/
     // Aggiorna un utente
     public Utente aggiornaUtente(Long id, String nome, String cognome, String email) {
 
@@ -289,29 +288,26 @@ public class UtenteService {
         return utenteRepository.save(utente);
     }
 
-    /*   // Disattiva un utente
-       public Utente disattivaUtente(Long id) {
+      // Disattiva un utente
+      public Utente disattivaUtente(Long id) {
+          // CONTROLLO ID
+          if (id == null || id <= 0) {
+              throw new BadRequestException("ID non valido");
+          }
 
-           // CONTROLLO ID
-           if (id == null || id <= 0) {
-               throw new BadRequestException("ID non valido");
-           }
+          Utente utente = findById(id);
 
-           Utente utente = findById(id);
+          // PROTEZIONE: Non permettere disattivazione dell'admin
+          if (utente.getTipoUtente().equals(TipoUtente.ADMIN)) {
+              throw new BadRequestException("Non è possibile disattivare un admin");
+          }
 
-           // PROTEZIONE: Non permettere disattivazione dell'admin
-           if (utente.getTipoUtente().equals(TipoUtente.ADMIN)) {
-               throw new BadRequestException("Non è possibile disattivare un admin");
-           }
-
-           utente.setAttivo(false);
-
-           return utenteRepository.save(utente);
-       }
+          utente.setAttivo(false);
+          return utenteRepository.save(utente);
+      }
 
        // Attiva un utente
        public Utente attivaUtente(Long id) {
-
            // CONTROLLO ID
            if (id == null || id <= 0) {
                throw new BadRequestException("ID non valido");
@@ -319,9 +315,8 @@ public class UtenteService {
 
            Utente utente = findById(id);
            utente.setAttivo(true);
-
            return utenteRepository.save(utente);
-       }*/
+       }
     // Admin resetta password utente (senza conoscere quella vecchia)
     public Utente resetPasswordByAdmin(Long userId, String nuovaPassword) {
         Utente utente = findById(userId);

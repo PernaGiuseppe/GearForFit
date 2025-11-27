@@ -1,17 +1,15 @@
-// src/components/Login/LoginPage.tsx
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link, useNavigate } from 'react-router-dom'
-// Importa l'azione asincrona (thunk)
 import { loginUser } from '../../features/auth/authSlice'
 import { RootState } from '../../app/store'
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('') // Inizializza vuoto
-  const [password, setPassword] = useState('') // Aggiunto stato per la password
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
   const dispatch = useDispatch()
   const navigate = useNavigate()
-  // Ottieni lo stato di caricamento e l'errore dallo slice
+
   const { isLoading, error } = useSelector((s: RootState) => s.auth)
 
   const submit = async (e: React.FormEvent) => {
@@ -22,28 +20,49 @@ export default function LoginPage() {
     }
 
     try {
-      // Dispatch del thunk loginUser
-      const resultAction = await dispatch(
-        loginUser({ email, password }) as any // Il thunk deve essere castato come 'any' per i tipi di Redux
-      )
-
-      // Verifica se il login è avvenuto con successo
+      const resultAction = await dispatch(loginUser({ email, password }) as any)
       if (loginUser.fulfilled.match(resultAction)) {
-        // Redirigi alla home solo se l'operazione ha avuto successo
         navigate('/')
       }
+      // Se fallisce, l'errore viene salvato nello state 'error' di Redux
+      //  e verrà renderizzato nel componente sotto.
     } catch (err) {
-      // Gli errori sono già gestiti nello slice (error è aggiornato)
       console.error('Errore durante il login:', err)
     }
   }
+
+  // Funzione helper per determinare il messaggio da mostrare
+  const getErrorMessage = (errorMsg: string | null) => {
+    if (!errorMsg) return null
+
+    // Controlla se il messaggio contiene la stringa specifica del backend
+    if (errorMsg.includes('account non è attivo')) {
+      return "Errore login, il tuo account non è attivo, contattare l'admin"
+    }
+
+    return errorMsg
+  }
+
+  const displayError = getErrorMessage(error)
 
   return (
     <div className="card mx-auto" style={{ maxWidth: 520 }}>
       <div className="card-body">
         <h5 className="card-title">Login</h5>
-        {/* Mostra errore se presente */}
-        {error && <div className="alert alert-danger">{error}</div>}
+
+        {/* Mostra Alert Errore */}
+        {displayError && (
+          <div
+            className={`alert ${
+              displayError.includes('non è attivo')
+                ? 'alert-warning'
+                : 'alert-danger'
+            }`}
+          >
+            {displayError}
+          </div>
+        )}
+
         <form onSubmit={submit}>
           <div className="mb-2">
             <label className="form-label">Email</label>
