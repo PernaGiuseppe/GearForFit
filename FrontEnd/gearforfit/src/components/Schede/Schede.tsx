@@ -3,7 +3,8 @@ import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { RootState } from '../../app/store'
 import { API_BASE_URL, getAuthHeader } from '../../utils/apiConfig'
-import { BsTrash, BsStar, BsStarFill } from 'react-icons/bs'
+import { BsTrash } from 'react-icons/bs'
+import { FaBookmark, FaRegBookmark } from 'react-icons/fa'
 import '../../css/Schede.css'
 import { toast } from 'sonner'
 
@@ -301,6 +302,7 @@ export default function Schede() {
               >
                 <div className="card h-100 position-relative">
                   {/* BUTTON DELETE */}
+
                   {(!scheda.isStandard || user?.tipoUtente === 'ADMIN') && (
                     <button
                       className="btn-delete-button"
@@ -323,7 +325,7 @@ export default function Schede() {
                       {!scheda.isStandard && user?.tipoUtente !== 'ADMIN' && (
                         <>
                           {scheda.attiva ? (
-                            <BsStarFill
+                            <FaBookmark
                               className="star-active fs-4 ms-2 me-1 mt-1 "
                               onClick={(e) =>
                                 handleToggleAttiva(e, scheda.id, true)
@@ -332,7 +334,7 @@ export default function Schede() {
                               style={{ cursor: 'pointer' }}
                             />
                           ) : (
-                            <BsStar
+                            <FaRegBookmark
                               className="star-inactive fs-4 ms-2 me-1 mt-1"
                               onClick={(e) =>
                                 handleToggleAttiva(e, scheda.id, false)

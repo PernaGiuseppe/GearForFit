@@ -3,8 +3,9 @@ import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { RootState } from '../../app/store'
 import { API_BASE_URL, getAuthHeader } from '../../utils/apiConfig'
-import { BsTrash, BsStar, BsStarFill } from 'react-icons/bs'
+import { BsTrash } from 'react-icons/bs'
 import { toast } from 'sonner'
+import { FaBookmark, FaRegBookmark } from 'react-icons/fa'
 import '../../css/Dieta.css'
 
 type DietaDTO = {
@@ -307,7 +308,7 @@ export default function Diete() {
                       {!dieta.isStandard && user?.tipoUtente !== 'ADMIN' && (
                         <>
                           {dieta.isAttiva ? (
-                            <BsStarFill
+                            <FaBookmark
                               className="star-active fs-4 ms-2 me-1 mt-1"
                               onClick={(e) =>
                                 handleToggleAttiva(e, dieta.id, true)
@@ -316,7 +317,7 @@ export default function Diete() {
                               style={{ cursor: 'pointer' }}
                             />
                           ) : (
-                            <BsStar
+                            <FaRegBookmark
                               className="star-inactive fs-4 ms-2 me-1 mt-1"
                               onClick={(e) =>
                                 handleToggleAttiva(e, dieta.id, false)

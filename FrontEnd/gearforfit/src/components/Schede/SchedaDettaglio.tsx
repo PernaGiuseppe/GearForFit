@@ -3,7 +3,8 @@ import { useParams, Link, useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../app/store'
 import { API_BASE_URL, getAuthHeader } from '../../utils/apiConfig'
-import { BsStar, BsStarFill, BsPencilFill } from 'react-icons/bs'
+import { BsPencilFill } from 'react-icons/bs'
+import { FaBookmark, FaRegBookmark } from 'react-icons/fa'
 import { toast } from 'sonner'
 import { GiConfirmed } from 'react-icons/gi'
 import { MdClose } from 'react-icons/md'
@@ -264,9 +265,6 @@ export default function SchedaDettaglio() {
                 style={{ cursor: 'pointer', fontSize: '1.5em' }}
               />
             </div>
-            <small className="text-muted d-block mt-1 text-center">
-              Premi Enter per confermare
-            </small>
           </div>
         )}
       </div>
@@ -300,14 +298,14 @@ export default function SchedaDettaglio() {
           {scheda && !scheda.isStandard && user?.tipoUtente !== 'ADMIN' && (
             <>
               {scheda.attiva ? (
-                <BsStarFill
+                <FaBookmark
                   className="stella-dettaglio star-active"
                   onClick={handleToggleAttiva}
                   title="Scheda attiva - Clicca per disattivare"
                   style={{ cursor: 'pointer' }}
                 />
               ) : (
-                <BsStar
+                <FaRegBookmark
                   className="stella-dettaglio star-inactive"
                   onClick={handleToggleAttiva}
                   title="Clicca per attivare questa scheda"

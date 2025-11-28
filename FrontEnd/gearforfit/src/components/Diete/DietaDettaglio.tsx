@@ -2,9 +2,9 @@ import { useState, useEffect } from 'react'
 import { useParams, useSearchParams, Link, useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../app/store'
-import { BsStar, BsStarFill } from 'react-icons/bs'
 import { API_BASE_URL, getAuthHeader } from '../../utils/apiConfig'
 import '../../css/Dieta.css'
+import { FaBookmark, FaRegBookmark } from 'react-icons/fa'
 import { toast } from 'sonner'
 
 type AlimentoPasto = {
@@ -181,14 +181,14 @@ export default function DietaDettaglio() {
           {dieta && !dieta.isStandard && user?.tipoUtente !== 'ADMIN' && (
             <>
               {dieta.isAttiva ? (
-                <BsStarFill
+                <FaBookmark
                   className="stella-dettaglio star-active"
                   onClick={handleToggleAttiva}
                   title="Dieta attiva - Clicca per disattivare"
                   style={{ cursor: 'pointer' }}
                 />
               ) : (
-                <BsStar
+                <FaRegBookmark
                   className="stella-dettaglio star-inactive"
                   onClick={handleToggleAttiva}
                   title="Clicca per attivare questa dieta"
