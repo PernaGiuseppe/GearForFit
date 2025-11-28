@@ -1,4 +1,4 @@
-# &nbsp;                                    "GearForFit"
+# &nbsp;"GearForFit"
 
 # 
 
@@ -20,7 +20,7 @@
 
 # -Schede: Tutti gli utenti da SILVER possono accedervi, l'utente può visualizzare tutte le schede standard, e a partire dal piano GOLD può creare le proprie schede custom, visualizzarle, eliminarle ed attivarle se necessario.
 
-# -Chat QeA: È una funzionalità di chat dove l'utente può accedere a delle risposte automatiche, sui temi più inerenti con la palestra, accessibile solo ai PREMIUM.
+# -Chat Q\&A: È una funzionalità di chat dove l'utente può accedere a delle risposte automatiche, sui temi più inerenti con la palestra, accessibile solo ai PREMIUM.
 
 # -Admin Login: L'admin ha tutte le funzionalità degli utenti, ma con la differenza di poter eliminare qualsiasi dieta o scheda, creare schede standard e custom per un utente specifico. Ha una sua rotta per la gestione degli utenti, dove può cambiare il "TipoPiano" all'utente, resettare la password, o eliminare l'account direttamente.
 
@@ -160,6 +160,8 @@
 
 # 
 
+# 
+
 # 3.4 Schede
 
 # 
@@ -170,7 +172,7 @@
 
 # Restituisce tutti gli esercizi, usato per la creazione delle diete custom.
 
-
+# 
 
 # 📤 POST /schede-allenamento/me
 
@@ -180,9 +182,9 @@
 
 # Body: (esempio per 2 giorni di allenamento)
 
-# {
+# 
 
-# "nome": "Forza Base Piramidale",
+# { "nome": "Forza Base Piramidale",
 
 # "descrizione": "Programma di mantenimento con approccio piramidale sui fondamentali, 2 giorni",
 
@@ -192,25 +194,13 @@
 
 # "giorni": \[
 
-# {
-
-# "giornoSettimana": "MARTEDI",
-
-# "serie": \[
+# { "giornoSettimana": "MARTEDI", "serie": \[
 
 # { "esercizioId": 1, "numeroSerie": 4, "numeroRipetizioni": "6", "tempoRecuperoSecondi": 150 },
 
-# { "esercizioId": 15, "numeroSerie": 4, "numeroRipetizioni": "8", "tempoRecuperoSecondi": 120 }
+# { "esercizioId": 15, "numeroSerie": 4, "numeroRipetizioni": "8", "tempoRecuperoSecondi": 120 }]},
 
-# ]
-
-# },
-
-# {
-
-# "giornoSettimana": "VENERDI",
-
-# "serie": \[
+# { "giornoSettimana": "VENERDI", "serie": \[
 
 # { "esercizioId": 8, "numeroSerie": 4, "numeroRipetizioni": "5", "tempoRecuperoSecondi": 180 },
 
@@ -223,8 +213,6 @@
 # Auth: bearer token (GOLD in su)
 
 # Attiva una scheda di allenamento per l'utente.
-
-
 
 # 🛠️ PATCH /schede-allenamento/me/schede/{schedaId}/serie/{serieId}/peso
 
@@ -242,7 +230,7 @@
 
 # 
 
-# 3.5 Chat QeA
+# 3.5 Chat Q\&A
 
 # 
 
@@ -284,15 +272,7 @@
 
 # "pasti": \[
 
-# {
-
-# "nomePasto": "Colazione",
-
-# "ordine": 1,
-
-# "giornoSettimana": "LUNEDI",
-
-# "alimenti": \[
+# { "nomePasto": "Colazione", "ordine": 1, "giornoSettimana": "LUNEDI","alimenti": \[
 
 # { "alimentoId": 1, "grammi": 100 },
 
@@ -352,9 +332,7 @@
 
 # Crea un nuovo esercizio.
 
-# {
-
-# "nome": "nome",
+# { "nome": "nome",
 
 # "descrizione": "descrizione",
 
@@ -364,9 +342,7 @@
 
 # "attrezzoId": 1,
 
-# "isComposto": false
-
-# }
+# "isComposto": false }
 
 # 
 
@@ -431,12 +407,6 @@
 # 
 
 # Come sopracitato, può fare le 📥 GET come il piano PREMIUM ed la 🗑️ DELETE delle Q\&A.
-
-# 
-
-# 
-
-# 
 
 
 
