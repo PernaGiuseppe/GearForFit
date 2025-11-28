@@ -1,11 +1,6 @@
 package giuseppeperna.GearForFit.controllers;
 
 import giuseppeperna.GearForFit.entities.Alimenti.Alimento;
-import giuseppeperna.GearForFit.entities.Alimenti.Carne;
-import giuseppeperna.GearForFit.entities.Diete.DietaStandard;
-import giuseppeperna.GearForFit.entities.Diete.TipoDieta;
-import giuseppeperna.GearForFit.entities.Utente.QeA;
-import giuseppeperna.GearForFit.payloads.SchedaAllenamentoRequestDTO;
 import giuseppeperna.GearForFit.entities.SchedePalestra.*;
 import giuseppeperna.GearForFit.entities.Utente.TipoPiano;
 import giuseppeperna.GearForFit.entities.Utente.Utente;
@@ -15,6 +10,7 @@ import giuseppeperna.GearForFit.services.*;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
@@ -57,22 +53,6 @@ public class AdminController {
 
 // ========== GESTIONE ALIMENTI ==========
 
-  /*  @PostMapping("/alimenti/carne")
-    @ResponseStatus(HttpStatus.CREATED)
-    public Carne creaAlimentoCarne(@RequestBody @Valid AlimentoRequestDTO body) {
-        Carne carne = new Carne();
-        mappaAlimento(carne, body);
-        return alimentoService.saveCarne(carne);
-    }*/
-/*    private void mappaAlimento(Alimento alimento, AlimentoRequestDTO body) {
-        alimento.setNome(body.nome());
-        alimento.setCaloriePer100g(body.caloriePer100g());
-        alimento.setProteinePer100g(body.proteinePer100g());
-        alimento.setCarboidratiPer100g(body.carboidratiPer100g());
-        alimento.setGrassiPer100g(body.grassiPer100g());
-        alimento.setFibrePer100g(body.fibrePer100g());
-    }*/
-
     @GetMapping("/alimenti")
     public List<Alimento> getTuttiAlimenti() {
         return alimentoService.findAllAlimenti();
@@ -90,40 +70,66 @@ public class AdminController {
         alimentoService.deleteAlimento(id);
     }
 
-// ========== GESTIONE DIETE STANDARD ==========
+// ========== GESTIONE DIETE ==========
 
-    @PostMapping("/diete/standard")
+    //Admin crea una nuova dieta standard
+
+    @PostMapping("/diete")
     @ResponseStatus(HttpStatus.CREATED)
-    public DietaStandardDTO creaDietaStandard(@RequestBody @Valid DietaStandardRequestDTO body) {
-        return dietaService.creaDietaStandard(body);
+    public DietaDTO creaDietaStandard(
+            @RequestBody DietaRequestDTO request,
+            @AuthenticationPrincipal Utente utente
+    ) {
+        return dietaService.creaDietaStandard(request);
     }
 
-    @PutMapping("/diete/standard/{id}")
-    public DietaStandardDTO aggiornaDietaStandard(
+    //Admin modifica una dieta standard
+    //NON USATO NEL FRONT END
+    @PutMapping("/diete/{id}")
+    public DietaDTO modificaDietaStandard(
             @PathVariable Long id,
-            @RequestBody @Valid DietaStandardRequestDTO body) {
-        return dietaService.aggiornaDietaStandard(id, body);
+            @RequestBody DietaRequestDTO request,
+            @AuthenticationPrincipal Utente utente
+    ) {
+        return dietaService.modificaDietaStandard(id, request);
+    }
+    // Admin visualizza SOLO diete standard
+    @GetMapping("/diete/standard")
+    public List<DietaDTO> adminGetDieteStandard() {
+        return dietaService.getDieteStandardAdmin();
     }
 
-    @GetMapping("/diete/personalizzate")
-    public List<DietaUtenteDTO> adminGetAllDieteAssegnate() {
-        return dietaService.adminGetTutteDieteAssegnate();
+
+    // Admin visualizza SOLO diete custom (di tutti gli utenti)
+    @GetMapping("/diete/custom")
+    public List<DietaDTO> adminGetDieteCustom() {
+        return dietaService.getAllDieteCustom();
+    }
+    // Admin visualizza TUTTE le diete (standard + custom di tutti gli utenti)
+
+    @GetMapping("/diete/all")
+    public List<DietaDTO> adminGetAllDiete() {
+        return dietaService.getAllDiete();
     }
 
-    @GetMapping("/diete/personalizzate/{dietaUtenteId}")
-    public DietaUtenteDTO adminGetDietaAssegnataById(@PathVariable Long dietaUtenteId) {
-        return dietaService.adminGetDietaAssegnataById(dietaUtenteId);
+    // Admin visualizza qualsiasi dieta (standard o custom) per ID
+
+    @GetMapping("/diete/{dietaId}")
+    public DietaDTO adminGetDietaById(@PathVariable Long dietaId) {
+        return dietaService.adminGetDietaById(dietaId);
     }
-    @PutMapping("/diete/utente/{utenteId}/{dietaUtenteId}")
-    public DietaUtenteDTO adminAggiornaDietaUtente(
-            @PathVariable Long utenteId,
-            @PathVariable Long dietaUtenteId,
-            @RequestBody @Valid DietaStandardRequestDTO body) {
-        return dietaService.adminModificaDietaUtente(utenteId, dietaUtenteId, body);
+    // Admin visualizza tutte le diete custom di uno specifico utente
+
+    @GetMapping("diete/custom/utente/{utenteId}")
+    public List<DietaDTO> adminGetDieteCustomByUtente(@PathVariable Long utenteId) {
+        return dietaService.getDieteCustomByUtente(utenteId);
     }
     @DeleteMapping("/diete/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void eliminaDieta(@PathVariable Long id) {
+    public void eliminaDieta(
+            @PathVariable Long id,
+            @AuthenticationPrincipal Utente utente
+    ) {
         dietaService.eliminaDieta(id);
     }
 
@@ -155,7 +161,7 @@ public class AdminController {
         utenteService.eliminaUtente(id);
     }
 
-    /* // Disattiva un utente
+    // Disattiva un utente
     @PutMapping("/utenti/{id}/disattiva")
     public Utente disattivaUtente(@PathVariable Long id) {
         return utenteService.disattivaUtente(id);
@@ -165,7 +171,7 @@ public class AdminController {
     @PutMapping("/utenti/{id}/attiva")
     public Utente attivaUtente(@PathVariable Long id) {
         return utenteService.attivaUtente(id);
-    }*/
+    }
 
     // ========== GRUPPI MUSCOLARI ==========
 
@@ -289,9 +295,15 @@ public class AdminController {
 
     // ========== SCHEDE ALLENAMENTO (STANDARD - ADMIN) ==========
 
+    // Admin visualizza SOLO schede standard
     @GetMapping("/schede/standard")
-    public List<SchedaAllenamentoDTO> getSchedeStandard() {
+    public List<SchedaAllenamentoDTO> adminGetSchedeStandard() {
         return schedaAllenamentoService.getSchedeStandard();
+    }
+    // Admin visualizza SOLO schede custom (di tutti gli utenti)
+    @GetMapping("/schede/custom")
+    public List<SchedaAllenamentoDTO> adminGetSchedeCustom() {
+        return schedaAllenamentoService.getAllSchedeCustom();
     }
 
     // GET - Ottieni lista di tutte le schede di allenamento (standard e custom, solo admin)
@@ -307,23 +319,23 @@ public class AdminController {
         return schedaAllenamentoService.getSchedaByIdAndAuthorize(id, utente);
     }
 
-   @PostMapping("/schede/standard")
-   @ResponseStatus(HttpStatus.CREATED)
-   public SchedaAllenamentoDTO creaSchedaStandard(
-           @RequestBody @Validated SchedaPersonalizzataRequestDTO body,
-           BindingResult validationResult) {
-       if (validationResult.hasErrors()) {
-           List<String> errorMessages = validationResult.getFieldErrors().stream()
-                   .map(fieldError -> fieldError.getField() + " :" + fieldError.getDefaultMessage())
-                   .toList();
-           throw new NotValidException(errorMessages);
-       }
-       return schedaAllenamentoService.creaSchedaStandard(body);
-   }
+    @PostMapping("/schede/standard")
+    @ResponseStatus(HttpStatus.CREATED)
+    public SchedaAllenamentoDTO creaSchedaStandard(
+            @RequestBody @Validated SchedaPersonalizzataRequestDTO body,
+            BindingResult validationResult) {
+        if (validationResult.hasErrors()) {
+            List<String> errorMessages = validationResult.getFieldErrors().stream()
+                    .map(fieldError -> fieldError.getField() + " :" + fieldError.getDefaultMessage())
+                    .toList();
+            throw new NotValidException(errorMessages);
+        }
+        return schedaAllenamentoService.creaSchedaStandard(body);
+    }
+    //NON USATO NEL FRONT END
     @PutMapping("/schede/standard/{id}")
     public SchedaAllenamentoDTO aggiornaSchedaStandard(
             @PathVariable Long id,
-
             @RequestBody @Validated SchedaPersonalizzataRequestDTO body,
             BindingResult validationResult) {
         if (validationResult.hasErrors()) {
@@ -362,28 +374,32 @@ public class AdminController {
         return schedaAllenamentoService.creaSchedaPersonalizzata(utenteId, body);
     }
 
-
-    @PutMapping("/schede/utente/{utenteId}/{schedaId}")
-    public SchedaAllenamentoDTO modificaSchedaPerUtente(
-            @PathVariable Long utenteId,
-            @PathVariable Long schedaId,
-            @RequestBody @Valid SchedaPersonalizzataRequestDTO body,
-            BindingResult validationResult) {
-
-        if (validationResult.hasErrors()) {
-            List<String> errorMessages = validationResult.getFieldErrors().stream()
-                    .map(fieldError -> fieldError.getField() + " : " + fieldError.getDefaultMessage())
-                    .toList();
-            throw new NotValidException(errorMessages);
-        }
-
-        return schedaAllenamentoService.adminModificaSchedaPersonalizzata(utenteId, schedaId, body);
-    }
     @GetMapping("/schede/utente/{utenteId}")
     public List<SchedaAllenamentoDTO> getSchedeByUtente(@PathVariable Long utenteId) {
         return schedaAllenamentoService.getSchedeByUtente(utenteId);
     }
+// ========== GESTIONE SCHEDE ADMIN CON FILTRI ==========
 
+    // Admin filtra schede standard per obiettivo
+    @GetMapping("/schede/standard/obiettivo/{obiettivo}")
+    public List<SchedaAllenamentoDTO> adminGetSchedeStandardPerObiettivo(
+            @PathVariable ObiettivoAllenamento obiettivo) {
+        return schedaAllenamentoService.getSchedeStandardPerObiettivo(obiettivo);
+    }
+
+    // Admin filtra schede custom per obiettivo
+    @GetMapping("/schede/custom/obiettivo/{obiettivo}")
+    public List<SchedaAllenamentoDTO> adminGetSchedeCustomPerObiettivo(
+            @PathVariable ObiettivoAllenamento obiettivo) {
+        return schedaAllenamentoService.getAllSchedeCustomPerObiettivo(obiettivo);
+    }
+
+    // Admin filtra TUTTE le schede per obiettivo (standard + custom)
+    @GetMapping("/schede/obiettivo/{obiettivo}")
+    public List<SchedaAllenamentoDTO> adminGetSchedePerObiettivo(
+            @PathVariable ObiettivoAllenamento obiettivo) {
+        return schedaAllenamentoService.getAllSchedePerObiettivo(obiettivo);
+    }
     // DELETE - Admin elimina una qualsiasi scheda allenamento
     @DeleteMapping("/schede-allenamento/{schedaId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)

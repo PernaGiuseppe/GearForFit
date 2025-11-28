@@ -34,10 +34,15 @@ public class AuthController {
     @PostMapping("/login")
     public LoginResponseDTO login(@RequestBody @Validated LoginRequestDTO body) {
         Utente utente = utenteService.findByEmail(body.email());
+        // Controllo pass
         if (!passwordEncoder.matches(body.password(), utente.getPassword())) {
             throw new BadRequestException("Credenziali non valide");
         }
-
+        // Controllo se l'utente non è attivo
+        if (!utente.getAttivo()) {
+            // Questo messaggio verrà intercettato dal frontend
+            throw new BadRequestException("Errore login, il tuo account non è attivo, contattare l'admin");
+        }
         String token = jwtTools.createToken(utente);
         return new LoginResponseDTO(
                 token,
@@ -50,7 +55,6 @@ public class AuthController {
         );
     }
 
-    // AGGIUNGI QUESTO METODO
     // Registrazione pubblica (utente si registra da solo)
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)

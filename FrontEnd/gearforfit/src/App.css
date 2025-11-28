@@ -1,0 +1,23 @@
+.hover-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: none;
+}
+
+.hover-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+}
+
+.page-content {
+  min-height: 80vh;
+}
+.page-content-general {
+  min-height: 69vh;
+}
+.page-content-custom {
+  min-height: 60vh;
+}
+
+.page-content-custom-2 {
+  min-height: 59vh;
+}

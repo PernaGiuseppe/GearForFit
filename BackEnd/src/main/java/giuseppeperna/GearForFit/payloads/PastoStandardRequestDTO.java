@@ -1,8 +1,10 @@
 package giuseppeperna.GearForFit.payloads;
+import giuseppeperna.GearForFit.entities.Diete.GiornoSettimana;
 import jakarta.validation.constraints.*;
 import java.util.List;
 public record PastoStandardRequestDTO(
         String nomePasto,
         int ordine,
-        List<DietaStandardAlimentoDTO> alimenti // <-- DEVE USARE IL DTO CORRETTO
+        GiornoSettimana giornoSettimana,
+        List<AlimentoPastoRequestDTO> alimenti
 ) {}

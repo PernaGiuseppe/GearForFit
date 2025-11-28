@@ -1,0 +1,46 @@
+.esercizio-card {
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.esercizio-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.esercizio-card.selected {
+  border-color: #28a745;
+  background-color: #f0fff4;
+  box-shadow: 0 0 15px rgba(40, 167, 69, 0.3);
+}
+
+.esercizio-card.disabled {
+  opacity: 0.5;
+  cursor: not-allowed !important;
+  filter: grayscale(100%);
+}
+.esercizio-card:not(.disabled):hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+}
+
+.esercizio-card.disabled:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+.card-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.card-text.small {
+  font-size: 0.8rem;
+  margin-bottom: 0.25rem;
+}
+.form-select:disabled {
+  cursor: not-allowed;
+  background-color: #e9ecef;
+}

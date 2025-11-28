@@ -29,9 +29,6 @@ public class SchedaAllenamento {
     @Column(nullable = false)
     private ObiettivoAllenamento obiettivo;
 
-    @Enumerated(EnumType.STRING)
-    private TipoAllenamento tipoAllenamento;
-
     @Column(name = "durata_settimane")
     private Integer durataSettimane;
 

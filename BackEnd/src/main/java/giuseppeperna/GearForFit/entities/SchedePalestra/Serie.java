@@ -22,7 +22,7 @@ public class Serie {
 
     @ManyToOne
     @JoinColumn(name = "esercizio_id", nullable = false)
-    private Esercizio esercizio;  // <-- Sostituisci con il nome corretto della tua entity
+    private Esercizio esercizio;
 
     @Column(name = "numero_serie", nullable = false)
     private Integer numeroSerie;
@@ -32,4 +32,7 @@ public class Serie {
 
     @Column(name = "tempo_recupero_secondi")
     private Integer tempoRecuperoSecondi;
+
+    @Column(length = 50)
+    private String peso;
 }

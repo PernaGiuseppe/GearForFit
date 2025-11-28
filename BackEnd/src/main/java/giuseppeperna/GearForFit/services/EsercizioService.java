@@ -11,6 +11,7 @@ import giuseppeperna.GearForFit.repositories.AttrezzoRepository;
 import giuseppeperna.GearForFit.repositories.EsercizioRepository;
 import giuseppeperna.GearForFit.repositories.GruppoMuscolareRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -32,7 +33,7 @@ public class EsercizioService {
     private AttrezzoRepository attrezzoRepository;
 
     @Autowired
-    private Cloudinary cloudinary; // ✅ AGGIUNTO: Bean Cloudinary
+    private Cloudinary cloudinary;
 
     // ============= METODI DI LETTURA =============
 
@@ -42,7 +43,7 @@ public class EsercizioService {
     }
 
     public List<Esercizio> getAllEsercizi() {
-        return esercizioRepository.findAll();
+        return esercizioRepository.findAll(Sort.by(Sort.Direction.ASC, "id"));
     }
 
     public List<Esercizio> getEserciziByGruppoMuscolare(Long gruppoId) {

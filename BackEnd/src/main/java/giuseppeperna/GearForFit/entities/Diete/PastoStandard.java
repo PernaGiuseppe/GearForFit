@@ -19,15 +19,16 @@ public class PastoStandard {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String nomePasto;  // es. Colazione, Pranzo, Cena, Spuntino
-
-    private Integer ordine; // Ordine del pasto nella giornata
-
     @ManyToOne
-    @JoinColumn(name = "dieta_standard_id", nullable = false)
+    @JoinColumn(name = "dieta_id")
     @JsonIgnore
-    private DietaStandard dietaStandard;
+    private Dieta dieta;
+
+    private String nomePasto;
+    private Integer ordine;
+
+    @Enumerated(EnumType.STRING)
+    private GiornoSettimana giornoSettimana;
 
     @OneToMany(mappedBy = "pastoStandard", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DietaStandardAlimento> alimenti = new ArrayList<>();

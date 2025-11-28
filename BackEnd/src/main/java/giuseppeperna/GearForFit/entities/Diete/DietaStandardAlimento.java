@@ -6,7 +6,7 @@ import lombok.*;
 
 
 @Entity
-@Table(name = "dieta_standard_alimento")
+@Table(name = "dieta_standard_alimenti")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -26,7 +26,7 @@ public class DietaStandardAlimento {
     private Double calorie;
 
     @ManyToOne
-    @JoinColumn(name = "pasto_standard_id", nullable = false)
+    @JoinColumn(name = "pasto_standard_id")
     @JsonIgnore
     private PastoStandard pastoStandard;
 

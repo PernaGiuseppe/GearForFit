@@ -6,6 +6,8 @@ import giuseppeperna.GearForFit.entities.Utente.Utente;
 import giuseppeperna.GearForFit.exceptions.BadRequestException;
 import giuseppeperna.GearForFit.exceptions.NotFoundException;
 import giuseppeperna.GearForFit.exceptions.UnauthorizedException;
+import giuseppeperna.GearForFit.payloads.AggiornaProfiloDTO;
+import giuseppeperna.GearForFit.payloads.UtenteDTO;
 import giuseppeperna.GearForFit.repositories.UtenteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,7 +25,32 @@ public class UtenteService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
-
+    // Ottieni utente come DTO (AGGIUNGI QUESTO)
+    public UtenteDTO getUtenteDTO(Long id) {
+        Utente utente = findById(id);
+        return new UtenteDTO(
+                utente.getId(),
+                utente.getEmail(),
+                utente.getNome(),
+                utente.getCognome(),
+                utente.getTipoUtente(),
+                utente.getTipoPiano(),
+                utente.getAttivo()
+        );
+    }
+    // Aggiorna utente e restituisci DTO (AGGIUNGI QUESTO)
+    public UtenteDTO aggiornaUtenteDTO(Long id, AggiornaProfiloDTO dto) {
+        Utente utente = aggiornaUtente(id, dto.nome(), dto.cognome(), dto.email());
+        return new UtenteDTO(
+                utente.getId(),
+                utente.getEmail(),
+                utente.getNome(),
+                utente.getCognome(),
+                utente.getTipoUtente(),
+                utente.getTipoPiano(),
+                utente.getAttivo()
+        );
+    }
     // Trova un utente per ID
     public Utente findById(Long id) {
         return utenteRepository.findById(id)
@@ -93,7 +120,7 @@ public class UtenteService {
     }
 
 
-    // ← METODO OVERLOAD (per admin - con piano ADMIN)
+
     public Utente creaUtenteConPiano(String email, String password, String nome, String cognome, TipoUtente tipoUtente, TipoPiano tipoPiano) {
 
         // CONTROLLO EMAIL VUOTA
@@ -147,7 +174,6 @@ public class UtenteService {
 
         return utenteRepository.save(nuovoUtente);
     }
-
     // Aggiorna un utente
     public Utente aggiornaUtente(Long id, String nome, String cognome, String email) {
 
@@ -218,7 +244,7 @@ public class UtenteService {
         return utenteRepository.save(utente);
     }
 
-    // Cambia il ruolo di un utente (solo ADMIN)
+    /*// Cambia il ruolo di un utente (solo ADMIN)
     public Utente cambiaRuolo(Long id, TipoUtente nuovoRuolo) {
 
         // CONTROLLO ID
@@ -235,7 +261,7 @@ public class UtenteService {
         utente.setTipoUtente(nuovoRuolo);
 
         return utenteRepository.save(utente);
-    }
+    }*/
 
     // Cambia il piano di un utente
     public Utente cambiaPiano(Long id, TipoPiano nuovoPiano) {
@@ -262,29 +288,26 @@ public class UtenteService {
         return utenteRepository.save(utente);
     }
 
-    /*   // Disattiva un utente
-       public Utente disattivaUtente(Long id) {
+      // Disattiva un utente
+      public Utente disattivaUtente(Long id) {
+          // CONTROLLO ID
+          if (id == null || id <= 0) {
+              throw new BadRequestException("ID non valido");
+          }
 
-           // CONTROLLO ID
-           if (id == null || id <= 0) {
-               throw new BadRequestException("ID non valido");
-           }
+          Utente utente = findById(id);
 
-           Utente utente = findById(id);
+          // PROTEZIONE: Non permettere disattivazione dell'admin
+          if (utente.getTipoUtente().equals(TipoUtente.ADMIN)) {
+              throw new BadRequestException("Non è possibile disattivare un admin");
+          }
 
-           // PROTEZIONE: Non permettere disattivazione dell'admin
-           if (utente.getTipoUtente().equals(TipoUtente.ADMIN)) {
-               throw new BadRequestException("Non è possibile disattivare un admin");
-           }
-
-           utente.setAttivo(false);
-
-           return utenteRepository.save(utente);
-       }
+          utente.setAttivo(false);
+          return utenteRepository.save(utente);
+      }
 
        // Attiva un utente
        public Utente attivaUtente(Long id) {
-
            // CONTROLLO ID
            if (id == null || id <= 0) {
                throw new BadRequestException("ID non valido");
@@ -292,9 +315,8 @@ public class UtenteService {
 
            Utente utente = findById(id);
            utente.setAttivo(true);
-
            return utenteRepository.save(utente);
-       }*/
+       }
     // Admin resetta password utente (senza conoscere quella vecchia)
     public Utente resetPasswordByAdmin(Long userId, String nuovaPassword) {
         Utente utente = findById(userId);
