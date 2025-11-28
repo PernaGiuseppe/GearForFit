@@ -5,6 +5,7 @@ import { RootState } from '../../app/store'
 import { BsStar, BsStarFill } from 'react-icons/bs'
 import { API_BASE_URL, getAuthHeader } from '../../utils/apiConfig'
 import '../../css/Dieta.css'
+import { toast } from 'sonner'
 
 type AlimentoPasto = {
   nome: string
@@ -70,64 +71,63 @@ export default function DietaDettaglio() {
   const handleToggleAttiva = async () => {
     if (!dieta || dieta.isStandard) return
 
-    try {
-      const res = await fetch(
-        `${API_BASE_URL}/diete/custom/${dieta.id}/attiva`,
-        {
-          method: 'PATCH',
-          headers: {
-            ...getAuthHeader(),
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ isAttiva: !dieta.isAttiva }),
-        }
-      )
-
-      if (res.ok) {
-        // Aggiorna solo lo stato corrente
+    toast.promise(
+      fetch(`${API_BASE_URL}/diete/custom/${dieta.id}/attiva`, {
+        method: 'PATCH',
+        headers: {
+          ...getAuthHeader(),
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ isAttiva: !dieta.isAttiva }),
+      }).then((res) => {
+        if (!res.ok) throw new Error('Errore API')
         setDieta((prev) =>
           prev ? { ...prev, isAttiva: !prev.isAttiva } : null
         )
-      } else {
-        alert("Errore durante l'aggiornamento")
+      }),
+      {
+        loading: 'Aggiornamento...',
+        success: !dieta.isAttiva
+          ? 'Dieta impostata come attiva!'
+          : 'Dieta disattivata.',
+        error: 'Errore durante la modifica dello stato',
       }
-    } catch (err) {
-      console.error('Errore toggle:', err)
-      alert('Errore di connessione')
-    }
+    )
   }
 
   // --- HANDLER ELIMINAZIONE ---
-  const handleDelete = async () => {
+  const handleDelete = () => {
     if (!dieta) return
+    toast('Sei sicuro di voler eliminare questa dieta?', {
+      action: {
+        label: 'Conferma',
+        onClick: async () => {
+          const endpoint =
+            user?.tipoUtente === 'ADMIN'
+              ? `${API_BASE_URL}/admin/diete/${dieta.id}`
+              : `${API_BASE_URL}/diete/custom/${dieta.id}`
 
-    if (
-      !window.confirm(`Sei sicuro di voler eliminare la dieta "${dieta.nome}"?`)
-    ) {
-      return
-    }
-
-    try {
-      const endpoint =
-        user?.tipoUtente === 'ADMIN'
-          ? `${API_BASE_URL}/admin/diete/${dieta.id}`
-          : `${API_BASE_URL}/diete/custom/${dieta.id}`
-
-      const res = await fetch(endpoint, {
-        method: 'DELETE',
-        headers: getAuthHeader(),
-      })
-
-      if (res.ok) {
-        alert('Dieta eliminata con successo')
-        navigate('/diete')
-      } else {
-        alert("Errore durante l'eliminazione della dieta")
-      }
-    } catch (err) {
-      console.error('Errore delete:', err)
-      alert('Errore di connessione')
-    }
+          toast.promise(
+            fetch(endpoint, {
+              method: 'DELETE',
+              headers: getAuthHeader(),
+            }).then((res) => {
+              if (!res.ok) throw new Error('Errore eliminazione')
+              navigate('/diete')
+            }),
+            {
+              loading: 'Eliminazione in corso...',
+              success: 'Dieta eliminata con successo',
+              error: 'Impossibile eliminare la dieta',
+            }
+          )
+        },
+      },
+      cancel: {
+        label: 'Annulla',
+      },
+      duration: 5000,
+    })
   }
 
   if (loading)

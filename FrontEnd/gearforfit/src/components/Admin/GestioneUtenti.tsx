@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { API_BASE_URL, getAuthHeader } from '../../utils/apiConfig'
+import { toast } from 'sonner'
 
 type UtenteDTO = {
   id: number
@@ -32,52 +33,50 @@ export default function GestioneUtenti() {
       if (!res.ok) throw new Error('Errore nel caricamento degli utenti')
       const data = await res.json()
       setUtenti(data)
+      toast.success('Utenti caricati con successo')
     } catch (err: any) {
       console.error(err)
       setError(err.message)
+      toast.error(err.message || 'Errore nel caricamento degli utenti')
     } finally {
       setLoading(false)
     }
   }
 
-  // --- LOGICA CAMBIO PIANO ---
+  // --- CAMBIO PIANO ---
   const handleCambiaPiano = async (id: number, nuovoPiano: string) => {
-    if (
-      !window.confirm(
-        `Vuoi cambiare il piano dell'utente ${id} in ${nuovoPiano}?`
-      )
-    )
-      return
-
-    try {
-      const res = await fetch(
+    toast.promise(
+      fetch(
         `${API_BASE_URL}/admin/utenti/${id}/piano?nuovoPiano=${nuovoPiano}`,
         {
           method: 'PUT',
           headers: getAuthHeader(),
         }
-      )
-      if (!res.ok) throw new Error('Errore modifica piano')
-
-      alert('Piano modificato con successo')
-      fetchUtenti()
-    } catch (err: any) {
-      alert(err.message)
-    }
+      ).then(async (res) => {
+        if (!res.ok) throw new Error('Errore modifica piano')
+        await fetchUtenti()
+        return nuovoPiano
+      }),
+      {
+        loading: 'Modifica del piano in corso...',
+        success: (piano) => `Piano modificato in ${piano} con successo!`,
+        error: 'Errore durante la modifica del piano',
+      }
+    )
   }
 
-  // --- LOGICA RESET PASSWORD ---
+  // --- RESET PASSWORD ---
   const handleResetPassword = async (id: number) => {
     const nuovaPassword = prompt("Inserisci la nuova password per l'utente:")
 
     if (!nuovaPassword) return
     if (nuovaPassword.length < 6) {
-      alert('La password deve essere di almeno 6 caratteri')
+      toast.error('La password deve essere di almeno 6 caratteri')
       return
     }
 
-    try {
-      const res = await fetch(`${API_BASE_URL}/admin/utenti/reset-password`, {
+    toast.promise(
+      fetch(`${API_BASE_URL}/admin/utenti/reset-password`, {
         method: 'PUT',
         headers: {
           ...getAuthHeader(),
@@ -87,30 +86,64 @@ export default function GestioneUtenti() {
           utenteId: id,
           nuovaPassword: nuovaPassword,
         }),
-      })
-
-      if (!res.ok) throw new Error('Errore reset password')
-
-      alert('Password resettata con successo!')
-    } catch (err: any) {
-      alert(err.message)
-    }
+      }).then(async (res) => {
+        if (!res.ok) throw new Error('Errore reset password')
+      }),
+      {
+        loading: 'Reset password in corso...',
+        success: 'Password resettata con successo!',
+        error: 'Errore durante il reset della password',
+      }
+    )
   }
 
-  const handleDeleteUser = async (id: number) => {}
+  const handleDeleteUser = async (id: number) => {
+    toast('Sei sicuro di voler eliminare questo utente?', {
+      action: {
+        label: 'Conferma',
+        onClick: async () => {
+          toast.promise(
+            fetch(`${API_BASE_URL}/admin/utenti/${id}`, {
+              method: 'DELETE',
+              headers: getAuthHeader(),
+            }).then(async (res) => {
+              if (!res.ok) throw new Error('Errore eliminazione utente')
+              await fetchUtenti()
+            }),
+            {
+              loading: 'Eliminazione in corso...',
+              success: 'Utente eliminato con successo',
+              error: "Impossibile eliminare l'utente",
+            }
+          )
+        },
+      },
+      cancel: {
+        label: 'Annulla',
+      },
+      duration: 5000,
+    })
+  }
+
   const toggleUserStatus = async (id: number, currentStatus: boolean) => {
-    try {
-      const res = await fetch(
+    toast.promise(
+      fetch(
         `${API_BASE_URL}/admin/utenti/${id}/${
           currentStatus ? 'disattiva' : 'attiva'
         }`,
         { method: 'PUT', headers: getAuthHeader() }
-      )
-      if (!res.ok) throw new Error('Errore cambio stato utente')
-      fetchUtenti()
-    } catch (err: any) {
-      alert(err.message)
-    }
+      ).then(async (res) => {
+        if (!res.ok) throw new Error('Errore cambio stato utente')
+        await fetchUtenti()
+      }),
+      {
+        loading: 'Modifica stato in corso...',
+        success: `Utente ${
+          currentStatus ? 'disattivato' : 'attivato'
+        } con successo!`,
+        error: 'Errore durante il cambio di stato',
+      }
+    )
   }
 
   if (loading)
@@ -159,7 +192,6 @@ export default function GestioneUtenti() {
                   </span>
                 </td>
 
-                {/* COLONNA PIANO CON DROPDOWN */}
                 <td>
                   {utente.tipoUtente === 'ADMIN' ? (
                     <span className="badge bg-dark">ADMIN</span>
@@ -192,7 +224,6 @@ export default function GestioneUtenti() {
                 </td>
 
                 <td>
-                  {/* PULSANTE RESET PASSWORD */}
                   <button
                     className="btn btn-sm btn-info text-white me-2"
                     onClick={() => handleResetPassword(utente.id)}

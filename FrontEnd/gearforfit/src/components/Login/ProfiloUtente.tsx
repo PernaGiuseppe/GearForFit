@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { RootState } from '../../app/store'
 import { API_BASE_URL, getAuthHeader } from '../../utils/apiConfig'
 import { logout } from '../../features/auth/authSlice'
+import { toast } from 'sonner'
 
 type ProfiloDTO = {
   id: number
@@ -40,6 +41,7 @@ export default function ProfiloUtente() {
   // Carica i dati del profilo
   useEffect(() => {
     if (!user) return
+    setLoading(true)
 
     fetch(`${API_BASE_URL}/utenti/me`, {
       headers: getAuthHeader(),
@@ -57,98 +59,98 @@ export default function ProfiloUtente() {
       .catch((err) => {
         console.error(err)
         setError(err.message)
+        toast.error('Errore nel caricamento del profilo') // Aggiunto
       })
-      .finally(() => {
-        setLoading(false)
-      })
-  }, [user])
+      .finally(() => setLoading(false))
+  }, [user, dispatch])
 
   // Aggiorna profilo
   const handleUpdateProfile = async (e: React.FormEvent) => {
     e.preventDefault()
-    setError(null)
-    setSuccessMsg(null)
-
-    try {
-      const res = await fetch(`${API_BASE_URL}/utenti/me`, {
+    toast.promise(
+      fetch(`${API_BASE_URL}/utenti/me`, {
         method: 'PUT',
         headers: {
           ...getAuthHeader(),
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ nome, cognome, email }),
-      })
-
-      if (!res.ok) {
-        const errData = await res.json()
-        throw new Error(errData.message || 'Errore aggiornamento profilo')
+      }).then(async (res) => {
+        if (!res.ok) {
+          const errData = await res.json()
+          throw new Error(errData.message || 'Errore aggiornamento profilo')
+        }
+        const updated = await res.json()
+        setProfilo(updated)
+        setEditMode(false)
+        return updated
+      }),
+      {
+        loading: 'Aggiornamento profilo...',
+        success: 'Profilo aggiornato con successo!',
+        error: (err) => `Errore: ${err.message}`,
       }
-
-      const updated = await res.json()
-      setProfilo(updated)
-      setEditMode(false)
-      setSuccessMsg('Profilo aggiornato con successo!')
-    } catch (err: any) {
-      setError(err.message)
-    }
+    )
   }
 
   // Cambia password
   const handleChangePassword = async (e: React.FormEvent) => {
     e.preventDefault()
-    setError(null)
-    setSuccessMsg(null)
 
-    try {
-      const res = await fetch(`${API_BASE_URL}/utenti/me/password`, {
+    toast.promise(
+      fetch(`${API_BASE_URL}/utenti/me/password`, {
         method: 'PUT',
         headers: {
           ...getAuthHeader(),
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ passwordVecchia, passwordNuova }),
-      })
-
-      if (!res.ok) {
-        const errData = await res.json()
-        throw new Error(errData.message || 'Errore cambio password')
+      }).then(async (res) => {
+        if (!res.ok) {
+          const errData = await res.json()
+          throw new Error(errData.message || 'Errore cambio password')
+        }
+        setPasswordMode(false)
+        setPasswordVecchia('')
+        setPasswordNuova('')
+      }),
+      {
+        loading: 'Modifica password in corso...',
+        success: 'Password cambiata con successo!',
+        error: (err) => `Errore: ${err.message}`,
       }
-
-      setPasswordMode(false)
-      setPasswordVecchia('')
-      setPasswordNuova('')
-      setSuccessMsg('Password cambiata con successo!')
-    } catch (err: any) {
-      setError(err.message)
-    }
+    )
   }
 
   // Elimina account
   const handleDeleteAccount = async () => {
-    if (
-      !window.confirm(
-        'Sei sicuro di voler eliminare il tuo account? Questa azione è irreversibile.'
-      )
-    ) {
-      return
-    }
-
-    try {
-      const res = await fetch(`${API_BASE_URL}/utenti/me`, {
-        method: 'DELETE',
-        headers: getAuthHeader(),
-      })
-
-      if (!res.ok) {
-        throw new Error('Errore eliminazione account')
-      }
-
-      // Logout e redirect
-      dispatch(logout())
-      navigate('/login')
-    } catch (err: any) {
-      setError(err.message)
-    }
+    toast('Sei sicuro di voler eliminare il tuo account?', {
+      description: 'Perderai tutti i dati!',
+      action: {
+        label: 'Conferma',
+        onClick: async () => {
+          toast.promise(
+            fetch(`${API_BASE_URL}/utenti/me`, {
+              method: 'DELETE',
+              headers: getAuthHeader(),
+            }).then((res) => {
+              if (!res.ok) throw new Error('Errore eliminazione account')
+              dispatch(logout())
+              navigate('/login')
+            }),
+            {
+              loading: 'Eliminazione account in corso...',
+              success: 'Account eliminato definitivamente.',
+              error: (err) => `Impossibile eliminare l'account: ${err.message}`,
+            }
+          )
+        },
+      },
+      cancel: {
+        label: 'Annulla',
+      },
+      duration: 5000,
+    })
   }
 
   if (!user)

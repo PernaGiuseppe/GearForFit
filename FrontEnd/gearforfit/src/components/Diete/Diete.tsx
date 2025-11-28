@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 import { RootState } from '../../app/store'
 import { API_BASE_URL, getAuthHeader } from '../../utils/apiConfig'
 import { BsTrash, BsStar, BsStarFill } from 'react-icons/bs'
+import { toast } from 'sonner'
 import '../../css/Dieta.css'
 
 type DietaDTO = {
@@ -75,7 +76,6 @@ export default function Diete() {
             }
           })
         } else {
-          // UTENTI NORMALI
           if (filter === 'ALL' || filter === 'STANDARD') {
             promises.push(
               fetch(`${API_BASE_URL}/diete/standard`, {
@@ -114,9 +114,11 @@ export default function Diete() {
         }
 
         setDiete(result)
+        toast.success('Diete caricate con successo')
       } catch (err: any) {
         console.error(err)
         setError(err.message)
+        toast.error(err.message || 'Errore nel caricamento delle diete')
         setDiete([])
       } finally {
         setLoading(false)
@@ -130,7 +132,6 @@ export default function Diete() {
     setTipoDietaFilter('ALL')
   }, [filter])
 
-  // --- LOGICA ATTIVAZIONE ---
   const handleToggleAttiva = async (
     e: React.MouseEvent,
     dietaId: number,
@@ -139,80 +140,75 @@ export default function Diete() {
     e.preventDefault()
     e.stopPropagation()
 
-    try {
-      const res = await fetch(
-        `${API_BASE_URL}/diete/custom/${dietaId}/attiva`,
-        {
-          method: 'PATCH',
-          headers: {
-            ...getAuthHeader(),
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ isAttiva: !currentState }),
-        }
-      )
+    toast.promise(
+      fetch(`${API_BASE_URL}/diete/custom/${dietaId}/attiva`, {
+        method: 'PATCH',
+        headers: {
+          ...getAuthHeader(),
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ isAttiva: !currentState }),
+      }).then(async (res) => {
+        if (!res.ok) throw new Error("Errore durante l'aggiornamento")
 
-      if (res.ok) {
-        // Aggiorna lo stato locale
         setDiete((prevDiete) =>
           prevDiete.map((d) => {
-            // Se stiamo attivando questa dieta (currentState era false),
-            // allora questa diventa true e TUTTE le altre custom diventano false.
             if (!currentState) {
               if (d.id === dietaId) return { ...d, isAttiva: true }
               if (!d.isStandard) return { ...d, isAttiva: false }
               return d
             } else {
-              // Se stiamo disattivando questa dieta
               if (d.id === dietaId) return { ...d, isAttiva: false }
               return d
             }
           })
         )
-      } else {
-        alert("Errore durante l'aggiornamento dello stato")
+      }),
+      {
+        loading: 'Aggiornamento in corso...',
+        success: currentState
+          ? 'Dieta disattivata con successo'
+          : 'Dieta attivata con successo',
+        error: "Errore durante l'aggiornamento dello stato",
       }
-    } catch (err) {
-      console.error('Errore toggle attiva:', err)
-      alert('Errore di connessione')
-    }
+    )
   }
 
-  // --- LOGICA ELIMINAZIONE ---
-  const handleDelete = async (
-    e: React.MouseEvent,
-    dietaId: number,
-    nome: string
-  ) => {
+  const handleDelete = (e: React.MouseEvent, dietaId: number, nome: string) => {
     e.preventDefault()
     e.stopPropagation()
 
-    if (!window.confirm(`Sei sicuro di voler eliminare la dieta "${nome}"?`)) {
-      return
-    }
+    toast('Sei sicuro di voler eliminare questa dieta?', {
+      action: {
+        label: 'Conferma',
+        onClick: async () => {
+          const endpoint =
+            user?.tipoUtente === 'ADMIN'
+              ? `${API_BASE_URL}/admin/diete/${dietaId}`
+              : `${API_BASE_URL}/diete/custom/${dietaId}`
 
-    try {
-      const endpoint =
-        user?.tipoUtente === 'ADMIN'
-          ? `${API_BASE_URL}/admin/diete/${dietaId}`
-          : `${API_BASE_URL}/diete/custom/${dietaId}`
-
-      const res = await fetch(endpoint, {
-        method: 'DELETE',
-        headers: getAuthHeader(),
-      })
-
-      if (res.ok) {
-        setDiete((prev) => prev.filter((d) => d.id !== dietaId))
-      } else {
-        alert("Errore durante l'eliminazione della dieta")
-      }
-    } catch (err) {
-      console.error('Errore delete:', err)
-      alert('Errore di connessione')
-    }
+          toast.promise(
+            fetch(endpoint, {
+              method: 'DELETE',
+              headers: getAuthHeader(),
+            }).then((res) => {
+              if (!res.ok) throw new Error("Errore durante l'eliminazione")
+              setDiete((prev) => prev.filter((d) => d.id !== dietaId))
+            }),
+            {
+              loading: 'Eliminazione in corso...',
+              success: 'Dieta eliminata con successo',
+              error: 'Impossibile eliminare la dieta',
+            }
+          )
+        },
+      },
+      cancel: {
+        label: 'Annulla',
+      },
+      duration: 5000,
+    })
   }
-
   if (!user) return <div>Devi essere loggato per vedere le diete.</div>
 
   return (
@@ -228,7 +224,6 @@ export default function Diete() {
         )}
       </div>
 
-      {/* Filtri */}
       <div className="row mb-3">
         <div className="col-md-6">
           <label className="form-label">Filtra per categoria:</label>
@@ -242,11 +237,9 @@ export default function Diete() {
               <option value="ALL">Tutte</option>
             )}
             <option value="STANDARD">Standard</option>
-            {/* Nascondi "Le mie Diete" se è ADMIN perché non ne ha */}
             {canViewPersonalized && !isAdmin && (
               <option value="PERSONALIZZATE">Le mie Diete</option>
             )}
-            {/* ADMIN vede le diete custom utenti */}
             {isAdmin && (
               <option value="PERSONALIZZATE">Diete custom utenti</option>
             )}
@@ -279,7 +272,6 @@ export default function Diete() {
         </div>
       )}
 
-      {/* Lista Cards */}
       {!loading && diete.length > 0 && (
         <div className="row pt-2">
           {diete.map((dieta) => {
@@ -293,9 +285,7 @@ export default function Diete() {
                 key={uniqueKey}
                 className="col-12 col-sm-6 col-lg-4 col-xxl-3 mb-4"
               >
-                {/* Aggiunta classe card-diet-wrapper per posizionamento relativo del bottone delete */}
                 <div className="card h-100 card-diet-wrapper">
-                  {/* BUTTON DELETE  */}
                   {(user?.tipoUtente === 'ADMIN' || !dieta?.isStandard) && (
                     <button
                       className="btn-delete-card"
@@ -314,7 +304,6 @@ export default function Diete() {
                         {nomeVisualizzato}
                       </h5>
 
-                      {/* STELLA (Solo per custom) */}
                       {!dieta.isStandard && user?.tipoUtente !== 'ADMIN' && (
                         <>
                           {dieta.isAttiva ? (

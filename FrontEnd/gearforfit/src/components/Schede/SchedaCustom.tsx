@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { API_BASE_URL, getAuthHeader } from '../../utils/apiConfig'
 import '../../css/SchedaCustom.css'
+import { toast } from 'sonner'
 
 type Esercizio = {
   id: number
@@ -116,6 +117,7 @@ export default function SchedaCustom() {
       }
     } catch (err) {
       console.error('Errore caricamento esercizi:', err)
+      toast.error('Impossibile caricare gli esercizi')
     } finally {
       setLoading(false)
     }
@@ -131,14 +133,14 @@ export default function SchedaCustom() {
 
   const handleStartCreation = () => {
     if (!nomeScheda.trim()) {
-      alert('Inserisci il nome della scheda')
+      toast.warning('Inserisci il nome della scheda')
       return
     }
     if (!obiettivo || giorniSelezionati.length !== numeroGiorni) {
-      alert('Completa tutti i campi prima di proseguire')
+      toast.warning('Completa tutti i campi prima di proseguire')
       return
     }
-    // Ordina i giorni secondo l'ordine settimanale
+    // ... resto del codice (ordinamento giorni, set step) rimane uguale ...
     const giorniOrdinati = giorniSettimana.filter((g) =>
       giorniSelezionati.includes(g)
     )
@@ -178,10 +180,9 @@ export default function SchedaCustom() {
       setConfigurazioniSerie(newConfig)
     }
   }
-
   const handleNextDay = async () => {
     if (eserciziSelezionati.length === 0) {
-      alert('Seleziona almeno un esercizio per questo giorno')
+      toast.error('Seleziona almeno un esercizio per questo giorno')
       return
     }
 
@@ -201,9 +202,8 @@ export default function SchedaCustom() {
       setCurrentDayIndex(currentDayIndex + 1)
       setEserciziSelezionati([])
       setConfigurazioniSerie(new Map())
-
-      // Scroll dropdown modificato
       window.scrollTo({ top: 0, behavior: 'smooth' })
+      toast.success(`Giorno ${currentDayIndex + 1} salvato`)
     } else {
       // Submit finale
       setSubmitting(true)
@@ -215,29 +215,28 @@ export default function SchedaCustom() {
         giorni: giorniAggiornati,
       }
 
-      try {
-        const res = await fetch(`${API_BASE_URL}/schede-allenamento/me`, {
+      toast.promise(
+        fetch(`${API_BASE_URL}/schede-allenamento/me`, {
           method: 'POST',
           headers: {
             ...getAuthHeader(),
             'Content-Type': 'application/json',
           },
           body: JSON.stringify(payloadFinale),
-        })
-
-        if (res.ok) {
-          alert('Scheda creata con successo!')
+        }).then(async (res) => {
+          if (!res.ok) {
+            const error = await res.text()
+            throw new Error(error)
+          }
           navigate('/schede')
-        } else {
-          const error = await res.text()
-          alert(`Errore: ${error}`)
+        }),
+        {
+          loading: 'Salvataggio scheda in corso...',
+          success: 'Scheda creata con successo!',
+          error: (err) => `Errore: ${err.message}`,
+          finally: () => setSubmitting(false),
         }
-      } catch (err) {
-        console.error('Errore creazione scheda:', err)
-        alert('Errore durante la creazione della scheda')
-      } finally {
-        setSubmitting(false)
-      }
+      )
     }
   }
 

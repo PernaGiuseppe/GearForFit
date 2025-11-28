@@ -21,6 +21,7 @@ import { canUserAccessChat } from './features/auth/authSlice'
 import SchedaCustomAdmin from './components/Admin/SchedaCustomAdmin'
 import SchedaStandardAdmin from './components/Admin/SchedaStandardAdmin'
 import ArticoliDettaglio from './components/Home/ArticoliDettaglio'
+import { Toaster } from 'sonner'
 import './App.css'
 
 export default function App() {
@@ -29,6 +30,8 @@ export default function App() {
 
   return (
     <>
+      <Toaster position="top-center" richColors duration={2000} expand={true} />
+
       <Navbar />
       <div className="container mt-4">
         {canAccessChat && (

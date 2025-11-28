@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 import { RootState } from '../../app/store'
 import { API_BASE_URL, getAuthHeader } from '../../utils/apiConfig'
 import { BsStar, BsStarFill, BsPencilFill } from 'react-icons/bs'
-import '../../css/Schede.css'
+import { toast } from 'sonner'
 import { GiConfirmed } from 'react-icons/gi'
 import { MdClose } from 'react-icons/md'
 
@@ -59,11 +59,6 @@ export default function SchedaDettaglio() {
     newWeight: '',
   })
 
-  const [updateMessage, setUpdateMessage] = useState<{
-    type: 'success' | 'error'
-    text: string
-  } | null>(null)
-
   useEffect(() => {
     if (!id || !user) return
 
@@ -71,18 +66,27 @@ export default function SchedaDettaglio() {
     setError(null)
 
     const endpoint =
-      user.tipoUtente === 'ADMIN'
+      user?.tipoUtente === 'ADMIN'
         ? `${API_BASE_URL}/admin/schede/${id}`
-        : `${API_BASE_URL}/schede-allenamento/${id}`
+        : `${API_BASE_URL}/schede-allenamento/me/${id}`
 
+    setLoading(true)
     fetch(endpoint, { headers: getAuthHeader() })
       .then((res) => {
         if (!res.ok) throw new Error('Errore nel caricamento della scheda')
         return res.json()
       })
-      .then((data) => setScheda(data))
-      .catch((err) => setError(err.message))
-      .finally(() => setLoading(false))
+      .then((data) => {
+        setScheda(data)
+        toast.success('Scheda caricata')
+      })
+      .catch((err) => {
+        setError(err.message)
+        toast.error(err.message || 'Errore nel caricamento della scheda') // Aggiunto toast
+      })
+      .finally(() => {
+        setLoading(false)
+      })
   }, [id, user])
 
   const handleToggleAttiva = async (e: React.MouseEvent) => {
@@ -91,58 +95,61 @@ export default function SchedaDettaglio() {
 
     if (!scheda || scheda.isStandard) return
 
-    try {
-      const res = await fetch(
+    toast.promise(
+      fetch(
         `${API_BASE_URL}/schede-allenamento/me/schede/${scheda.id}/attiva`,
         {
           method: 'PUT',
           headers: getAuthHeader(),
         }
-      )
-
-      if (res.ok) {
+      ).then(async (res) => {
+        if (!res.ok) throw new Error("Errore durante l'aggiornamento")
         setScheda((prev) => (prev ? { ...prev, attiva: !prev.attiva } : null))
-      } else {
-        alert("Errore durante l'aggiornamento")
+      }),
+      {
+        loading: 'Aggiornamento in corso...',
+        success: scheda.attiva
+          ? 'Scheda disattivata con successo'
+          : 'Scheda attivata con successo',
+        error: "Errore durante l'aggiornamento dello stato",
       }
-    } catch (err) {
-      console.error('Errore toggle:', err)
-      alert('Errore di connessione')
-    }
+    )
   }
 
   const handleDelete = async () => {
     if (!scheda) return
 
-    if (
-      !window.confirm(
-        `Sei sicuro di voler eliminare la scheda "${scheda.nome}"?`
-      )
-    ) {
-      return
-    }
+    toast('Sei sicuro di voler eliminare questa scheda?', {
+      action: {
+        label: 'Conferma',
+        onClick: async () => {
+          const endpoint =
+            user?.tipoUtente === 'ADMIN'
+              ? `${API_BASE_URL}/admin/schede/${scheda.id}`
+              : `${API_BASE_URL}/schede-allenamento/me/${scheda.id}`
 
-    try {
-      const endpoint =
-        user?.tipoUtente === 'ADMIN'
-          ? `${API_BASE_URL}/admin/schede/${scheda.id}`
-          : `${API_BASE_URL}/schede-allenamento/me/${scheda.id}`
-
-      const res = await fetch(endpoint, {
-        method: 'DELETE',
-        headers: getAuthHeader(),
-      })
-
-      if (res.ok || res.status === 204) {
-        alert('Scheda eliminata con successo')
-        navigate('/schede')
-      } else {
-        alert("Errore durante l'eliminazione della scheda")
-      }
-    } catch (err) {
-      console.error('Errore delete:', err)
-      alert('Errore di connessione')
-    }
+          toast.promise(
+            fetch(endpoint, {
+              method: 'DELETE',
+              headers: getAuthHeader(),
+            }).then((res) => {
+              if (!res.ok && res.status !== 204)
+                throw new Error('Errore eliminazione')
+              navigate('/schede')
+            }),
+            {
+              loading: 'Eliminazione in corso...',
+              success: 'Scheda eliminata con successo',
+              error: 'Impossibile eliminare la scheda',
+            }
+          )
+        },
+      },
+      cancel: {
+        label: 'Annulla',
+      },
+      duration: 5000,
+    })
   }
 
   const handleWeightUpdate = async (
@@ -150,10 +157,9 @@ export default function SchedaDettaglio() {
     newWeight: string
   ) => {
     if (!scheda || scheda.isStandard) return
-    setUpdateMessage(null)
 
-    try {
-      const res = await fetch(
+    toast.promise(
+      fetch(
         `${API_BASE_URL}/schede-allenamento/me/schede/${scheda.id}/serie/${serie.id}/peso`,
         {
           method: 'PATCH',
@@ -163,9 +169,9 @@ export default function SchedaDettaglio() {
           },
           body: JSON.stringify({ peso: newWeight }),
         }
-      )
+      ).then(async (res) => {
+        if (!res.ok) throw new Error("Errore durante l'aggiornamento del peso")
 
-      if (res.ok) {
         const updatedSerie: SerieDTOBackend = await res.json()
 
         setScheda((prevScheda) => {
@@ -180,23 +186,16 @@ export default function SchedaDettaglio() {
 
           return { ...prevScheda, giorni: updatedGiorni }
         })
-        setEditing({ giornoId: null, serieId: null, newWeight: '' })
-        setUpdateMessage({
-          type: 'success',
-          text: `Peso aggiornato a ${updatedSerie.peso}`,
-        })
 
-        setTimeout(() => setUpdateMessage(null), 3000)
-      } else {
-        throw new Error("Errore durante l'aggiornamento del peso")
+        setEditing({ giornoId: null, serieId: null, newWeight: '' })
+        return updatedSerie.peso
+      }),
+      {
+        loading: 'Aggiornamento peso...',
+        success: (peso) => `Peso aggiornato a ${peso} kg`,
+        error: 'Errore durante aggiornamento peso',
       }
-    } catch (err) {
-      console.error('Errore PATCH peso:', err)
-      setUpdateMessage({
-        type: 'error',
-        text: 'Errore di connessione o autorizzazione',
-      })
-    }
+    )
   }
 
   const renderWeightCell = (giornoId: number, serie: EsercizioScheda) => {
@@ -206,12 +205,10 @@ export default function SchedaDettaglio() {
     const displayedWeight =
       serie.peso && serie.peso.trim() !== '' ? serie.peso : '---'
 
-    // Mostra solo la visualizzazione se è admin o scheda standard
     const canEdit = user?.tipoUtente !== 'ADMIN' && !scheda?.isStandard
 
     return (
       <div style={{ position: 'relative', minHeight: '30px' }}>
-        {/* Contenuto sempre visibile (non cambia mai di dimensione) */}
         <div className="d-flex align-items-center justify-content-center">
           <span className="me-2">{displayedWeight}</span>
           {canEdit && (
@@ -230,7 +227,6 @@ export default function SchedaDettaglio() {
           )}
         </div>
 
-        {/* Popover di editing che si sovrappone */}
         {isEditing && (
           <div id="input-cambiopeso" onClick={(e) => e.stopPropagation()}>
             <div className="d-flex align-items-center gap-2">
@@ -337,22 +333,7 @@ export default function SchedaDettaglio() {
         </div>
       </div>
 
-      {updateMessage && (
-        <div
-          className={`alert alert-${
-            updateMessage.type === 'success' ? 'success' : 'danger'
-          } alert-dismissible fade show`}
-          role="alert"
-        >
-          {updateMessage.text}
-          <button
-            type="button"
-            className="btn-close"
-            onClick={() => setUpdateMessage(null)}
-          ></button>
-        </div>
-      )}
-
+      {/* Resto del componente rimane uguale... */}
       <div className="row">
         <div className="col-12">
           <p className="text-muted">Dettaglio del programma di allenamento</p>
@@ -389,6 +370,7 @@ export default function SchedaDettaglio() {
         </div>
       </div>
 
+      {/* Giorni allenamento... */}
       <div className="row">
         <div className="col-12 mb-3">
           <h3 className="fw-bold text-primary">Programma Settimanale</h3>
@@ -405,144 +387,52 @@ export default function SchedaDettaglio() {
                 </div>
 
                 <div className="card-body p-0">
-                  {giorno.serie && giorno.serie.length > 0 ? (
-                    <>
-                      <div className="table-responsive d-none d-md-block">
-                        <table className="table table-striped table-hover mb-0 align-middle">
-                          <thead className="table-light">
-                            <tr>
-                              <th
-                                scope="col"
-                                className="ps-4"
-                                style={{ width: '35%' }}
-                              >
-                                Esercizio
-                              </th>
-                              <th
-                                scope="col"
-                                className="text-center"
-                                style={{ width: '13%' }}
-                              >
-                                Serie
-                              </th>
-                              <th
-                                scope="col"
-                                className="text-center"
-                                style={{ width: '13%' }}
-                              >
-                                Reps
-                              </th>
-                              <th
-                                scope="col"
-                                className="text-center"
-                                style={{ width: '13%' }}
-                              >
-                                Rec (s)
-                              </th>
-                              <th
-                                scope="col"
-                                className="text-center"
-                                style={{ width: '26%' }}
-                              >
-                                Peso (kg)
-                              </th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {giorno.serie.map((es) => (
-                              <tr key={es.id}>
-                                <td className="ps-4 fw-semibold text-primary">
-                                  {es.nomeEsercizio}
-                                </td>
-                                <td className="text-center">
-                                  <span className="badge bg-light text-dark border">
-                                    {es.numeroSerie}
-                                  </span>
-                                </td>
-                                <td className="text-center">
-                                  {es.numeroRipetizioni}
-                                </td>
-                                <td className="text-center text-muted">
-                                  {es.tempoRecuperoSecondi}"
-                                </td>
-                                <td className="text-center">
-                                  {renderWeightCell(giorno.id, es)}
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-
-                      {/* CARD LAYOUT PER MOBILE (sm e inferiori) */}
-                      <div className="d-md-none p-3">
-                        {giorno.serie.map((es) => (
-                          <div
-                            key={es.id}
-                            className="card mb-3 shadow-sm border"
-                            style={{
-                              borderLeft: '4px solid #0d6efd',
-                              transition: 'transform 0.2s',
-                            }}
-                          >
-                            <div className="card-body">
-                              <h6 className="card-title text-primary fw-bold mb-3">
+                  {giorno.serie && giorno.serie.length > 0 && (
+                    <div className="table-responsive">
+                      <table className="table table-striped table-hover mb-0 align-middle">
+                        <thead className="table-light">
+                          <tr>
+                            <th scope="col" className="ps-4">
+                              Esercizio
+                            </th>
+                            <th scope="col" className="text-center">
+                              Serie
+                            </th>
+                            <th scope="col" className="text-center">
+                              Reps
+                            </th>
+                            <th scope="col" className="text-center">
+                              Rec (s)
+                            </th>
+                            <th scope="col" className="text-center">
+                              Peso (kg)
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {giorno.serie.map((es) => (
+                            <tr key={es.id}>
+                              <td className="ps-4 fw-semibold text-primary">
                                 {es.nomeEsercizio}
-                              </h6>
-
-                              <div className="row g-2">
-                                <div className="col-6">
-                                  <div className="d-flex flex-column">
-                                    <small className="text-muted mb-1">
-                                      Serie
-                                    </small>
-                                    <span className="badge bg-light text-dark border w-auto align-self-start px-3 py-2">
-                                      {es.numeroSerie}
-                                    </span>
-                                  </div>
-                                </div>
-
-                                <div className="col-6">
-                                  <div className="d-flex flex-column">
-                                    <small className="text-muted mb-1">
-                                      Ripetizioni
-                                    </small>
-                                    <span className="fw-semibold fs-5">
-                                      {es.numeroRipetizioni}
-                                    </span>
-                                  </div>
-                                </div>
-
-                                <div className="col-6">
-                                  <div className="d-flex flex-column">
-                                    <small className="text-muted mb-1">
-                                      Recupero
-                                    </small>
-                                    <span className="fw-semibold fs-5">
-                                      {es.tempoRecuperoSecondi}"
-                                    </span>
-                                  </div>
-                                </div>
-
-                                <div className="col-6">
-                                  <div className="d-flex flex-column">
-                                    <small className="text-muted mb-1">
-                                      Peso (kg)
-                                    </small>
-                                    <div className="mt-1">
-                                      {renderWeightCell(giorno.id, es)}
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </>
-                  ) : (
-                    <div className="p-4 text-center text-muted">
-                      <em>Nessun esercizio programmato per questo giorno.</em>
+                              </td>
+                              <td className="text-center">
+                                <span className="badge bg-light text-dark border">
+                                  {es.numeroSerie}
+                                </span>
+                              </td>
+                              <td className="text-center">
+                                {es.numeroRipetizioni}
+                              </td>
+                              <td className="text-center text-muted">
+                                {es.tempoRecuperoSecondi}"
+                              </td>
+                              <td className="text-center">
+                                {renderWeightCell(giorno.id, es)}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
                     </div>
                   )}
                 </div>

@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux'
 import { RootState } from '../../app/store'
 import { API_BASE_URL, getAuthHeader } from '../../utils/apiConfig'
 import '../../css/SchedeAdmin.css'
+import { toast } from 'sonner'
 
 type Utente = {
   id: number
@@ -112,6 +113,7 @@ export default function SchedaCustomAdmin() {
         setUtenti(Array.isArray(data) ? data : [])
       } catch (err: any) {
         setErrorUtenti(err.message)
+        toast.error('Impossibile caricare gli utenti')
       } finally {
         setLoadingUtenti(false)
       }
@@ -151,6 +153,7 @@ export default function SchedaCustomAdmin() {
       }
     } catch (err) {
       console.error('Errore caricamento esercizi:', err)
+      toast.error('Impossibile caricare gli esercizi')
     } finally {
       setLoading(false)
     }
@@ -242,6 +245,7 @@ export default function SchedaCustomAdmin() {
     } else {
       setSubmitting(true)
       const payloadFinale = {
+        // ... (proprietà payload)
         nome: nomeScheda,
         descrizione: descrizioneScheda || undefined,
         obiettivo: obiettivo,
@@ -249,32 +253,28 @@ export default function SchedaCustomAdmin() {
         giorni: giorniAggiornati,
       }
 
-      try {
-        const res = await fetch(
-          `${API_BASE_URL}/admin/schede/utente/${selectedUtenteId}`,
-          {
-            method: 'POST',
-            headers: {
-              ...getAuthHeader(),
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(payloadFinale),
+      toast.promise(
+        fetch(`${API_BASE_URL}/admin/schede/utente/${selectedUtenteId}`, {
+          method: 'POST',
+          headers: {
+            ...getAuthHeader(),
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(payloadFinale),
+        }).then(async (res) => {
+          if (!res.ok) {
+            const error = await res.text()
+            throw new Error(error)
           }
-        )
-
-        if (res.ok) {
-          alert('Scheda custom creata e assegnata con successo!')
           navigate('/schede')
-        } else {
-          const error = await res.text()
-          alert(`Errore: ${error}`)
+        }),
+        {
+          loading: 'Assegnazione scheda in corso...',
+          success: 'Scheda custom creata e assegnata!',
+          error: (err) => `Errore: ${err.message}`,
+          finally: () => setSubmitting(false),
         }
-      } catch (err) {
-        console.error('Errore creazione scheda:', err)
-        alert('Errore durante la creazione della scheda')
-      } finally {
-        setSubmitting(false)
-      }
+      )
     }
   }
 

@@ -3,6 +3,7 @@ import { RootState } from '../../app/store'
 import { useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { API_BASE_URL, getAuthHeader } from '../../utils/apiConfig'
+import { toast } from 'sonner'
 
 type DietaStandard = {
   id: number
@@ -64,6 +65,7 @@ export default function DietaCustom() {
       }
     } catch (err) {
       console.error('Errore caricamento diete standard:', err)
+      toast.error('Impossibile caricare le diete standard')
     } finally {
       setLoadingDiete(false)
     }
@@ -82,7 +84,7 @@ export default function DietaCustom() {
       !livelloAttivita ||
       !tipoDieta
     ) {
-      alert('Compila tutti i campi obbligatori')
+      toast.error('Compila tutti i campi obbligatori')
       return
     }
 
@@ -99,34 +101,31 @@ export default function DietaCustom() {
       tipoDieta,
     }
 
-    try {
-      const res = await fetch(
-        `${API_BASE_URL}/diete/standard/${dietaStandardId}/custom`,
-        {
-          method: 'POST',
-          headers: {
-            ...getAuthHeader(),
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(payload),
+    toast.promise(
+      fetch(`${API_BASE_URL}/diete/standard/${dietaStandardId}/custom`, {
+        method: 'POST',
+        headers: {
+          ...getAuthHeader(),
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      }).then(async (res) => {
+        if (!res.ok) {
+          const error = await res.text()
+          throw new Error(error)
         }
-      )
-
-      if (res.ok) {
-        alert('Dieta personalizzata creata con successo!')
+        // Navigazione dopo il successo
         navigate('/diete')
-      } else {
-        const error = await res.text()
-        alert(`Errore: ${error}`)
+        return 'Dieta creata!'
+      }),
+      {
+        loading: 'Creazione dieta in corso...',
+        success: (msg) => `${msg} Personalizzazione completata.`,
+        error: (err) => `Errore: ${err.message}`,
+        finally: () => setSubmitting(false),
       }
-    } catch (err) {
-      console.error('Errore creazione dieta custom:', err)
-      alert('Errore durante la creazione della dieta')
-    } finally {
-      setSubmitting(false)
-    }
+    )
   }
-
   return (
     <div className="container mt-4 page-content-custom">
       <h1>Crea la tua Dieta Personalizzata</h1>

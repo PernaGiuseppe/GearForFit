@@ -5,6 +5,7 @@ import { RootState } from '../../app/store'
 import { API_BASE_URL, getAuthHeader } from '../../utils/apiConfig'
 import { BsTrash, BsStar, BsStarFill } from 'react-icons/bs'
 import '../../css/Schede.css'
+import { toast } from 'sonner'
 
 type SchedaDTO = {
   id: number
@@ -103,6 +104,7 @@ export default function Schede() {
       .catch((err) => {
         console.error(err)
         setError(err.message)
+        toast.error(err.message || 'Errore nel caricamento delle schede')
       })
       .finally(() => {
         setLoading(false)
@@ -122,44 +124,38 @@ export default function Schede() {
     e.preventDefault()
     e.stopPropagation()
 
-    try {
-      const res = await fetch(
-        `${API_BASE_URL}/schede-allenamento/me/schede/${schedaId}/attiva`,
-        {
-          method: 'PUT',
-          headers: getAuthHeader(),
-        }
-      )
+    toast.promise(
+      fetch(`${API_BASE_URL}/schede-allenamento/me/schede/${schedaId}/attiva`, {
+        method: 'PUT',
+        headers: getAuthHeader(),
+      }).then((res) => {
+        if (!res.ok) throw new Error('Errore aggiornamento stato')
 
-      if (res.ok) {
         // Aggiorna lo stato locale
         setSchede((prevSchede) =>
           prevSchede.map((s) => {
-            // Se stiamo attivando questa scheda (currentState era false),
-            // allora questa diventa true e TUTTE le altre personalizzate diventano false.
             if (!currentState) {
               if (s.id === schedaId) return { ...s, attiva: true }
               if (!s.isStandard) return { ...s, attiva: false }
               return s
             } else {
-              // Se stiamo disattivando questa scheda
               if (s.id === schedaId) return { ...s, attiva: false }
               return s
             }
           })
         )
-      } else {
-        alert("Errore durante l'aggiornamento dello stato")
+      }),
+      {
+        loading: 'Aggiornamento stato...',
+        success: !currentState ? 'Scheda attivata!' : 'Scheda disattivata!',
+        error: 'Impossibile cambiare lo stato della scheda',
       }
-    } catch (err) {
-      console.error('Errore toggle attiva:', err)
-      alert('Errore di connessione')
-    }
+    )
   }
 
   // --- LOGICA ELIMINAZIONE ---
 
-  const handleDelete = async (
+  const handleDelete = (
     e: React.MouseEvent,
     schedaId: number,
     nome: string
@@ -167,31 +163,37 @@ export default function Schede() {
     e.preventDefault()
     e.stopPropagation()
 
-    if (!window.confirm(`Sei sicuro di voler eliminare la scheda "${nome}"?`)) {
-      return
-    }
+    toast('Sei sicuro di voler eliminare questa scheda?', {
+      action: {
+        label: 'Conferma',
+        onClick: async () => {
+          const endpoint =
+            user?.tipoUtente === 'ADMIN'
+              ? `${API_BASE_URL}/admin/schede/${schedaId}`
+              : `${API_BASE_URL}/schede-allenamento/me/${schedaId}`
 
-    try {
-      // Admin usa endpoint per eliminare qualsiasi scheda
-      const endpoint =
-        user?.tipoUtente === 'ADMIN'
-          ? `${API_BASE_URL}/admin/schede/${schedaId}`
-          : `${API_BASE_URL}/schede-allenamento/me/${schedaId}`
-
-      const res = await fetch(endpoint, {
-        method: 'DELETE',
-        headers: getAuthHeader(),
-      })
-
-      if (res.ok || res.status === 204) {
-        setSchede((prev) => prev.filter((s) => s.id !== schedaId))
-      } else {
-        alert("Errore durante l'eliminazione della scheda")
-      }
-    } catch (err) {
-      console.error('Errore delete:', err)
-      alert('Errore di connessione')
-    }
+          toast.promise(
+            fetch(endpoint, {
+              method: 'DELETE',
+              headers: getAuthHeader(),
+            }).then((res) => {
+              if (!res.ok && res.status !== 204)
+                throw new Error('Errore eliminazione')
+              setSchede((prev) => prev.filter((s) => s.id !== schedaId))
+            }),
+            {
+              loading: 'Eliminazione in corso...',
+              success: `Scheda "${nome}" eliminata correttamente`,
+              error: "Errore durante l'eliminazione della scheda",
+            }
+          )
+        },
+      },
+      cancel: {
+        label: 'Annulla',
+      },
+      duration: 5000,
+    })
   }
 
   if (!user) return <div>Devi essere loggato per accedere alle schede.</div>

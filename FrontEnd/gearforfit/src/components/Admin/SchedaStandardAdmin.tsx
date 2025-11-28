@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux'
 import { RootState } from '../../app/store'
 import { API_BASE_URL, getAuthHeader } from '../../utils/apiConfig'
 import '../../css/SchedeAdmin.css'
+import { toast } from 'sonner'
 
 type Esercizio = {
   id: number
@@ -111,6 +112,7 @@ export default function SchedaStandardAdmin() {
       }
     } catch (err) {
       console.error('Errore caricamento esercizi:', err)
+      toast.error('Impossibile caricare gli esercizi')
     } finally {
       setLoading(false)
     }
@@ -205,29 +207,28 @@ export default function SchedaStandardAdmin() {
         giorni: giorniAggiornati,
       }
 
-      try {
-        const res = await fetch(`${API_BASE_URL}/admin/schede/standard`, {
+      toast.promise(
+        fetch(`${API_BASE_URL}/admin/schede/standard`, {
           method: 'POST',
           headers: {
             ...getAuthHeader(),
             'Content-Type': 'application/json',
           },
           body: JSON.stringify(payloadFinale),
-        })
-
-        if (res.ok) {
-          alert('Scheda standard creata con successo!')
+        }).then(async (res) => {
+          if (!res.ok) {
+            const error = await res.text()
+            throw new Error(error)
+          }
           navigate('/schede')
-        } else {
-          const error = await res.text()
-          alert(`Errore: ${error}`)
+        }),
+        {
+          loading: 'Salvataggio Standard in corso...',
+          success: 'Scheda Standard creata!',
+          error: (err) => `Errore: ${err.message}`,
+          finally: () => setSubmitting(false),
         }
-      } catch (err) {
-        console.error('Errore creazione scheda:', err)
-        alert('Errore durante la creazione della scheda')
-      } finally {
-        setSubmitting(false)
-      }
+      )
     }
   }
 
