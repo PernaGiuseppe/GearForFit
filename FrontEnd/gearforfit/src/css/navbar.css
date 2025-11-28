@@ -1,0 +1,148 @@
+.navbar-fixed {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  z-index: 1000;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+body {
+  padding-top: 60px;
+}
+/* Brand Container con Position Relative */
+.brand-container {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+}
+
+/* Badge Piano/Ruolo */
+.plan-badge {
+  position: absolute;
+  left: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  /* margin-left: 8px; */
+  padding: 4px 12px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  border-radius: 4px;
+  white-space: nowrap;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+}
+
+/* FREE - Blu con scritta bianca */
+.badge-free {
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  color: white;
+  border: 2px solid #60a5fa;
+  border-radius: 18%;
+}
+
+/* SILVER - Grigio metallico con scritta nera */
+.badge-silver {
+  background: linear-gradient(135deg, #e5e7eb 0%, #d1d5db 100%);
+  color: #1f2937;
+  border: 2px solid #9ca3af;
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.8);
+  border-radius: 18%;
+}
+
+/* GOLD - Oro con scritta bianca (stile Tinder Gold) */
+.badge-gold {
+  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+  color: white;
+  border: 2px solid #fde047;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 2px 8px rgba(251, 191, 36, 0.4);
+  border-radius: 18%;
+}
+
+/* PREMIUM - Fucsia con scritta bianca */
+.badge-premium {
+  background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
+  color: white;
+  border: 2px solid #f472b6;
+  box-shadow: 0 2px 8px rgba(236, 72, 153, 0.4);
+  border-radius: 18%;
+}
+
+/* ADMIN - Color diamante (#C8E5EB) con scritta nera */
+.badge-admin {
+  background: linear-gradient(135deg, #c8e5eb 0%, #a0d5df 100%);
+  color: #1f2937;
+  border: 2px solid #e0f2f7;
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.8);
+  box-shadow: 0 2px 8px rgba(200, 229, 235, 0.5);
+  border-radius: 18%;
+}
+
+/* Spostamento dei link quando c'è il badge */
+.nav-with-badge {
+  margin-left: 90px;
+}
+
+/* Responsive - Riduci dimensioni su schermi piccoli */
+@media (max-width: 991px) {
+  .plan-badge {
+    position: static;
+    transform: none;
+    margin-left: 8px;
+    font-size: 0.65rem;
+    padding: 3px 8px;
+  }
+
+  .nav-with-badge {
+    margin-left: 0;
+  }
+
+  .brand-container {
+    display: flex;
+    flex-wrap: nowrap;
+  }
+}
+
+@media (max-width: 576px) {
+  .plan-badge {
+    font-size: 0.6rem;
+    padding: 2px 6px;
+  }
+}
+
+/* Animazione di entrata del badge */
+@keyframes badgeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-50%) translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(-50%) translateX(0);
+  }
+}
+
+@keyframes goldGlow {
+  from {
+    box-shadow: 0 2px 8px rgba(251, 191, 36, 0.4);
+  }
+  to {
+    box-shadow: 0 2px 12px rgba(251, 191, 36, 0.6),
+      0 0 20px rgba(251, 191, 36, 0.3);
+  }
+}
+
+@keyframes premiumGlow {
+  from {
+    box-shadow: 0 2px 8px rgba(236, 72, 153, 0.4);
+  }
+  to {
+    box-shadow: 0 2px 12px rgba(236, 72, 153, 0.6),
+      0 0 20px rgba(236, 72, 153, 0.3);
+  }
+}

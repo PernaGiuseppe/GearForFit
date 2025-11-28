@@ -1,0 +1,748 @@
+type,category,name,energy_kcal,proteins,available_carbohydrates,lipids,total_fiber
+ALIMENTO,CARBOIDRATO,"Farro perlato, crudo",353.0,14.6,69.3,2.4,6.5
+ALIMENTO,CARBOIDRATO,"Farro perlato, cotto, bollito",178.0,6.2,37.3,1.0,2.1
+ALIMENTO,CARBOIDRATO,Frumento duro,332.0,13.0,62.5,2.9,9.8
+ALIMENTO,CARBOIDRATO,Frumento tenero,336.0,12.3,65.2,2.6,9.7
+ALIMENTO,CARBOIDRATO,"Couscous, crudo",361.0,13.7,76.5,1.1,4.5
+ALIMENTO,CARBOIDRATO,"Couscous, cotto",179.0,3.6,39.7,1.1,2.7
+ALIMENTO,CARBOIDRATO,Grano saraceno,329.0,12.4,61.2,3.3,10.0
+ALIMENTO,CARBOIDRATO,Mais,357.0,9.2,75.1,3.8,2.0
+ALIMENTO,CARBOIDRATO,"Mais, dolce, in scatola, sgocciolato",105.0,3.4,20.5,1.3,1.4
+ALIMENTO,CARBOIDRATO,"Polenta, cruda",323.0,8.0,72.7,0.7,6.2
+ALIMENTO,CARBOIDRATO,"Polenta, cotta",73.0,0.9,17.8,0.04,0.9
+ALIMENTO,CARBOIDRATO,Miglio,343.0,11.8,64.9,3.9,8.5
+ALIMENTO,CARBOIDRATO,"Miglio, decorticato",342.0,11.0,67.8,4.2,3.1
+ALIMENTO,CARBOIDRATO,Orzo perlato,346.0,9.4,73.7,1.5,9.2
+ALIMENTO,CARBOIDRATO,"Orzo perlato, cotto, bollito",118.0,2.6,26.4,0.6,1.8
+ALIMENTO,CARBOIDRATO,"Quinoa, cruda",376.0,15.4,57.8,8.1,12.2
+ALIMENTO,CARBOIDRATO,"Quinoa, cotta, bollita",140.0,4.8,24.3,2.5,3.6
+ALIMENTO,CARBOIDRATO,"Riso, brillato",334.0,6.7,80.4,0.4,1.0
+ALIMENTO,CARBOIDRATO,"Riso, brillato, cotto, bollito",100.0,2.0,24.2,0.1,0.2
+ALIMENTO,CARBOIDRATO,"Riso, integrale",341.0,7.5,77.4,1.9,1.9
+ALIMENTO,CARBOIDRATO,"Riso, integrale, cotto, bollito",113.0,2.5,25.5,0.6,0.8
+ALIMENTO,CARBOIDRATO,"Riso, parboiled",338.0,7.4,81.3,0.3,0.5
+ALIMENTO,CARBOIDRATO,"Riso, parboiled, cotto, bollito",97.0,2.1,23.3,0.1,0.3
+ALIMENTO,CARBOIDRATO,"Riso Basmati, crudo",367.0,9.0,82.9,1.9,1.3
+ALIMENTO,CARBOIDRATO,"Riso Basmati, cotto, bollito",113.0,3.0,25.2,0.6,0.7
+ALIMENTO,CARBOIDRATO,"Riso Venere, crudo",355.0,7.8,80.4,1.3,5.1
+ALIMENTO,CARBOIDRATO,"Riso Venere, cotto, bollito",160.0,3.5,36.9,0.3,2.4
+ALIMENTO,CARBOIDRATO,Crusca di frumento,290.0,14.1,26.6,5.5,42.4
+ALIMENTO,CARBOIDRATO,Farina d'avena,378.0,12.6,66.3,7.1,7.6
+ALIMENTO,CARBOIDRATO,Farina d'orzo,333.0,10.6,68.4,1.9,8.5
+ALIMENTO,CARBOIDRATO,"Farina di frumento, tipo 00",323.0,11.0,71.6,0.7,2.2
+ALIMENTO,CARBOIDRATO,"Farina di frumento, tipo 0",321.0,11.5,69.5,1.0,2.9
+ALIMENTO,CARBOIDRATO,"Farina di frumento, integrale",313.0,11.9,61.8,1.9,8.4
+ALIMENTO,CARBOIDRATO,"Farina di frumento, duro",330.0,12.9,63.2,2.8,8.0
+ALIMENTO,CARBOIDRATO,Farina di mais,341.0,8.7,73.5,2.7,3.1
+ALIMENTO,CARBOIDRATO,Farina di riso,332.0,7.3,79.1,0.5,1.0
+ALIMENTO,CARBOIDRATO,Farina di segale,342.0,11.7,67.8,2.0,11.3
+ALIMENTO,LEGUME,Farina di soia,469.0,36.8,23.4,23.5,11.2
+ALIMENTO,CARBOIDRATO,Semola,346.0,11.5,76.9,0.5,3.6
+ALIMENTO,CARBOIDRATO,Farina di manioca,332.0,0.6,87.2,0.2,0.4
+ALIMENTO,CARBOIDRATO,Germe di frumento,378.0,26.0,43.5,10.0,10.5
+ALIMENTO,CARBOIDRATO,Pane al malto,278.0,8.3,56.6,2.4,5.5
+ALIMENTO,CARBOIDRATO,Pane di segale,228.0,8.3,45.4,1.7,4.6
+ALIMENTO,CARBOIDRATO,Pane bianco,268.0,8.1,59.5,0.5,3.8
+ALIMENTO,CARBOIDRATO,Pane di tipo semintegrale,239.0,8.3,52.0,0.3,4.2
+ALIMENTO,CARBOIDRATO,Pane di tipo integrale,224.0,8.5,44.1,1.3,6.5
+ALIMENTO,CARBOIDRATO,Pane formato rosetta,275.0,9.0,57.6,1.9,3.1
+ALIMENTO,CARBOIDRATO,Pangrattato,357.0,10.1,77.8,2.1,3.2
+ALIMENTO,CARBOIDRATO,Panini al latte,298.0,9.0,48.1,8.7,1.9
+ALIMENTO,CARBOIDRATO,Panini all'olio,288.0,7.7,52.6,5.8,3.7
+ALIMENTO,CARBOIDRATO,Pane azzimo,365.0,10.7,81.7,1.0,3.5
+ALIMENTO,CARBOIDRATO,Pizza bianca,306.0,7.9,57.9,5.9,2.3
+ALIMENTO,CARBOIDRATO,Pizza con pomodoro,248.0,7.6,40.7,6.6,2.7
+ALIMENTO,CARBOIDRATO,Pizza con pomodoro e mozzarella,255.0,12.1,35.5,7.6,2.5
+ALIMENTO,CARBOIDRATO,Pasta di semola,341.0,13.5,72.7,1.2,1.7
+ALIMENTO,CARBOIDRATO,"Pasta di semola, cotta, bollita",175.0,6.9,37.3,0.6,0.9
+ALIMENTO,CARBOIDRATO,"Pasta di semola, integrale",330.0,13.3,64.8,2.2,7.1
+ALIMENTO,CARBOIDRATO,"Pasta di semola, integrale, cotta, bollita",182.0,7.4,36.0,1.2,3.5
+ALIMENTO,CARBOIDRATO,"Pasta all'uovo, secca",346.0,13.0,71.0,2.4,3.2
+ALIMENTO,CARBOIDRATO,"Pasta all'uovo, secca, cotta, bollita",123.0,4.6,25.5,0.8,1.1
+ALIMENTO,CARBOIDRATO,"Ravioli, crudi, freschi",265.0,10.6,40.7,7.3,2.2
+ALIMENTO,CARBOIDRATO,"Ravioli, cotti",177.0,7.2,27.5,4.6,1.6
+ALIMENTO,CARBOIDRATO,"Tortellini, freschi",302.0,12.2,49.9,7.1,1.2
+ALIMENTO,CARBOIDRATO,"Tortellini, freschi, cotti",158.0,6.4,26.0,3.7,0.6
+ALIMENTO,CARBOIDRATO,"Tortellini, secchi",379.0,15.7,57.6,10.8,1.6
+ALIMENTO,CARBOIDRATO,"Biscotti, frollini",426.0,7.2,71.7,13.8,1.9
+ALIMENTO,CARBOIDRATO,"Biscotti, integrali",419.0,7.8,70.8,12.3,6.0
+ALIMENTO,CARBOIDRATO,"Biscotti, secchi",404.0,6.6,80.4,7.9,2.6
+ALIMENTO,CARBOIDRATO,"Biscotti, alla soia",375.0,11.5,70.8,6.1,4.5
+ALIMENTO,CARBOIDRATO,"Biscotti, integrali, con soia",464.0,11.5,60.4,20.4,3.8
+ALIMENTO,CARBOIDRATO,"Biscotti, wafers",452.0,7.1,76.2,15.0,1.6
+ALIMENTO,CARBOIDRATO,"Crackers, al formaggio",498.0,10.1,59.2,25.5,2.8
+ALIMENTO,CARBOIDRATO,"Crackers, alla soia",421.0,13.1,67.7,11.7,4.9
+ALIMENTO,CARBOIDRATO,"Crackers, salati",386.0,9.4,67.5,10.0,2.8
+ALIMENTO,CARBOIDRATO,"Crackers, integrali",402.0,12.0,61.7,11.4,10.0
+ALIMENTO,CARBOIDRATO,Fette biscottate,387.0,11.3,75.0,6.0,3.5
+ALIMENTO,CARBOIDRATO,"Fette biscottate, integrali",394.0,14.2,63.0,10.0,5.4
+ALIMENTO,CARBOIDRATO,Grissini,421.0,11.3,65.1,13.9,3.5
+ALIMENTO,CARBOIDRATO,Cornetti,403.0,7.2,54.7,18.3,2.1
+ALIMENTO,CARBOIDRATO,Croissants,362.0,8.3,38.0,20.3,1.6
+ALIMENTO,CARBOIDRATO,Bastoncini di crusca di frumento,301.0,14.0,38.4,3.2,35.9
+ALIMENTO,CARBOIDRATO,Corn flakes,367.0,6.6,87.4,0.8,2.8
+ALIMENTO,CARBOIDRATO,Fiocchi d'avena,367.0,8.0,66.8,7.5,8.3
+ALIMENTO,CARBOIDRATO,Muesli,374.0,9.7,71.7,6.0,6.4
+ALIMENTO,CARBOIDRATO,"Riso, soffiato, da prima colazione",354.0,6.0,85.1,1.0,1.0
+ALIMENTO,LEGUME,"Ceci, secchi",343.0,20.9,46.9,6.3,13.6
+ALIMENTO,LEGUME,"Ceci, secchi, cotti, bolliti",132.0,7.0,18.9,2.4,5.8
+ALIMENTO,LEGUME,"Ceci, in scatola, scolati",111.0,6.7,13.9,2.3,5.7
+ALIMENTO,LEGUME,Fagioli,326.0,23.6,47.5,2.0,17.5
+ALIMENTO,LEGUME,"Fagioli, cotti, bolliti",117.0,7.9,17.0,0.7,7.8
+ALIMENTO,LEGUME,"Fagioli, Borlotti, freschi",143.0,10.2,22.7,0.8,4.8
+ALIMENTO,LEGUME,"Fagioli, Borlotti, freschi, cotti, bolliti",78.0,5.7,11.2,0.5,4.2
+ALIMENTO,LEGUME,"Fagioli, Borlotti, secchi",312.0,20.2,47.7,2.0,17.3
+ALIMENTO,LEGUME,"Fagioli, Borlotti, secchi, cotti, bolliti",106.0,6.9,16.4,0.4,6.9
+ALIMENTO,LEGUME,"Fagioli, Borlotti, in scatola, scolati",102.0,6.7,15.9,0.5,5.5
+ALIMENTO,LEGUME,"Fagioli, Cannellini, secchi",314.0,23.4,45.5,1.6,17.6
+ALIMENTO,LEGUME,"Fagioli, Cannellini, secchi, cotti, bolliti",107.0,8.0,14.9,0.4,7.8
+ALIMENTO,LEGUME,"Fagioli, Cannellini in scatola, scolati",86.0,6.0,12.5,0.6,4.8
+ALIMENTO,LEGUME,"Fagioli dall'occhio, secchi",318.0,22.4,50.9,1.4,12.7
+ALIMENTO,LEGUME,"Fagiolini a corallo, cotti, bolliti",31.0,1.7,4.6,0.1,2.9
+ALIMENTO,LEGUME,"Fagiolini, freschi",24.0,2.1,2.4,0.1,2.9
+ALIMENTO,LEGUME,"Fagiolini, surgelati, cotti, bolliti",31.0,1.7,4.6,0.1,2.9
+ALIMENTO,LEGUME,"Fave, fresche",51.0,5.2,4.5,0.4,5.0
+ALIMENTO,LEGUME,"Fave, fresche, cotte, in padella",61.0,6.1,5.3,0.5,5.9
+ALIMENTO,LEGUME,"Fave, secche",331.0,21.3,52.8,2.1,14.7
+ALIMENTO,LEGUME,"Fave, secche, sgusciate, crude",343.0,25.2,53.6,3.0,7.0
+ALIMENTO,LEGUME,"Fave, secche, sgusciate, cotte, bollite",146.0,11.0,22.4,1.3,3.0
+ALIMENTO,LEGUME,"Lenticchie, secche",319.0,22.7,51.1,1.0,13.8
+ALIMENTO,LEGUME,"Lenticchie, secche, cotte, bollite",109.0,6.9,16.3,0.4,8.3
+ALIMENTO,LEGUME,"Lenticchie, in scatola, scolate",91.0,5.0,15.4,0.5,4.2
+ALIMENTO,LEGUME,"Lupini, ammollati",119.0,16.4,7.1,2.4,2.8
+ALIMENTO,LEGUME,"Piselli, freschi",64.0,5.5,6.5,0.6,6.3
+ALIMENTO,LEGUME,"Piselli, freschi, cotti, in padella",104.0,9.7,11.5,1.0,6.4
+ALIMENTO,LEGUME,"Piselli, secchi",317.0,21.7,48.2,2.0,15.7
+ALIMENTO,LEGUME,"Piselli, in scatola, scolati",78.0,5.3,11.1,0.6,5.1
+ALIMENTO,LEGUME,"Piselli, surgelati",61.0,5.4,6.5,0.3,6.3
+ALIMENTO,LEGUME,"Soia, secca",430.0,36.9,23.2,19.1,11.9
+ALIMENTO,VERDURA,Aglio,53.0,8.4,1.0,0.8,4.3
+ALIMENTO,VERDURA,Aglio Rosso di Castelliri,52.0,8.9,1.02,0.5,3.8
+ALIMENTO,VERDURA,Aglio Rosso di Procerno,57.0,8.9,1.0,0.9,4.6
+ALIMENTO,VERDURA,Aglio Rosso di Sulmona,58.0,8.7,1.0,1.3,4.0
+ALIMENTO,VERDURA,Aglio Bianco Piacentino,47.0,7.2,0.9,0.6,4.7
+ALIMENTO,VERDURA,"Agretti, crudi",22.0,1.8,2.2,0.2,2.3
+ALIMENTO,VERDURA,"Agretti, cotti, bolliti",25.0,2.1,2.6,0.2,2.7
+ALIMENTO,VERDURA,"Asparagi di bosco, crudi",40.0,4.6,4.0,0.2,2.2
+ALIMENTO,VERDURA,"Asparagi di campo, crudi",33.0,3.6,3.3,0.2,2.0
+ALIMENTO,VERDURA,"Asparagi di campo, cotti, bolliti",34.0,3.8,3.4,0.2,2.1
+ALIMENTO,VERDURA,"Asparagi di serra, crudi",28.0,3.0,3.0,0.1,2.1
+ALIMENTO,VERDURA,"Bieta, cruda",15.0,1.3,1.8,0.1,1.2
+ALIMENTO,VERDURA,"Bieta, cotta, al microonde",15.0,1.3,1.8,0.1,1.2
+ALIMENTO,VERDURA,"Bieta, cotta, bollita",18.0,1.5,2.1,0.1,1.4
+ALIMENTO,VERDURA,"Broccoletti di rapa, crudi",28.0,2.9,2.0,0.3,2.9
+ALIMENTO,VERDURA,"Broccoletti di rapa, cotti, bolliti",29.0,3.1,2.1,0.3,3.1
+ALIMENTO,VERDURA,"Broccolo a testa, cotto, bollito",34.0,3.1,3.2,0.4,3.2
+ALIMENTO,VERDURA,"Broccolo a testa, crudo",33.0,3.0,3.1,0.4,3.1
+ALIMENTO,VERDURA,"Carciofi, crudi",33.0,2.7,2.5,0.2,5.5
+ALIMENTO,VERDURA,"Carciofi, cotti, al microonde",34.0,2.8,2.5,0.2,5.6
+ALIMENTO,VERDURA,"Carciofi, cotti, bolliti",44.0,3.6,3.3,0.3,7.4
+ALIMENTO,VERDURA,"Carciofi, surgelati",32.0,2.7,2.5,0.2,5.0
+ALIMENTO,VERDURA,Carciofo Romanesco IGP,48.0,3.0,6.1,0.2,5.5
+ALIMENTO,VERDURA,"Carciofo, verde, precoce",45.0,2.9,5.4,0.2,5.5
+ALIMENTO,VERDURA,"Carciofo, violetto, precoce",43.0,2.8,5.2,0.2,5.5
+ALIMENTO,VERDURA,"Carciofo, Spinoso sardo",45.0,1.9,8.9,0.2,1.0
+ALIMENTO,VERDURA,"Cardi, crudi",13.0,0.6,1.7,0.1,1.5
+ALIMENTO,VERDURA,"Carote, crude",41.0,1.1,7.6,0.2,3.1
+ALIMENTO,VERDURA,"Carote, cotte, al microonde",41.0,1.1,7.7,0.2,3.1
+ALIMENTO,VERDURA,"Carote, cotte, bollite",47.0,1.3,8.7,0.2,3.6
+ALIMENTO,VERDURA,"Cavolfiore, crudo",30.0,3.2,2.7,0.2,2.4
+ALIMENTO,VERDURA,"Cavolfiore, cotto, al microonde",30.0,3.2,2.8,0.2,2.4
+ALIMENTO,VERDURA,"Cavolfiore, cotto, bollito",31.0,3.4,2.9,0.2,2.6
+ALIMENTO,VERDURA,"Cavoli di Bruxelles, crudi",47.0,4.2,4.2,0.5,5.0
+ALIMENTO,VERDURA,"Cavoli di Bruxelles, cotti, bolliti",53.0,4.7,4.6,0.6,5.6
+ALIMENTO,VERDURA,"Cavolo broccolo verde ramoso, crudo",30.0,3.4,2.0,0.3,3.0
+ALIMENTO,VERDURA,"Cavolo broccolo verde ramoso, cotto, bollito",52.0,6.0,3.5,0.5,5.3
+ALIMENTO,VERDURA,"Cavolo cappuccio, rosso, crudo",22.0,1.9,2.7,0.2,1.0
+ALIMENTO,VERDURA,"Cardi, cotti, bolliti",22.0,1.0,2.9,0.2,2.5
+ALIMENTO,VERDURA,"Cavolo cappuccio, verde, crudo",24.0,2.1,2.5,0.1,2.6
+ALIMENTO,VERDURA,"Cavolo cappuccio, verde, cotto, bollito",24.0,2.1,2.5,0.1,2.6
+ALIMENTO,VERDURA,"Cavolo verza, cruda",29.0,2.0,3.8,0.1,2.9
+ALIMENTO,VERDURA,"Cavolo verza, cotto, bollito",29.0,2.0,3.8,0.1,2.9
+ALIMENTO,VERDURA,"Cetrioli, freschi",16.0,0.7,1.8,0.5,0.8
+ALIMENTO,VERDURA,"Cicoria, da taglio, coltivata, cruda",14.0,1.2,1.7,0.1,1.2
+ALIMENTO,VERDURA,"Cicoria, di campo, cruda",17.0,1.4,0.7,0.2,3.6
+ALIMENTO,VERDURA,"Cicoria, di campo, cotta, bollita",17.0,1.4,0.7,0.2,3.6
+ALIMENTO,VERDURA,"Cicoria, witloof o indivia belga, cruda",20.0,0.7,3.2,0.3,1.1
+ALIMENTO,VERDURA,"Cipolle, crude",28.0,1.0,5.7,0.1,1.0
+ALIMENTO,VERDURA,"Cipolle, cotte, bollite",39.0,1.4,7.8,0.1,1.4
+ALIMENTO,VERDURA,"Cipolline, crude",42.0,1.3,8.5,0.1,1.9
+ALIMENTO,VERDURA,"Cipolline, cotte, bollite",53.0,1.7,10.9,0.1,2.4
+ALIMENTO,VERDURA,"Fiori di zucca, freschi",18.0,1.7,0.5,0.4,2.8
+ALIMENTO,VERDURA,"Foglie di rapa, crude",27.0,2.6,2.8,0.1,2.5
+ALIMENTO,VERDURA,Germogli di soia,54.0,6.2,3.0,1.4,2.8
+ALIMENTO,VERDURA,"Indivia, fresca",20.0,0.9,2.7,0.3,1.6
+ALIMENTO,VERDURA,"Lattuga, fresca",22.0,1.8,2.2,0.4,1.5
+ALIMENTO,VERDURA,"Lattuga, a cappuccio, fresca",22.0,1.5,3.0,0.2,1.3
+ALIMENTO,VERDURA,"Lattuga, da taglio, fresca",17.0,1.1,2.2,0.1,1.5
+ALIMENTO,VERDURA,"Lattughino, fresco",16.0,1.5,1.4,0.2,1.6
+ALIMENTO,VERDURA,"Lattughino IV gamma, fresco",16.0,1.4,1.4,0.2,1.6
+ALIMENTO,VERDURA,"Radicchio, rosso, fresco",19.0,1.4,1.6,0.1,3.0
+ALIMENTO,VERDURA,"Radicchio rosso di Treviso IGP, precoce",16.0,1.6,1.0,0.1,2.5
+ALIMENTO,VERDURA,"Radicchio rosso di Treviso IGP, tardivo",16.0,1.5,1.4,0.1,2.1
+ALIMENTO,VERDURA,Radicchio variegato di Castelfranco IGP,16.0,1.3,1.4,0.1,2.1
+ALIMENTO,VERDURA,"Rughetta o rucola, fresca",30.0,2.6,3.9,0.3,0.9
+ALIMENTO,VERDURA,Scarola,19.0,1.1,2.3,0.3,1.8
+ALIMENTO,VERDURA,"Scarola IV gamma, fresca",17.0,0.9,2.2,0.2,1.6
+ALIMENTO,VERDURA,"Tarassaco o dente di leone, fresco",37.0,3.1,3.7,1.1,0.4
+ALIMENTO,VERDURA,"Melanzane, crude",23.0,1.0,2.6,0.4,2.6
+ALIMENTO,VERDURA,"Melanzane, cotte, in padella",39.0,1.3,5.4,0.7,3.7
+ALIMENTO,VERDURA,"Melanzane, cotte, al microonde",23.0,0.8,3.0,0.4,2.4
+ALIMENTO,VERDURA,"Peperoni, crudi",26.0,0.9,4.2,0.3,1.9
+ALIMENTO,VERDURA,"Peperoni, cotti, in padella",143.0,5.2,24.3,1.5,8.7
+ALIMENTO,VERDURA,"Peperoni, rossi e gialli, crudi",35.0,0.9,6.7,0.3,1.9
+ALIMENTO,VERDURA,"Peperoni, gialli, crudi",35.0,0.9,6.8,0.2,1.9
+ALIMENTO,VERDURA,"Peperoni, gialli, cotti, al microonde",41.0,1.1,8.1,0.2,2.3
+ALIMENTO,VERDURA,"Peperoni, rossi, crudi",34.0,0.9,6.5,0.3,1.9
+ALIMENTO,VERDURA,"Peperoni, rossi, cotti, al microonde",42.0,1.1,7.9,0.4,2.3
+ALIMENTO,VERDURA,"Peperoni, verdi, crudi",31.0,0.7,6.0,0.2,1.9
+ALIMENTO,VERDURA,"Porri, crudi",35.0,2.1,5.2,0.1,2.9
+ALIMENTO,VERDURA,"Porri, cotti, bolliti",35.0,2.1,5.3,0.1,3.0
+ALIMENTO,VERDURA,"Rape, crude",24.0,1.0,4.0,0.0,2.6
+ALIMENTO,VERDURA,"Rape, cotte, bollite",26.0,1.1,4.3,0.0,2.8
+ALIMENTO,VERDURA,"Ravanelli, freschi",13.0,0.8,1.8,0.1,1.3
+ALIMENTO,VERDURA,"Sedano, crudo",23.0,2.3,2.4,0.2,1.6
+ALIMENTO,VERDURA,"Sedano, cotto, al microonde",24.0,2.4,2.4,0.2,1.7
+ALIMENTO,VERDURA,"Sedano rapa, crudo",29.0,1.9,3.8,0.1,3.1
+ALIMENTO,VERDURA,"Spinaci, crudi",35.0,3.4,2.9,0.7,1.9
+ALIMENTO,VERDURA,"Spinaci, cotti, al microonde",35.0,3.4,3.0,0.7,1.9
+ALIMENTO,VERDURA,"Spinaci, cotti, bolliti",41.0,4.0,3.5,0.8,2.3
+ALIMENTO,VERDURA,"Zucca gialla, fresca",29.0,1.1,3.5,0.1,5.5
+ALIMENTO,VERDURA,"Zucchine, crude",16.0,1.5,1.7,0.1,1.2
+ALIMENTO,VERDURA,"Zucchine, cotte, bollite",30.0,3.2,3.4,0.2,1.3
+ALIMENTO,VERDURA,"Zucchine, chiare",17.0,1.9,1.7,0.1,1.2
+ALIMENTO,VERDURA,"Zucchine chiare, cotte, al vapore",20.0,2.0,2.5,0.0,1.3
+ALIMENTO,VERDURA,"Zucchine chiare, cotte, in padella grigliate",29.0,0.0,5.7,0.2,2.8
+ALIMENTO,VERDURA,"Zucchine, chiare, cotte, al microonde",23.0,2.0,3.0,0.1,1.6
+ALIMENTO,VERDURA,"Zucchine, scure, crude",17.0,1.4,2.1,0.1,1.2
+ALIMENTO,VERDURA,"Zucchine, scure, cotte, al vapore",20.0,1.6,2.7,0.1,1.5
+ALIMENTO,VERDURA,"Zucchine, scure, cotte, in padella grigliate",37.0,2.7,5.6,0.1,2.0
+ALIMENTO,VERDURA,"Zucchine, scure, cotte, al microonde",23.0,1.8,3.5,0.0,1.5
+ALIMENTO,VERDURA,"Funghi coltivati, prataioli, crudi",24.0,3.7,0.8,0.2,2.3
+ALIMENTO,VERDURA,"Funghi coltivati, prataioli, cotti, in padella",46.0,7.0,1.5,0.4,4.3
+ALIMENTO,VERDURA,"Funghi coltivati, pleurotes, crudi",37.0,2.2,5.6,0.3,2.4
+ALIMENTO,VERDURA,"Funghi coltivati, pleurotes, cotti, in padella",35.0,2.6,5.3,0.4,0.8
+ALIMENTO,VERDURA,"Funghi ovuli, crudi",23.0,2.0,1.6,0.3,3.0
+ALIMENTO,VERDURA,"Funghi porcini, crudi",31.0,3.9,1.0,0.7,2.5
+ALIMENTO,VERDURA,"Tartufo, nero",48.0,6.0,0.7,0.5,8.4
+ALIMENTO,VERDURA,"Patate, crude",72.0,2.0,16.0,0.1,1.8
+ALIMENTO,CARBOIDRATO,"Patate, con buccia, cotte, bollite",88.0,2.1,17.9,1.0,1.6
+ALIMENTO,CARBOIDRATO,"Patate, cotte, arrosto",152.0,2.9,25.7,4.5,1.8
+ALIMENTO,CARBOIDRATO,"Patate, cotte, al microonde",88.0,2.1,17.9,1.0,1.6
+ALIMENTO,CARBOIDRATO,"Patate, senza buccia, cotte, bollite",74.0,1.8,16.9,0.1,1.3
+ALIMENTO,CARBOIDRATO,"Patate, fritte",192.0,3.9,29.9,6.7,2.2
+ALIMENTO,VERDURA,"Patatine, fritte, confezionate in busta",512.0,5.4,58.0,29.6,3.2
+ALIMENTO,VERDURA,"Patate novelle, crude",72.0,2.0,15.7,0.3,1.4
+ALIMENTO,CARBOIDRATO,"Patate novelle, cotte, al microonde",72.0,2.0,15.7,0.3,1.4
+ALIMENTO,CARBOIDRATO,"Patate novelle, cotte, bollte",68.0,1.9,14.9,0.2,1.4
+ALIMENTO,CARBOIDRATO,"Gnocchi di patate, crudi",164.0,3.9,37.9,0.3,1.9
+ALIMENTO,CARBOIDRATO,"Gnocchi di patate, cotti",147.0,3.5,34.0,0.2,1.8
+ALIMENTO,VERDURA,"Topinambur, cotto, bollito",52.0,1.6,10.6,0.1,2.7
+ALIMENTO,VERDURA,"Pomodori, da insalata, freschi",19.0,1.2,2.8,0.2,1.0
+ALIMENTO,VERDURA,"Pomodori, maturi, freschi",23.0,1.0,3.5,0.2,2.0
+ALIMENTO,VERDURA,"Pomodori, San Marzano, freschi",21.0,1.1,3.0,0.2,2.0
+ALIMENTO,VERDURA,"Pomodori, Nerina, verdi, freschi",21.0,0.9,2.8,0.4,1.5
+ALIMENTO,VERDURA,"Pomodori, Nerina, rossi, freschi",21.0,1.1,2.8,0.4,1.4
+ALIMENTO,VERDURA,"Pomodorini ciliegino, freschi",37.0,1.1,7.2,0.4,1.0
+ALIMENTO,VERDURA,"Pomodori, conserva",100.0,3.9,20.4,0.4,2.0
+ALIMENTO,VERDURA,"Pomodori, passata",21.0,1.3,3.0,0.2,1.5
+ALIMENTO,VERDURA,"Pomodori, pelati in scatola",22.0,1.2,3.0,0.5,0.9
+ALIMENTO,VERDURA,"Basilico, fresco",42.0,3.1,5.2,0.8,1.6
+ALIMENTO,VERDURA,"Menta, fresca",49.0,3.8,5.3,0.7,3.8
+ALIMENTO,VERDURA,Pepe nero,311.0,11.4,49.0,3.3,25.9
+ALIMENTO,VERDURA,"Peperoncini piccanti, freschi",30.0,1.8,3.8,0.5,2.0
+ALIMENTO,VERDURA,"Rosmarino, fresco",110.0,1.4,13.5,4.4,7.0
+ALIMENTO,VERDURA,"Salvia, fresco",132.0,3.9,15.6,4.6,8.2
+ALIMENTO,VERDURA,"Vegetali misti, surgelati",67.0,3.3,13.7,0.3,0.0
+ALIMENTO,FRUTTA,"Albicocche, fresche",42.0,0.4,9.8,0.1,1.5
+ALIMENTO,FRUTTA,"Albicocche, disidratate",356.0,5.6,80.6,1.0,11.0
+ALIMENTO,FRUTTA,"Albicocche, sciroppate",65.0,0.4,16.1,0.1,0.9
+ALIMENTO,FRUTTA,"Albicocche, secche",286.0,5.0,66.5,0.5,6.0
+ALIMENTO,FRUTTA,"Fichi, freschi",63.0,0.9,14.2,0.2,2.0
+ALIMENTO,FRUTTA,"Fichi, seccati al forno e mandorlati",305.0,5.2,58.2,4.2,14.0
+ALIMENTO,FRUTTA,"Fichi, canditi",294.0,3.5,73.7,0.2,1.1
+ALIMENTO,FRUTTA,"Fichi, secchi",282.0,3.5,58.0,2.7,13.0
+ALIMENTO,FRUTTA,"Fichi d'india, freschi",63.0,0.8,13.0,0.1,5.0
+ALIMENTO,FRUTTA,"Loti o kaki, freschi",70.0,0.6,16.0,0.3,2.5
+ALIMENTO,FRUTTA,"Melagrane, fresche",68.0,0.5,15.9,0.2,2.2
+ALIMENTO,FRUTTA,"Mele, fresche, senza buccia",57.0,0.3,13.7,0.1,2.0
+ALIMENTO,FRUTTA,"Mele, fresche, annurche",45.0,0.3,10.2,0.1,2.2
+ALIMENTO,FRUTTA,"Mele, fresche, deliziose",46.0,0.2,11.1,0.1,1.5
+ALIMENTO,FRUTTA,"Mele, fresche, golden",46.0,0.4,10.7,0.1,1.7
+ALIMENTO,FRUTTA,"Mele, fresche, granny smith",42.0,0.5,9.4,0.1,1.9
+ALIMENTO,FRUTTA,"Mele, fresche, imperatore",48.0,0.2,11.3,0.1,1.9
+ALIMENTO,FRUTTA,"Mele, fresche, renette",43.0,0.3,10.0,0.1,1.7
+ALIMENTO,FRUTTA,"Mele, disidratate",356.0,1.3,82.2,2.0,12.5
+ALIMENTO,FRUTTA,"Mele cotogne, fresche",38.0,0.3,6.3,0.1,5.9
+ALIMENTO,FRUTTA,"Melone, d'estate, fresco",34.0,0.8,7.4,0.2,0.7
+ALIMENTO,FRUTTA,"Melone, d'inverno, fresco",24.0,0.5,4.9,0.2,0.7
+ALIMENTO,FRUTTA,"Nespole, fresche",32.0,0.4,6.1,0.4,2.1
+ALIMENTO,FRUTTA,"Pere, fresche, senza buccia",43.0,0.3,8.8,0.1,3.8
+ALIMENTO,FRUTTA,"Pere, fresche, Abate Fetel",59.0,0.2,12.7,0.3,3.8
+ALIMENTO,FRUTTA,"Pere, fresche, Coscia",42.0,0.3,8.6,0.1,3.8
+ALIMENTO,FRUTTA,"Pere, fresche, Kaiser",48.0,0.3,9.2,0.5,3.8
+ALIMENTO,FRUTTA,"Pere, fresche, Max-Red Barlett",50.0,0.3,10.0,0.4,3.8
+ALIMENTO,FRUTTA,"Pere, fresche, William",52.0,0.3,10.2,0.5,3.8
+ALIMENTO,FRUTTA,"Pere, candite",294.0,1.0,73.9,0.4,4.5
+ALIMENTO,FRUTTA,"Pesche, fresche, senza buccia",30.0,0.8,6.1,0.1,1.6
+ALIMENTO,FRUTTA,"Pesche, disidratate",364.0,4.8,88.0,0.9,3.5
+ALIMENTO,FRUTTA,"Pesche, secche",280.0,3.1,68.3,0.7,2.8
+ALIMENTO,FRUTTA,"Peschenoci, fresche",36.0,1.4,7.0,0.1,1.5
+ALIMENTO,FRUTTA,"Prugne, fresche",45.0,0.5,10.5,0.1,1.5
+ALIMENTO,FRUTTA,"Prugne, gialle",30.0,0.5,6.6,0.1,1.4
+ALIMENTO,FRUTTA,"Prugne, rosse",45.0,0.5,10.5,0.1,1.6
+ALIMENTO,FRUTTA,"Prugne, secche",236.0,2.2,55.0,0.5,8.4
+ALIMENTO,FRUTTA,"Uva, fresca",64.0,0.5,15.6,0.1,1.5
+ALIMENTO,FRUTTA,"Uva, bianca, fresca",86.0,0.4,21.5,0.1,1.4
+ALIMENTO,FRUTTA,"Uva, nera, fresca",53.0,0.5,12.6,0.1,1.6
+ALIMENTO,FRUTTA,"Uva, secca",293.0,1.9,72.0,0.6,5.2
+ALIMENTO,FRUTTA,"Ananas, fresco",42.0,0.5,10.0,0.0,1.0
+ALIMENTO,FRUTTA,"Ananas, sciroppato",66.0,0.5,16.6,0.0,0.7
+ALIMENTO,FRUTTA,"Anona, fresca",73.0,1.8,15.8,0.2,2.2
+ALIMENTO,FRUTTA,"Avocado, fresco",238.0,4.4,1.8,23.0,3.3
+ALIMENTO,FRUTTA,"Babaco, fresco",24.0,0.7,4.5,0.2,1.1
+ALIMENTO,FRUTTA,"Banane, fresche",76.0,1.2,17.4,0.3,1.8
+ALIMENTO,FRUTTA,"Cocco, fresco",358.0,3.5,4.4,35.0,6.1
+ALIMENTO,FRUTTA,"Cocco, essiccato",669.0,5.6,16.4,62.0,13.7
+ALIMENTO,FRUTTA,"Feijoa, fresca",59.0,0.7,9.6,0.8,6.5
+ALIMENTO,FRUTTA,"Guava, fresca",31.0,0.7,3.5,0.5,5.4
+ALIMENTO,FRUTTA,"Kiwi, freschi",48.0,1.2,9.0,0.6,2.2
+ALIMENTO,FRUTTA,"Litchi, freschi",72.0,1.1,17.2,0.1,1.3
+ALIMENTO,FRUTTA,"Mango, fresco",56.0,1.0,12.6,0.2,1.6
+ALIMENTO,FRUTTA,"Papaia, fresca",33.0,0.4,6.9,0.1,2.3
+ALIMENTO,FRUTTA,"Passiflora, fresca",64.0,3.0,5.7,0.3,13.9
+ALIMENTO,FRUTTA,"Datteri, secchi",270.0,2.7,63.1,0.6,8.7
+ALIMENTO,FRUTTA,"Ciliege, fresche",48.0,0.8,11.0,0.1,1.3
+ALIMENTO,FRUTTA,"Fragole, fresche",30.0,0.9,5.3,0.4,1.6
+ALIMENTO,FRUTTA,"Lamponi, freschi",49.0,1.0,6.5,0.6,7.4
+ALIMENTO,FRUTTA,"Mirtilli, freschi",49.0,0.9,10.1,0.2,3.1
+ALIMENTO,FRUTTA,"Arance, fresche",37.0,0.7,7.8,0.2,1.6
+ALIMENTO,FRUTTA,"Arance bionde, fresche",45.0,0.7,9.9,0.2,1.6
+ALIMENTO,FRUTTA,"Arance Valencia, fresche",39.0,0.7,8.0,0.3,1.6
+ALIMENTO,FRUTTA,"Arance Washington Navel, fresche",44.0,1.0,9.4,0.2,1.6
+ALIMENTO,FRUTTA,"Arance rosse, fresche",45.0,0.7,9.9,0.2,1.6
+ALIMENTO,FRUTTA,"Arance Moro, fresche",42.0,0.7,9.0,0.2,1.6
+ALIMENTO,FRUTTA,"Arance Sanguinello, fresche",47.0,0.7,10.6,0.1,1.6
+ALIMENTO,FRUTTA,"Arance Tarocco, fresche",45.0,0.7,10.0,0.2,1.6
+ALIMENTO,FRUTTA,"Clementine, fresche",40.0,0.9,8.7,0.1,1.2
+ALIMENTO,FRUTTA,"Limoni, freschi",16.0,0.6,2.5,0.0,1.9
+ALIMENTO,FRUTTA,"Mandaranci, freschi",57.0,0.8,12.8,0.2,2.2
+ALIMENTO,FRUTTA,"Mandarini, freschi",76.0,0.9,17.6,0.3,1.7
+ALIMENTO,FRUTTA,"Pompelmo, fresco",29.0,0.6,6.2,0.0,1.6
+ALIMENTO,FRUTTA,"Arachidi, tostate",620.0,29.0,8.5,50.0,10.9
+ALIMENTO,FRUTTA,Carrube,253.0,3.3,49.9,0.7,23.1
+ALIMENTO,FRUTTA,Castagne,174.0,2.9,36.7,1.7,4.7
+ALIMENTO,FRUTTA,"Castagne, arrostite",210.0,3.7,41.8,2.4,8.3
+ALIMENTO,FRUTTA,"Castagne, bollite",130.0,2.5,26.1,1.3,5.4
+ALIMENTO,FRUTTA,"Castagne, secche",315.0,6.0,62.0,3.4,13.8
+ALIMENTO,FRUTTA,"Mandorle dolci, secche",628.0,22.0,4.6,55.3,12.7
+ALIMENTO,FRUTTA,"Nocciole, secche",671.0,13.8,6.1,64.1,8.1
+ALIMENTO,FRUTTA,Noci,589.0,10.5,5.5,57.7,3.5
+ALIMENTO,FRUTTA,"Noci, secche",702.0,14.3,5.1,68.1,6.2
+ALIMENTO,FRUTTA,Noci pecan,723.0,7.2,7.9,71.8,9.4
+ALIMENTO,FRUTTA,Pinoli,604.0,31.9,4.0,50.3,4.5
+ALIMENTO,FRUTTA,Pistacchi,629.0,18.1,8.1,56.1,10.6
+ALIMENTO,FRUTTA,Pistacchio di Bronte DOP,595.0,24.3,7.3,48.9,15.3
+ALIMENTO,FRUTTA,Anacardi,604.0,15.0,33.0,46.0,3.0
+ALIMENTO,FRUTTA,Macadamia,751.0,8.0,5.1,76.0,8.0
+ALIMENTO,FRUTTA,Olive da tavola conservate,277.0,1.5,5.0,27.0,4.4
+ALIMENTO,FRUTTA,"Olive, nere",243.0,1.6,0.8,25.1,3.9
+ALIMENTO,FRUTTA,"Olive, verdi",148.0,0.8,1.0,15.0,3.0
+ALIMENTO,FRUTTA,"Olive, verdi, in salamoia",113.0,1.2,1.0,11.0,2.8
+ALIMENTO,FRUTTA,Oliva Nocellara del Belice,211.0,1.4,0.06,22.1,3.3
+ALIMENTO,FRUTTA,Oliva Giarraffa,192.0,1.4,0.19,20.0,2.6
+ALIMENTO,CONDIMENTO,Burro d'arachidi,625.0,24.9,8.0,53.7,6.0
+ALIMENTO,CONDIMENTO,"Margarina, 100% vegetale",760.0,0.6,0.4,84.0,0.0
+ALIMENTO,CONDIMENTO,"Margarina, 2/3 di grassi animali, 1/3 di grassi vegetali",760.0,0.7,0.4,84.0,0.0
+ALIMENTO,CONDIMENTO,Olio di oliva,899.0,0.0,0.0,99.9,0.0
+ALIMENTO,CONDIMENTO,Olio di oliva extra vergine,899.0,0.0,0.0,99.9,0.0
+ALIMENTO,CONDIMENTO,Olio di arachide,899.0,0.0,0.0,99.9,0.0
+ALIMENTO,CONDIMENTO,Olio di girasole,899.0,0.0,0.0,99.9,0.0
+ALIMENTO,CONDIMENTO,Olii vegetali,899.0,0.0,0.0,99.9,0.0
+ALIMENTO,CARNE,"Bovino adulto o vitellone, tagli anteriori, crudo",145.0,20.5,0.0,7.0,0.0
+ALIMENTO,CARNE,"Bovino adulto o vitellone, tagli posteriori, crudo",117.0,21.5,0.0,3.4,0.0
+ALIMENTO,CARNE,"Bovino adulto o vitellone, costata, crudo",140.0,21.3,0.0,6.1,0.0
+ALIMENTO,CARNE,"Bovino adulto o vitellone, fesa, crudo",103.0,21.8,0.0,1.8,0.0
+ALIMENTO,CARNE,"Bovino adulto o vitellone, filetto, crudo",127.0,20.5,0.0,5.0,0.0
+ALIMENTO,CARNE,"Bovino adulto o vitellone, girello, crudo",110.0,21.3,0.0,2.8,0.0
+ALIMENTO,CARNE,"Bovino adulto o vitellone, lombata, crudo",134.0,21.8,0.0,5.2,0.0
+ALIMENTO,CARNE,"Bovino adulto o vitellone, noce, crudo",106.0,21.3,0.0,2.3,0.0
+ALIMENTO,CARNE,"Bovino adulto o vitellone, scamone, crudo",119.0,21.4,0.0,3.7,0.0
+ALIMENTO,CARNE,"Bovino adulto o vitellone, sottofesa, crudo",111.0,22.0,0.0,2.6,0.0
+ALIMENTO,CARNE,"Bovino adulto o vitellone, copertina di sotto, copertina di spalla, sottospalla e collo, crudo",132.0,20.3,0.0,5.7,0.0
+ALIMENTO,CARNE,"Bovino adulto o vitellone, geretto anteriore e posteriore, crudo",112.0,20.9,0.0,3.2,0.0
+ALIMENTO,CARNE,"Bovino adulto o vitellone, pancia, biancostato e punta di petto, crudo",171.0,19.7,0.0,10.2,0.0
+ALIMENTO,CARNE,"Bovino adulto o vitellone, spalla, muscolo, girello e fesone, crudo",108.0,21.5,0.0,2.4,0.0
+ALIMENTO,CARNE,"Vitello, filetto, crudo",107.0,20.7,0.0,2.7,0.0
+ALIMENTO,CARNE,"Vitello, filetto, cotto in padella",126.0,24.4,0.0,3.2,0.0
+ALIMENTO,CARNE,"Bufalo, solo tessuto muscolare, crudo",98.0,22.0,0.0,1.1,0.0
+ALIMENTO,CARNE,"Cavallo, tessuto muscolare e grasso, crudo",143.0,19.8,0.6,6.8,0.0
+ALIMENTO,CARNE,"Cavallo, solo tessuto muscolare, crudo",106.0,23.5,0.7,1.0,0.0
+ALIMENTO,CARNE,"Agnello, crudo",159.0,20.0,0.0,8.8,0.0
+ALIMENTO,CARNE,"Agnello, cotto, al forno",199.0,25.0,0.0,11.0,0.0
+ALIMENTO,CARNE,"Agnello, coscio, crudo",102.0,20.0,0.0,2.5,0.0
+ALIMENTO,CARNE,"Agnello, coscio, cotto, al forno",118.0,23.0,0.0,2.9,0.0
+ALIMENTO,CARNE,"Agnello, costoletta, crudo",106.0,20.4,0.0,2.7,0.0
+ALIMENTO,CARNE,"Agnello, costoletta, cotto, al forno",118.0,22.7,0.0,3.0,0.0
+ALIMENTO,CARNE,"Capra, solo tessuto muscolare, crudo",106.0,21.2,0.0,2.3,0.0
+ALIMENTO,CARNE,"Capretto, crudo",113.0,19.2,0.0,4.0,0.0
+ALIMENTO,CARNE,"Pecora, solo tessuto muscolare, crudo",121.0,21.0,0.0,4.1,0.0
+ALIMENTO,CARNE,"Maiale, coscio, crudo",110.0,20.2,0.0,3.2,0.0
+ALIMENTO,CARNE,"Maiale, lombo, crudo",146.0,20.7,0.0,7.0,0.0
+ALIMENTO,CARNE,"Maiale, spalla, crudo",133.0,19.0,0.0,6.3,0.0
+ALIMENTO,CARNE,"Maiale, bistecca, crudo",157.0,21.3,0.0,8.0,0.0
+ALIMENTO,CARNE,"Maiale, bistecca, cotto, in padella",187.0,25.4,0.0,9.5,0.0
+ALIMENTO,CARNE,"Maiale, pesante, coscio, crudo",127.0,20.4,0.0,5.1,0.0
+ALIMENTO,CARNE,"Maiale, pesante, lombo, crudo",172.0,20.8,0.0,9.9,0.0
+ALIMENTO,CARNE,"Maiale, pesante, spalla, crudo",156.0,19.0,0.0,8.9,0.0
+ALIMENTO,CARNE,"Anatra domestica, crudo",159.0,21.4,0.0,8.2,0.0
+ALIMENTO,CARNE,"Faraona, coscio, con pelle, crudo",133.0,24.3,0.3,3.8,0.0
+ALIMENTO,CARNE,"Faraona, coscio, senza pelle, crudo",127.0,24.0,0.3,3.3,0.0
+ALIMENTO,CARNE,"Faraona, coscio, senza pelle, cotto, allo spiedo",194.0,34.4,0.3,6.1,0.0
+ALIMENTO,CARNE,"Faraona, petto, senza pelle, crudo",121.0,25.8,0.2,1.9,0.0
+ALIMENTO,CARNE,"Faraona, petto, senza pelle, cotto, allo spiedo",146.0,30.7,0.2,2.5,0.0
+ALIMENTO,CARNE,"Gallina, crudo",194.0,20.9,0.0,12.3,0.0
+ALIMENTO,CARNE,"Oca, crudo",373.0,15.8,0.0,34.4,0.0
+ALIMENTO,CARNE,"Pollo, intero, con pelle, crudo",171.0,19.0,0.0,10.6,0.0
+ALIMENTO,CARNE,"Pollo, intero, con pelle, cotto, al forno",200.0,27.1,0.0,10.2,0.0
+ALIMENTO,CARNE,"Pollo, intero, senza pelle, crudo",110.0,19.4,0.0,3.6,0.0
+ALIMENTO,CARNE,"Pollo, intero, senza pelle, cotto, al forno",160.0,27.9,0.0,5.4,0.0
+ALIMENTO,CARNE,"Pollo, intero, con pelle, cotto, arrosto",245.0,28.3,0.0,14.7,0.0
+ALIMENTO,CARNE,"Pollo, intero, senza pelle, cotto, arrosto",206.0,28.9,0.0,10.0,0.0
+ALIMENTO,CARNE,"Pollo, ala, con pelle, crudo",196.0,16.7,0.0,14.3,0.0
+ALIMENTO,CARNE,"Pollo, ala, con pelle, cotta, al forno",283.0,31.7,0.0,17.4,0.0
+ALIMENTO,CARNE,"Pollo, fuso, con pelle, crudo",125.0,18.4,0.0,5.7,0.0
+ALIMENTO,CARNE,"Pollo, fuso, con pelle, cotto, al forno",201.0,31.2,0.0,8.5,0.0
+ALIMENTO,CARNE,"Pollo, fuso, senza pelle, crudo",107.0,18.5,0.0,3.7,0.0
+ALIMENTO,CARNE,"Pollo, fuso, senza pelle, cotto, al forno",175.0,29.9,0.0,6.2,0.0
+ALIMENTO,CARNE,"Pollo, petto, crudo",100.0,23.3,0.0,0.8,0.0
+ALIMENTO,CARNE,"Pollo, petto, cotto, in padella",129.0,30.2,0.0,0.9,0.0
+ALIMENTO,CARNE,"Pollo, sovracoscio, con pelle, crudo",196.0,17.4,0.0,14.0,0.0
+ALIMENTO,CARNE,"Pollo, sovracoscio, con pelle, cotto, al forno",219.0,26.7,0.0,12.5,0.0
+ALIMENTO,CARNE,"Pollo, sovracoscio, senza pelle, crudo",132.0,18.7,0.0,6.3,0.0
+ALIMENTO,CARNE,"Pollo, sovracoscio, senza pelle, cotto, al forno",188.0,28.3,0.0,8.3,0.0
+ALIMENTO,CARNE,"Tacchino intero, con pelle, crudo",135.0,18.2,0.0,6.9,0.0
+ALIMENTO,CARNE,"Tacchino intero, senza pelle, crudo",109.0,21.9,0.0,2.4,0.0
+ALIMENTO,CARNE,"Tacchino intero, senza pelle, cotto, al forno",117.0,23.3,0.0,2.6,0.0
+ALIMENTO,CARNE,"Tacchino, coscio, con pelle, crudo",131.0,18.1,0.0,6.5,0.0
+ALIMENTO,CARNE,"Tacchino, fesa, crudo",107.0,24.0,0.0,1.2,0.0
+ALIMENTO,CARNE,"Tacchino, fesa, cotta, al forno",131.0,29.6,0.0,1.4,0.0
+ALIMENTO,CARNE,"Tacchino, fuso, con pelle, crudo",126.0,17.9,0.0,6.0,0.0
+ALIMENTO,CARNE,"Tacchino, fuso, con pelle, cotto, al forno",191.0,26.7,0.0,9.3,0.0
+ALIMENTO,CARNE,"Tacchino, fuso, senza pelle, crudo",113.0,18.0,0.0,4.6,0.0
+ALIMENTO,CARNE,"Tacchino, fuso, senza pelle, cotto, al forno",190.0,28.0,0.0,8.7,0.0
+ALIMENTO,CARNE,"Tacchino, sovracoscio, senza pelle, crudo",120.0,18.5,0.0,5.1,0.0
+ALIMENTO,CARNE,"Tacchino, sovracoscio, senza pelle, cotto, al forno",182.0,30.2,0.0,6.8,0.0
+ALIMENTO,CARNE,"Coniglio intero, crudo",118.0,19.9,0.0,4.3,0.0
+ALIMENTO,CARNE,"Coniglio, intero, cotto",166.0,27.9,0.0,6.0,0.0
+ALIMENTO,CARNE,"Coniglio, intero surgelato, crudo",116.0,20.3,0.0,3.9,0.0
+ALIMENTO,CARNE,"Coniglio, coscio, crudo",137.0,21.0,0.0,5.9,0.0
+ALIMENTO,CARNE,"Cervo, solo tessuto muscolare, crudo",91.0,21.0,0.0,0.8,0.0
+ALIMENTO,CARNE,"Daino, solo tessuto muscolare, crudo",95.0,21.0,0.0,1.2,0.0
+ALIMENTO,CARNE,"Fagiano, crudo",144.0,24.3,0.0,5.2,0.0
+ALIMENTO,CARNE,"Piccione giovane, crudo",138.0,22.1,0.0,5.5,0.0
+ALIMENTO,CARNE,"Quaglia, crudo",161.0,25.0,0.0,6.8,0.0
+ALIMENTO,CARNE,"Struzzo, solo tessuto muscolare, crudo",92.0,20.9,0.0,0.9,0.0
+ALIMENTO,CARNE,"Struzzo, solo tessuto muscolare, cotto, al forno",101.0,22.2,0.0,1.4,0.0
+ALIMENTO,CARNE,"Lumaca, cruda",67.0,12.9,0.0,1.7,0.0
+ALIMENTO,CARNE,"Rana, crudo",64.0,15.5,0.0,0.2,0.0
+ALIMENTO,CARNE,Bresaola della Valtellina IGP,152.0,33.1,0.4,2.0,0.0
+ALIMENTO,CARNE,Capocollo,450.0,20.8,1.4,40.2,0.0
+ALIMENTO,CARNE,Capocollo di Calabria,344.0,29.1,0.9,24.9,0.0
+ALIMENTO,CARNE,Ciccioli,636.0,45.2,0.0,50.6,0.0
+ALIMENTO,CARNE,"Cotechino, confezionato precotto",449.0,17.2,0.0,42.3,0.0
+ALIMENTO,CARNE,"Cotechino Modena IGP, cotto",253.0,23.6,3.2,16.3,0.0
+ALIMENTO,CARNE,Mortadella di bovini e suini,388.0,13.3,0.5,37.0,0.0
+ALIMENTO,CARNE,Pancetta magretta,314.0,21.7,0.0,25.3,0.0
+ALIMENTO,CARNE,Pancetta tesa,337.0,20.9,0.0,28.1,0.0
+ALIMENTO,CARNE,Prosciutto cotto,138.0,15.7,1.7,7.6,0.0
+ALIMENTO,CARNE,"Prosciutto cotto, sgrassato",107.0,17.0,1.9,3.5,0.0
+ALIMENTO,CARNE,"Prosciutto cotto, alta qualità",182.0,18.0,0.8,11.9,0.0
+ALIMENTO,CARNE,"Prosciutto cotto, alta qualità, sgrassato",126.0,19.5,0.9,5.0,0.0
+ALIMENTO,CARNE,"Prosciutto cotto, scelto",155.0,17.5,0.6,9.2,0.0
+ALIMENTO,CARNE,"Prosciutto cotto, scelto, sgrassato",115.0,19.4,0.5,4.0,0.0
+ALIMENTO,CARNE,"Prosciutto crudo, di Modena DOP",309.0,25.6,0.1,22.9,0.0
+ALIMENTO,CARNE,"Prosciutto crudo, di Modena DOP, sgrassato",201.0,30.2,0.1,8.9,0.0
+ALIMENTO,CARNE,Prosciutto crudo di montagna,303.0,26.2,0.0,22.0,0.0
+ALIMENTO,CARNE,"Prosciutto crudo DOP, di Parma",269.0,25.9,0.3,18.3,0.0
+ALIMENTO,CARNE,"Prosciutto crudo, di Parma DOP, sgrassato",176.0,29.1,0.4,6.4,0.0
+ALIMENTO,CARNE,"Prosciutto crudo, di Pietraroja",358.0,26.2,0.0,28.1,0.0
+ALIMENTO,CARNE,"Prosciutto crudo, di San Daniele DOP",271.0,25.7,0.2,18.6,0.0
+ALIMENTO,CARNE,"Prosciutto crudo, di San Daniele DOP, sgrassato",176.0,29.0,0.4,6.5,0.0
+ALIMENTO,CARNE,"Prosciutto crudo, disossato",224.0,26.9,0.0,12.9,0.0
+ALIMENTO,CARNE,"Prosciutto crudo, disossato, sgrassato",159.0,29.3,0.0,4.6,0.0
+ALIMENTO,CARNE,"Prosciutto crudo, gambuccio",306.0,26.2,0.0,22.4,0.0
+ALIMENTO,CARNE,"Prosciutto crudo, Nazionale",235.0,27.8,0.1,13.7,0.0
+ALIMENTO,CARNE,"Prosciutto crudo, Nazionale, sgrassato",169.0,30.5,0.3,5.1,0.0
+ALIMENTO,CARNE,Salame Brianza,384.0,26.5,1.0,30.5,0.0
+ALIMENTO,CARNE,Salami italiani alla cacciatora DOP,411.0,28.4,0.7,32.7,0.0
+ALIMENTO,CARNE,Salame Fabriano,420.0,26.5,1.5,34.3,0.0
+ALIMENTO,CARNE,Salame Felino,375.0,30.5,0.5,27.9,0.0
+ALIMENTO,CARNE,Salame Milano,385.0,25.4,1.1,31.0,0.0
+ALIMENTO,CARNE,Salame Napoli,378.0,27.4,0.2,29.7,0.0
+ALIMENTO,CARNE,Salame nostrano,370.0,27.3,1.1,28.5,0.0
+ALIMENTO,CARNE,Salame ungherese,420.0,23.6,1.1,35.7,0.0
+ALIMENTO,CARNE,Salsiccia di fegato,424.0,12.4,0.9,41.2,0.0
+ALIMENTO,CARNE,"Salsiccia di suino, fresca",304.0,15.4,0.6,26.7,0.0
+ALIMENTO,CARNE,"Salsiccia di suino, fresca, cotta, in padella",324.0,22.2,0.0,26.1,0.0
+ALIMENTO,CARNE,"Salsiccia di suino, secca",514.0,22.0,0.0,47.3,0.0
+ALIMENTO,CARNE,Salsiccia di Calabria,366.0,33.6,1.3,25.2,0.0
+ALIMENTO,CARNE,Soppressata di Calabria,377.0,34.2,0.9,26.3,0.0
+ALIMENTO,CARNE,Speck dell'Alto Adige IGP,299.0,30.7,1.2,19.1,0.0
+ALIMENTO,CARNE,"Wurstel di puro suino, crudo",250.0,13.2,1.9,21.1,0.0
+ALIMENTO,CARNE,"Wurstel di puro suino, cotto",259.0,14.6,0.3,22.2,0.0
+ALIMENTO,CARNE,"Zampone confezionato, precotto",361.0,19.1,0.0,31.6,0.0
+ALIMENTO,CARNE,"Zampone Modena IGP, cotto",262.0,23.7,2.6,17.5,0.0
+ALIMENTO,CARNE,"Carne bovina in gelatina, in scatola",67.0,12.6,0.0,1.8,0.0
+ALIMENTO,CARNE,"Carne bovina pressata, in scatola",141.0,16.5,0.0,8.3,0.0
+ALIMENTO,CARNE,Patè di coniglio,346.0,13.0,1.1,32.2,0.0
+ALIMENTO,CARNE,Patè di fegato,341.0,12.7,1.3,31.7,0.0
+ALIMENTO,CARNE,Patè di pollo,289.0,11.1,2.3,26.2,0.0
+ALIMENTO,CARNE,Patè di prosciutto,358.0,11.3,1.1,34.3,0.0
+ALIMENTO,CARNE,Animelle di bovini,304.0,11.5,0.1,28.6,0.0
+ALIMENTO,CARNE,"Animelle di bovini, cotte",434.0,16.4,0.2,40.9,0.0
+ALIMENTO,CARNE,Cervello di bovini,157.0,10.0,0.8,12.7,0.0
+ALIMENTO,CARNE,Coratella di agnello,109.0,15.7,1.0,4.7,0.0
+ALIMENTO,CARNE,Coratella di vitello,100.0,17.1,0.8,3.2,0.0
+ALIMENTO,CARNE,Cuore di bovini,123.0,16.8,0.5,6.0,0.0
+ALIMENTO,CARNE,"Cuore di bovini, cotto",189.0,25.8,0.8,9.2,0.0
+ALIMENTO,CARNE,Cuore di equini,146.0,18.7,0.6,7.7,0.0
+ALIMENTO,CARNE,Cuore di ovini,134.0,16.9,0.4,7.2,0.0
+ALIMENTO,CARNE,Cuore di pollo,103.0,14.1,0.2,5.1,0.0
+ALIMENTO,CARNE,"Cuore di pollo, cotto",147.0,20.1,0.3,7.3,0.0
+ALIMENTO,CARNE,Cuore di suino,159.0,18.3,0.4,9.4,0.0
+ALIMENTO,CARNE,Cuore di tacchino,103.0,14.1,0.2,5.1,0.0
+ALIMENTO,CARNE,"Cuore di tacchino, cotto",147.0,20.1,0.3,7.3,0.0
+ALIMENTO,CARNE,Fegato di bovini,142.0,20.0,5.9,4.4,0.0
+ALIMENTO,CARNE,"Fegato di bovini, cotto",190.0,26.7,7.9,5.9,0.0
+ALIMENTO,CARNE,Fegato di equini,145.0,22.4,5.3,4.0,0.0
+ALIMENTO,CARNE,Fegato di ovini,135.0,19.5,2.0,5.5,0.0
+ALIMENTO,CARNE,Fegato di pollo,154.0,22.8,1.5,6.3,0.0
+ALIMENTO,CARNE,"Fegato di pollo, cotto",192.0,29.4,2.0,7.4,0.0
+ALIMENTO,CARNE,Fegato di suini,140.0,22.8,1.5,4.8,0.0
+ALIMENTO,CARNE,"Fegato di suini, cotto",183.0,29.4,2.0,6.4,0.0
+ALIMENTO,CARNE,Fegato di tacchino,127.0,17.8,0.5,6.0,0.0
+ALIMENTO,CARNE,"Fegato di tacchino, cotto",195.0,27.4,0.8,9.2,0.0
+ALIMENTO,CARNE,Lingua di bovini,232.0,17.1,0.4,18.0,0.0
+ALIMENTO,CARNE,"Lingua di bovini, cotta, fritta",309.0,22.8,0.5,24.0,0.0
+ALIMENTO,CARNE,Milza di bovini,107.0,18.5,0.0,3.7,0.0
+ALIMENTO,CARNE,Polmone di bovini,75.0,14.0,0.0,2.1,0.0
+ALIMENTO,CARNE,Rene di bovini,118.0,18.4,0.8,4.6,0.0
+ALIMENTO,CARNE,Trippa di bovini,108.0,15.8,0.0,5.0,0.0
+ALIMENTO,PESCE,Acciuga o alice,96.0,16.8,1.5,2.6,0.0
+ALIMENTO,PESCE,"Acciuga o alice, sott'olio",206.0,25.9,0.2,11.3,0.0
+ALIMENTO,PESCE,"Acciuga o alice, sotto sale",137.0,25.0,2.3,3.1,0.0
+ALIMENTO,PESCE,"Anguilla, affumicata",231.0,17.5,0.2,17.8,0.0
+ALIMENTO,PESCE,"Anguilla, marinata",259.0,14.8,0.6,21.9,0.0
+ALIMENTO,PESCE,Anguilla di fiume,261.0,11.8,0.1,23.7,0.0
+ALIMENTO,PESCE,Anguilla di mare,237.0,14.6,0.7,19.6,0.0
+ALIMENTO,PESCE,"Anguilla d'allevamento, filetti",237.0,16.2,0.5,18.9,0.0
+ALIMENTO,PESCE,Capitone,247.0,13.0,0.5,21.5,0.0
+ALIMENTO,PESCE,Aringa,216.0,16.5,0.0,16.7,0.0
+ALIMENTO,PESCE,"Aringa, affumicata",194.0,19.9,0.0,12.7,0.0
+ALIMENTO,PESCE,"Aringa, marinata",199.0,18.3,0.0,14.0,0.0
+ALIMENTO,PESCE,"Aringa, sotto sale",218.0,19.8,0.0,15.4,0.0
+ALIMENTO,PESCE,Boga,87.0,18.3,0.8,1.2,0.0
+ALIMENTO,PESCE,Carpa,139.0,18.9,0.0,7.1,0.0
+ALIMENTO,PESCE,Cefalo muggine,127.0,15.8,0.7,6.8,0.0
+ALIMENTO,PESCE,"Bottarga, cefalo muggine",405.0,43.5,0.0,25.7,0.0
+ALIMENTO,PESCE,Cernia surgelata,88.0,17.0,0.5,2.0,0.0
+ALIMENTO,PESCE,Coregone,135.0,19.0,0.1,6.5,0.0
+ALIMENTO,PESCE,Corvina,88.0,20.0,0.2,0.8,0.0
+ALIMENTO,PESCE,Dentice,101.0,16.7,0.7,3.5,0.0
+ALIMENTO,PESCE,"Dentice, surgelato",103.0,17.2,0.7,3.5,0.0
+ALIMENTO,PESCE,Halibut,114.0,20.6,0.0,3.5,0.0
+ALIMENTO,PESCE,Lattarini,145.0,14.6,0.0,9.6,0.0
+ALIMENTO,PESCE,Luccio,81.0,18.7,0.1,0.6,0.0
+ALIMENTO,PESCE,"Melù o pesce molo, stoccafisso, secco",356.0,80.1,1.1,3.5,0.0
+ALIMENTO,PESCE,"Melù o pesce molo, stoccafisso, ammollato",92.0,20.7,0.3,0.9,0.0
+ALIMENTO,PESCE,Merluzzo o nasello,71.0,17.0,0.0,0.3,0.0
+ALIMENTO,PESCE,"Merluzzo o nasello, surgelato",75.0,17.3,0.0,0.6,0.0
+ALIMENTO,PESCE,"Merluzzo o nasello, surgelato, cotto, in forno",78.0,17.5,0.0,0.9,0.0
+ALIMENTO,PESCE,"Merluzzo o nasello, surgelato, cotto, al microonde",107.0,24.8,0.0,0.9,0.0
+ALIMENTO,PESCE,"Merluzzo o nasello, surgelato, filetti",68.0,15.6,0.0,0.6,0.0
+ALIMENTO,PESCE,"Merluzzo o nasello, baccalà, secco",131.0,29.0,0.0,1.7,0.0
+ALIMENTO,PESCE,"Merluzzo o nasello, baccalà, ammollato",95.0,21.6,0.0,1.0,0.0
+ALIMENTO,PESCE,"Merluzzo o nasello, bastoncini di pesce, surgelati",191.0,11.0,15.0,10.1,0.0
+ALIMENTO,PESCE,Mormora,97.0,18.0,2.0,1.9,0.0
+ALIMENTO,PESCE,Occhiata,117.0,19.0,2.0,3.7,0.0
+ALIMENTO,PESCE,"Orata, surgelata",94.0,19.8,1.0,1.2,0.0
+ALIMENTO,PESCE,"Orata fresca, filetti",121.0,20.7,1.0,3.8,0.0
+ALIMENTO,PESCE,"Orata fresca d'allevamento, filetti",159.0,19.7,1.2,8.4,0.0
+ALIMENTO,PESCE,Pagello,101.0,21.0,0.0,1.9,0.0
+ALIMENTO,PESCE,Pagello bocca d'oro,118.0,20.0,3.0,3.0,0.0
+ALIMENTO,PESCE,Palombo,80.0,16.0,1.3,1.2,0.0
+ALIMENTO,PESCE,Pesce gatto,92.0,15.5,0.2,3.3,0.0
+ALIMENTO,PESCE,Razza,68.0,14.2,0.7,0.9,0.0
+ALIMENTO,PESCE,Rombo,81.0,16.3,1.2,1.3,0.0
+ALIMENTO,PESCE,"Salmone, fresco",185.0,18.4,1.0,12.0,0.0
+ALIMENTO,PESCE,"Salmone, affumicato",147.0,25.4,1.2,4.5,0.0
+ALIMENTO,PESCE,"Salmone, in salamoia",192.0,21.1,1.0,11.5,0.0
+ALIMENTO,PESCE,Salpa,104.0,18.0,2.0,2.7,0.0
+ALIMENTO,PESCE,Sarago,97.0,20.7,1.0,1.2,0.0
+ALIMENTO,PESCE,Sarda,129.0,20.8,1.5,4.5,0.0
+ALIMENTO,PESCE,Sardine,225.0,20.3,1.5,15.4,0.0
+ALIMENTO,PESCE,"Sardine, fritte",324.0,32.3,1.0,21.2,0.0
+ALIMENTO,PESCE,Scorfano,82.0,19.0,0.6,0.4,0.0
+ALIMENTO,PESCE,Sgombro o maccarello,170.0,17.0,0.5,11.1,0.0
+ALIMENTO,PESCE,"Sgombro o maccarello, in salamoia",177.0,19.3,0.0,11.1,0.0
+ALIMENTO,PESCE,Sogliola,83.0,16.9,0.8,1.4,0.0
+ALIMENTO,PESCE,"Sogliola, surgelata",81.0,17.3,0.1,1.3,0.0
+ALIMENTO,PESCE,Spigola,82.0,16.5,0.6,1.5,0.0
+ALIMENTO,PESCE,"Spigola d'allevamento, filetti",149.0,21.3,0.8,6.8,0.0
+ALIMENTO,PESCE,Storione,145.0,19.2,0.0,7.6,0.0
+ALIMENTO,PESCE,"Caviale, storione",255.0,26.9,3.3,15.0,0.0
+ALIMENTO,PESCE,Tinca,79.0,17.9,0.9,0.5,0.0
+ALIMENTO,PESCE,Tonno,159.0,21.5,0.1,8.1,0.0
+ALIMENTO,PESCE,"Tonno in salamoia, sgocciolato",103.0,25.1,0.0,0.3,0.0
+ALIMENTO,PESCE,"Tonno sott'olio, sgocciolato",192.0,25.2,0.0,10.1,0.0
+ALIMENTO,PESCE,Triglia,123.0,15.8,1.1,6.2,0.0
+ALIMENTO,PESCE,Trota,86.0,14.7,0.0,3.0,0.0
+ALIMENTO,PESCE,Trota surgelata,92.0,17.8,0.0,2.3,0.0
+ALIMENTO,PESCE,"Trota surgelata, cotta, al microonde",105.0,20.4,0.0,2.6,0.0
+ALIMENTO,PESCE,"Trota surgelata, cotta, in forno",136.0,26.7,0.0,3.2,0.0
+ALIMENTO,PESCE,"Trota iridea d'allevamento, filetti",118.0,20.3,0.0,4.1,0.0
+ALIMENTO,PESCE,Suro o sugarello,104.0,18.3,1.0,3.0,0.0
+ALIMENTO,PESCE,Calamaro,68.0,12.6,0.6,1.7,0.0
+ALIMENTO,PESCE,Calamaro surgelato,68.0,13.1,0.6,1.5,0.0
+ALIMENTO,PESCE,Cozza o mitilo,84.0,11.7,3.4,2.7,0.0
+ALIMENTO,PESCE,Ostrica,69.0,10.2,5.4,0.9,0.0
+ALIMENTO,PESCE,Polpo,57.0,10.6,1.4,1.0,0.0
+ALIMENTO,PESCE,Seppia,72.0,14.0,0.7,1.5,0.0
+ALIMENTO,PESCE,Vongola,65.0,9.8,3.9,1.2,0.0
+ALIMENTO,PESCE,Aragosta,85.0,16.0,1.0,1.9,0.0
+ALIMENTO,PESCE,"Aragosta, bollita",86.0,16.2,1.0,1.9,0.0
+ALIMENTO,PESCE,Gamberi,71.0,13.6,2.9,0.6,0.0
+ALIMENTO,PESCE,"Gamberi sgusciati, surgelati",85.0,16.5,2.9,0.9,0.0
+ALIMENTO,PESCE,"Granchio, in scatola",81.0,18.1,0.0,0.9,0.0
+ALIMENTO,LATTICINO,Latte di capra,76.0,3.9,4.7,4.8,0.0
+ALIMENTO,LATTICINO,Latte di pecora,103.0,5.3,5.2,6.9,0.0
+ALIMENTO,LATTICINO,Latte di bufala,114.0,4.5,5.1,8.5,0.0
+ALIMENTO,LATTICINO,"Latte di vacca, pastorizzato, intero",64.0,3.3,4.9,3.6,0.0
+ALIMENTO,LATTICINO,"Latte di vacca, pastorizzato, parzialmente scremato",46.0,3.5,5.0,1.5,0.0
+ALIMENTO,LATTICINO,"Latte di vacca, pastorizzato, scremato",36.0,3.6,5.3,0.2,0.0
+ALIMENTO,LATTICINO,"Latte di vacca, condensato, zuccherato",328.0,8.7,56.5,9.0,0.0
+ALIMENTO,LATTICINO,"Latte di vacca, evaporato, non zuccherato",134.0,7.0,8.6,8.2,0.0
+ALIMENTO,LATTICINO,"Latte di vacca, in polvere, intero",484.0,25.7,42.0,24.9,0.0
+ALIMENTO,LATTICINO,"Latte di vacca, in polvere, parzialmente scremato",418.0,28.8,50.2,12.7,0.0
+ALIMENTO,LATTICINO,"Latte di vacca, in polvere, scremato",351.0,33.1,56.2,0.9,0.0
+ALIMENTO,LATTICINO,"Latte di vacca, UHT, intero",63.0,3.3,4.7,3.6,0.0
+ALIMENTO,LATTICINO,"Latte di vacca, UHT, parzialmente scremato",46.0,3.2,5.1,1.6,0.0
+ALIMENTO,LATTICINO,"Crema di latte, 12% di lipidi",140.0,2.8,4.4,12.5,0.0
+ALIMENTO,LATTICINO,"Panna da montare, 35% di lipidi",337.0,2.3,3.4,35.0,0.0
+ALIMENTO,LATTICINO,"Panna da cucina, sterilizzata, 23% di lipidi",233.0,2.7,4.0,23.0,0.0
+ALIMENTO,LATTICINO,"Yogurt, da latte intero",66.0,3.8,4.3,3.9,0.0
+ALIMENTO,LATTICINO,"Yogurt, 0% lipidi",42.0,4.7,6.0,0.1,0.0
+ALIMENTO,LATTICINO,"Yogurt greco, da latte intero",115.0,6.4,2.0,9.1,0.0
+ALIMENTO,LATTICINO,"Yogurt greco, da latte magro, alla frutta",74.0,6.0,11.0,0.9,0.5
+ALIMENTO,LATTICINO,"Yogurt greco, 0% lipidi",51.0,9.0,4.0,0.0,0.0
+ALIMENTO,LATTICINO,"Yogurt greco, 0% lipidi, aromatizzato",86.0,7.5,15.0,0.0,0.0
+ALIMENTO,LATTICINO,"Yogurt da latte intero, alla frutta",80.0,3.4,10.5,2.8,1.0
+ALIMENTO,LATTICINO,"Yogurt da latte, parzialmente scremato",43.0,3.4,3.8,1.7,0.0
+ALIMENTO,LATTICINO,"Yogurt da latte, scremato",36.0,3.3,4.0,0.9,0.0
+ALIMENTO,LATTICINO,Yogurt caprino,60.0,3.6,5.1,2.9,0.0
+ALIMENTO,LATTICINO,Formaggio molle da tavola,377.0,25.4,1.0,30.2,0.0
+ALIMENTO,LATTICINO,Brie,320.0,19.3,0.2,26.9,0.0
+ALIMENTO,LATTICINO,Burrini,527.0,22.1,4.1,47.0,0.0
+ALIMENTO,LATTICINO,Butirro calabro,449.0,24.7,0.3,38.8,0.0
+ALIMENTO,LATTICINO,Caciocavallo,431.0,35.7,2.3,31.1,0.0
+ALIMENTO,LATTICINO,Cacioricotta di capra,182.0,11.9,1.5,14.3,0.0
+ALIMENTO,LATTICINO,Caciotta mista,384.0,24.5,1.8,31.0,0.0
+ALIMENTO,LATTICINO,Caciotta romana di pecora,364.0,27.7,2.1,27.3,0.0
+ALIMENTO,LATTICINO,Caciotta toscana,368.0,24.6,0.8,29.6,0.0
+ALIMENTO,LATTICINO,Caciottina vaccina,324.0,21.1,3.0,25.4,0.0
+ALIMENTO,LATTICINO,Caciottina fresca,263.0,17.3,0.5,21.3,0.0
+ALIMENTO,LATTICINO,Camembert,307.0,20.9,0.2,24.7,0.0
+ALIMENTO,LATTICINO,Cheddar,388.0,26.7,0.5,31.0,0.0
+ALIMENTO,LATTICINO,Crescenza,281.0,16.1,1.9,23.3,0.0
+ALIMENTO,LATTICINO,Dolce verde,276.0,19.1,2.5,21.1,0.0
+ALIMENTO,LATTICINO,Edam,326.0,25.5,1.4,24.3,0.0
+ALIMENTO,LATTICINO,Emmenthal,403.0,28.5,3.6,30.6,0.0
+ALIMENTO,LATTICINO,Feta,250.0,15.6,1.5,20.2,0.0
+ALIMENTO,LATTICINO,Fior di latte,268.0,20.6,0.7,20.3,0.0
+ALIMENTO,LATTICINO,Fontina,361.0,24.5,0.8,28.9,0.0
+ALIMENTO,LATTICINO,Formaggino,309.0,11.2,6.0,26.9,0.0
+ALIMENTO,LATTICINO,Formaggino con ridotto contenuto di grasso,239.0,14.7,6.5,17.3,0.0
+ALIMENTO,LATTICINO,Gorgonzola,324.0,19.1,1.0,27.1,0.0
+ALIMENTO,LATTICINO,"Grana Padano, DOP",392.0,33.9,0.0,28.5,0.0
+ALIMENTO,LATTICINO,Groviera,417.0,30.6,1.5,32.1,0.0
+ALIMENTO,LATTICINO,Italico,316.0,21.2,1.2,25.2,0.0
+ALIMENTO,LATTICINO,Latteria,456.0,30.7,1.4,36.4,0.0
+ALIMENTO,LATTICINO,Mascarpone,455.0,7.6,0.3,47.0,0.0
+ALIMENTO,LATTICINO,Mozzarella di bufala,288.0,16.7,0.4,24.4,0.0
+ALIMENTO,LATTICINO,Mozzarella di bufala campana DOP,257.0,14.1,1.4,21.7,0.0
+ALIMENTO,LATTICINO,Mozzarella di vacca,253.0,18.7,0.7,19.5,0.0
+ALIMENTO,LATTICINO,Caciottina mista,370.0,26.9,1.5,28.5,0.0
+ALIMENTO,LATTICINO,Pecorino,404.0,28.8,0.2,32.0,0.0
+ALIMENTO,LATTICINO,Pecorino romano,409.0,26.0,1.8,33.1,0.0
+ALIMENTO,LATTICINO,Pecorino siciliano,427.0,28.9,2.4,33.6,0.0
+ALIMENTO,LATTICINO,Provolone,374.0,28.1,2.0,28.2,0.0
+ALIMENTO,LATTICINO,Ricotta di bufala,212.0,10.5,3.7,17.3,0.0
+ALIMENTO,LATTICINO,Ricotta di pecora,157.0,9.5,4.2,11.5,0.0
+ALIMENTO,LATTICINO,Ricotta di vacca,146.0,8.8,3.5,10.9,0.0
+ALIMENTO,LATTICINO,Robiola,338.0,20.0,2.3,27.7,0.0
+ALIMENTO,LATTICINO,Scamorza,334.0,25.0,1.0,25.6,0.0
+ALIMENTO,LATTICINO,Taleggio,315.0,19.0,0.9,26.2,0.0
+ALIMENTO,LATTICINO,Fiocchi di formaggio magro,115.0,9.7,3.2,7.1,0.0
+ALIMENTO,LATTICINO,"Formaggio cremoso spalmabile, light",179.0,9.2,3.1,14.5,0.0
+ALIMENTO,CARNE,"Uova di anatra, intero",190.0,12.2,0.7,15.4,0.0
+ALIMENTO,CARNE,"Uova di gallina, intero, in polvere",537.0,51.9,0.4,36.4,0.0
+ALIMENTO,CARNE,"Uova di gallina, tuorlo, in polvere",642.0,31.2,0.02,57.5,0.0
+ALIMENTO,CARNE,"Uova di oca, intero",189.0,13.8,1.0,14.4,0.0
+ALIMENTO,CARNE,"Uova di tacchina, intero",147.0,12.8,1.0,10.2,0.0
+ALIMENTO,CONDIMENTO,Burro,758.0,0.8,1.1,83.4,0.0
+ALIMENTO,CONDIMENTO,Lardo,891.0,0.0,0.0,99.0,0.0
+ALIMENTO,CONDIMENTO,Sego di bue,872.0,0.8,0.0,96.5,0.0
+ALIMENTO,CONDIMENTO,Strutto o sugna,892.0,0.3,0.0,99.0,0.0
+ALIMENTO,CONDIMENTO,Olio di fegato di merluzzo,899.0,0.0,0.0,99.9,0.0
+ALIMENTO,DOLCE,"Zucchero, saccarosio",392.0,0.0,104.5,0.0,0.0
+ALIMENTO,DOLCE,"Caramelle tipo ""mou""",430.0,2.1,71.1,17.2,0.0
+ALIMENTO,DOLCE,"Gomme da masticare, lastrine e confetti",262.0,0.0,70.0,0.0,0.0
+ALIMENTO,DOLCE,Torrone alla mandorla,483.0,10.8,52.0,26.8,1.9
+ALIMENTO,DOLCE,"Cioccolato, al latte",552.0,7.3,50.5,36.3,3.2
+ALIMENTO,DOLCE,"Cioccolato, fondente",531.0,6.6,49.7,33.6,8.0
+ALIMENTO,DOLCE,"Cioccolato, al latte con nocciole",553.0,7.2,48.6,36.9,4.8
+ALIMENTO,DOLCE,Crema di nocciole e cacao,537.0,6.9,58.1,32.4,0.0
+ALIMENTO,DOLCE,Canditi,292.0,0.5,75.0,0.0,4.5
+ALIMENTO,DOLCE,"Gelato confezionato, cacao, in vaschetta",173.0,3.6,25.3,7.1,0.0
+ALIMENTO,DOLCE,"Gelato confezionato, caffè, in vaschetta",245.0,5.1,23.9,15.0,0.0
+ALIMENTO,DOLCE,"Gelato confezionato, fior di latte, in vaschetta",218.0,4.2,20.7,13.7,0.0
+ALIMENTO,DOLCE,"Gelato confezionato, fior di latte, ricoperto di sorbetto alla fragola",101.0,1.4,21.3,1.7,0.0
+ALIMENTO,DOLCE,"Gelato confezionato, nocciola, in vaschetta",183.0,3.3,25.2,8.4,0.0
+ALIMENTO,DOLCE,"Gelato confezionato, panna, in vaschetta",189.0,3.2,27.2,8.2,0.0
+ALIMENTO,DOLCE,"Gelato confezionato, panna ricoperta di cioccolato fondente",316.0,4.5,28.2,21.4,0.0
+ALIMENTO,DOLCE,"Gelato confezionato, stracciatella, in vaschetta",193.0,2.9,31.5,7.0,0.0
+ALIMENTO,DOLCE,"Gelato confezionato, vaniglia, in vaschetta",167.0,2.7,25.7,6.7,0.0
+ALIMENTO,DOLCE,"Gelato confezionato, biscotto con crema, zabaione e cioccolato",271.0,5.3,49.1,7.3,0.0
+ALIMENTO,DOLCE,"Gelato confezionato, cono con panna e cioccolato",291.0,5.1,34.9,15.5,0.0
+ALIMENTO,DOLCE,"Gelato confezionato, cono con panna, scaglie di cioccolato e noccioline",326.0,4.2,33.3,20.5,0.0
+ALIMENTO,DOLCE,Baba' al rhum,288.0,5.9,41.2,5.7,1.1
+ALIMENTO,DOLCE,"Cannoli alla crema, industriale",368.0,6.2,41.9,20.7,0.0
+ALIMENTO,DOLCE,"Crostata, con crema al cacao, industriale",492.0,4.6,67.0,24.7,0.0
+ALIMENTO,DOLCE,"Crostata, con marmellata, industriale",339.0,4.9,65.5,8.2,0.0
+ALIMENTO,DOLCE,"Crostata, con marmellata di albicocche, industriale",421.0,0.9,71.7,16.5,0.0
+ALIMENTO,DOLCE,Torta margherita,370.0,8.9,63.4,10.4,1.4
+ALIMENTO,DOLCE,Miele,304.0,0.6,80.3,0.0,0.0
+ALIMENTO,DOLCE,"Merendine, con marmellata, industriale",364.0,5.5,67.9,9.5,1.1
+ALIMENTO,DOLCE,"Merendine, farcite con cacao, industriale",410.0,6.2,65.5,15.1,1.9
+ALIMENTO,DOLCE,"Merendine, tipo pan di Spagna, industriale",386.0,7.4,62.7,13.1,1.5
+ALIMENTO,DOLCE,"Merendine, tipo briosche, industriale",440.0,8.2,65.7,17.6,1.0
+ALIMENTO,DOLCE,"Merendine, tipo pasta frolla, industriale",447.0,5.3,71.7,17.1,1.7
+ALIMENTO,DOLCE,Barretta al cocco ricoperta di cioccolato,472.0,4.8,58.2,26.1,0.0
+ALIMENTO,DOLCE,Wafer ricoperto di cioccolato,498.0,8.2,60.3,26.6,0.0
+ALIMENTO,DOLCE,"Savoiardi, industriali",395.0,11.9,69.6,9.2,1.6
+ALIMENTO,DOLCE,Panettone,337.0,6.4,56.2,10.7,2.1
+ALIMENTO,FRUTTA,Pasta di mandorle,455.0,9.9,54.6,23.4,0.0
+ALIMENTO,FRUTTA,Farina di castagne,318.0,6.1,62.0,3.7,13.8
+ALIMENTO,VERDURA,"Minestrone, cotto",45.0,2.0,7.8,0.4,2.1
+BEVANDA,ALCOLICA,Vino da pasto bianco,70.0,0.0,0.0,0.0,0.0
+BEVANDA,ALCOLICA,Vino da pasto rosso,75.0,0.0,0.0,0.0,0.0
+BEVANDA,ALCOLICA,Marsala tipico,203.0,0.2,28.0,0.0,0.0
+BEVANDA,ALCOLICA,Vino da aperitivo,186.0,0.0,17.0,0.0,0.0
+BEVANDA,ANALCOLICA,"Arance succo, fresco",33.0,0.5,8.2,0.0,0.0
+BEVANDA,ANALCOLICA,"Arance bionde succo, fresco",38.0,0.5,9.6,0.0,0.0
+BEVANDA,ANALCOLICA,"Arance rosse succo, fresco",39.1,0.5,9.8,0.1,0.1
+BEVANDA,ANALCOLICA,"The, foglie",108.0,19.6,3.0,2.0,0.0
+BEVANDA,ALCOLICA,Birra chiara,34.0,0.2,3.5,0.0,0.0
+BEVANDA,ALCOLICA,Birra scura,45.0,0.3,3.2,0.1,0.1
+BEVANDA,ALCOLICA,Birra rossa,40.2,0.5,40.2,0.2,0.0

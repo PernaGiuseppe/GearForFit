@@ -1,0 +1,45 @@
+/* Bottone delete circolare nella card (Diete lista) */
+.btn-delete-card {
+  position: absolute;
+  top: 145px;
+  right: -1px;
+  background-color: #dc3545;
+  color: white;
+  border-radius: 6px;
+  border: 1px solid white;
+  width: 2em;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.btn-delete-card:hover {
+  background-color: #c82333;
+  transform: scale(1.1);
+}
+
+.stella-dettaglio {
+  font-size: 2em;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.stella-dettaglio.star-active {
+  position: static;
+  color: #ffc107;
+}
+
+.stella-dettaglio.star-inactive {
+  position: static;
+  color: #d3d3d3;
+}
+
+.stella-dettaglio:hover {
+  color: #ffc107;
+  transform: scale(1.1);
+}
