@@ -100,6 +100,7 @@ export default function Schede() {
       })
       .then((data) => {
         setSchede(data)
+        toast.success('Schede caricate')
       })
       .catch((err) => {
         console.error(err)
