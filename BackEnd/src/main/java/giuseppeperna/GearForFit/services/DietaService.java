@@ -5,10 +5,10 @@ import giuseppeperna.GearForFit.entities.Diete.*;
 import giuseppeperna.GearForFit.entities.Utente.Utente;
 import giuseppeperna.GearForFit.exceptions.NotFoundException;
 import giuseppeperna.GearForFit.payloads.*;
-import giuseppeperna.GearForFit.repositories.DietaRepository;
-import giuseppeperna.GearForFit.repositories.PastoStandardRepository;
-import giuseppeperna.GearForFit.repositories.DietaStandardAlimentoRepository;
 import giuseppeperna.GearForFit.repositories.AlimentoRepository;
+import giuseppeperna.GearForFit.repositories.DietaRepository;
+import giuseppeperna.GearForFit.repositories.DietaStandardAlimentoRepository;
+import giuseppeperna.GearForFit.repositories.PastoStandardRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -214,6 +214,7 @@ public class DietaService {
                 .map(this::convertToDTO)
                 .toList();
     }
+
     // Ottieni TUTTE le diete custom di TUTTI gli utenti (per ADMIN)
     @Transactional(readOnly = true)
     public List<DietaDTO> getAllDieteCustom() {
@@ -255,10 +256,10 @@ public class DietaService {
         // Crea un oggetto CalcoloBMR con i dati dal body
         CalcoloBMR calcoloBMR = CalcoloBMR.builder()
                 .utente(utente)
-                .peso(request.peso())                          // ← Dal request!
-                .altezza(request.altezza())                    // ← Dal request!
-                .eta(request.eta())                            // ← Dal request!
-                .sesso(request.sesso())                        // ← Dal request!
+                .peso(request.peso())
+                .altezza(request.altezza())
+                .eta(request.eta())
+                .sesso(request.sesso())
                 .livelloAttivita(request.livelloAttivita())
                 .tipoDieta(request.tipoDieta())
                 .build();
@@ -323,7 +324,7 @@ public class DietaService {
     }
 
 
-  /*   * Metodo helper: adatta le calorie in base all'obiettivo dietetico
+    /*   * Metodo helper: adatta le calorie in base all'obiettivo dietetico
      * IPOCALORICA: -15% dalle calorie target
      * NORMOCALORICA: 0% (rimane uguale)
      * IPERCALORICA: +15% alle calorie target*/
