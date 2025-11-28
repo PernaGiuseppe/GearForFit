@@ -1,412 +1,720 @@
-# \# GearForFit
+#                               "GearForFit"
 
-# 
 
-# GearForFit è una web application per appassionati di fitness dove, a seconda del piano utente, si ha accesso a diversi contenuti personalizzati e non.
 
-# Essendo stata strutturata in modo tale da poter essere aggiornata nel tempo, si presta sia per piccole che per grandi aziende grazie alle relazioni tra gli elementi che la compongono.
+GearForFit è una web application per appassionati di fitness dove a seconda del piano utente, si ha accesso a diversi contenuti, personalizzati e non.
 
-# Tutti gli esercizi sono aggiornabili nel tempo grazie all'uso di diverse classi (attrezzi, gruppi muscolari, schema serie, giorno allenamento, ecc.), offrendo la possibilità di ampliare facilmente macchinari o esercizi.
+Essendo stata strutturata in modo tale che possa essere aggiornata col tempo, si presta molto all'utilizzo per piccole e grandi aziende, avendo delle relazioni tra gli elementi che lo permettono.
 
-# 
+Infatti tutti gli esercizi, sono aggiornabili nel tempo, avendo usato diverse classi es: attrezzi, gruppo muscolari, schema serie, giorno allenamento etc, per dare il modo di poter implementare col tempo, altri macchinari o esercizi a loro affiliati.
 
-# ---
 
-# 
 
-# \## \*\*1. INFO APPLICAZIONE\*\*
+### **1 INFO APPLICAZIONE**
 
-# 
 
-# \### \*\*Profilo utente\*\*
 
-# 
+Profilo utente: A seconda del "TipoPiano" visualizza un diverso badge e tra le funzionalità del componente ci sono: informazioni utente, cambio dati personali/password ed eliminazione profilo).
 
-# A seconda del "TipoPiano" viene visualizzato un diverso badge. Il componente include: informazioni utente, modifica dati personali/password ed eliminazione profilo.
+Diete: Tutti gli utenti registrati hanno accesso a te pagina, dove si possono visualizzare tutte le diete standard, e se si è piano SILVER si possono creare le proprie diete custom e visualizzarle di conseguenza, eliminarle (nel caso delle proprie diete) ed attivare una delle proprie diete. Per quanto riguarda le diete custom, l'utente usa una dieta standard di riferimento, e tramite il calcolo BMR (per età, altezza, peso, ed altri fattori sull'attività), gestisce la quantità di calorie, e le diminuisce o le aumenta a seconda del soggetto, ovviamente aumentando o diminuendo anche le quantità degli alimenti. Tutti gli alimenti vengono caricati tramite un cvs, che all'avvio dell'application popola il DB.
 
-# 
+Schede: Tutti gli utenti da SILVER possono accedervi, l'utente può visualizzare tutte le schede standard, e a partire dal piano GOLD può creare le proprie schede custom, visualizzarle, eliminarle ed attivarle se necessario.
 
-# \### \*\*Diete\*\*
+Chat QeA: È una funzionalità di chat dove l'utente può accedere a delle risposte automatiche, sui temi più inerenti con la palestra, accessibile solo ai PREMIUM.
 
-# 
+Admin Login: L'admin ha tutte le funzionalità degli utenti, ma con la differenza di poter eliminare qualsiasi dieta o scheda, creare schede standard e custom per un utente specifico. Ha una sua rotta per la gestione degli utenti, dove può cambiare il "TipoPiano" all'utente, resettare la password, o eliminare l'account direttamente.
 
-# Tutti gli utenti registrati hanno accesso alla pagina dedicata, dove possono visualizzare tutte le diete standard. Gli utenti SILVER possono creare diete personalizzate, visualizzarle, eliminarle e attivarne una. La creazione delle diete custom si basa su una dieta standard di riferimento e sul calcolo BMR. Tutti gli alimenti vengono caricati tramite un cvs, che all'avvio dell'application popola il DB.
 
 
+### **2 STACK**
 
-# 
 
-# \### \*\*Schede\*\*
 
-# 
+Backend: Java con utilizzo di Spring Boot, Spring Security e Data JPA
 
-# Gli utenti da SILVER in su possono visualizzare tutte le schede standard. Dal piano GOLD è possibile creare schede custom, visualizzarle, eliminarle e attivarle.
+Database: PostgreSQL
 
-# 
+Frontend: React.js, Bootstrap, React Router, Redux toolkit
 
-# \### \*\*Chat QeA\*\*
+Autenticazione: JWT
 
-# 
+Storage media: Cloudinary, data.ts (per homepage), locale
 
-# Funzionalità che permette l'accesso a risposte automatiche su temi inerenti alla palestra. Disponibile solo per utenti PREMIUM.
+Environment: Uso di variabili d'ambiente su file .env
 
-# 
 
-# \### \*\*Admin Login\*\*
 
-# 
+### **3 DOCUMENTAZIONE API BASE\_URL (http://localhost:3001)**
 
-# L'admin ha tutte le funzionalità degli utenti, più la possibilità di eliminare qualsiasi dieta o scheda, creare schede standard o custom per un utente specifico, gestire gli utenti, modificare il "TipoPiano", resettare password o eliminare account.
 
-# 
 
-# ---
+#### 3.1 Autenticazione
 
-# 
 
-# \## \*\*2. STACK\*\*
 
-# 
+📤 POST /auth/register
 
-# \* \*\*Backend:\*\* Java con Spring Boot, Spring Security e Data JPA
+Crea nuovo account.
 
-# \* \*\*Database:\*\* PostgreSQL
+json
 
-# \* \*\*Frontend:\*\* React.js, Bootstrap, React Router, Redux Toolkit
+{
 
-# \* \*\*Autenticazione:\*\* JWT
+  "email": "test@test.com",
 
-# \* \*\*Storage media:\*\* Cloudinary, data.ts (homepage), locale
+  "password": "test123",
 
-# \* \*\*Environment:\*\* Variabili d'ambiente in file `.env`
+  "nome": "Test",
 
-# 
+  "cognome": "Test"
 
-# ---
+}
 
-# 
+📤 POST /auth/login
 
-# \## \*\*3. DOCUMENTAZIONE API\*\*
+Restituisce token di accesso.
 
-# 
+json
 
-# \*\*BASE\_URL:\*\* `http://localhost:3001`
+{
 
-# 
+  "email":"test@test.com",
 
-# \### \*\*3.1 Autenticazione\*\*
+  "password": "test123"
 
-# 
+}
 
-# \#### 📤 \*\*POST /auth/register\*\*
+#### 3.2 Utenti
 
-# 
 
-# Crea nuovo account.
 
-# 
+📥 GET /utenti/me
 
-# ```json
+Auth: bearer token
 
-# {
+Restituisce il profilo dell'utente autenticato.
 
-#   "email": "test@test.com",
+🔄 PUT /utenti/me
 
-#   "password": "test123",
+Auth: bearer token
 
-#   "nome": "Test",
+Aggiorna il profilo dell'utente autenticato.
 
-#   "cognome": "Test"
+json
 
-# }
+{
 
-# ```
+  "nome": "NuovoNome",
 
-# 
+  "cognome": "NuovoCognome",
 
-# \#### 📤 \*\*POST /auth/login\*\*
+  "email": "nuovaemail@test.com"
 
-# 
+}
 
-# Restituisce token di accesso.
+🔄 PUT /utenti/me/password
 
-# 
+Auth: bearer token
 
-# ```json
+Cambia la password dell'utente autenticato.
 
-# {
+json
 
-#   "email": "test@test.com",
+{
 
-#   "password": "test123"
+  "passwordVecchia": "test123",
 
-# }
+  "passwordNuova": "nuovapassword"
 
-# ```
+}
 
-# 
+🗑️ DELETE /utenti/me
 
-# ---
+Auth: bearer token
 
-# 
+Elimina l'account dell'utente autenticato.
 
-# \### \*\*3.2 Utenti\*\*
 
-# 
 
-# \#### 📥 \*\*GET /utenti/me\*\* — \*Auth: bearer token\*
+#### 3.3 Diete
 
-# 
 
-# Restituisce il profilo dell'utente autenticato.
 
-# 
+📥 GET /diete/standard
 
-# \#### 🔄 \*\*PUT /utenti/me\*\* — \*Auth: bearer token\*
+Auth: bearer token (tutti i piani)
 
-# 
+Restituisce una lista di tutte le diete standard.
 
-# Aggiorna il profilo dell'utente.
+📥 GET /diete/standard/{id}
 
-# 
+Auth: bearer token (tutti i piani)
 
-# ```json
+Nella path si inserisce l'id della dieta.
 
-# {
+Restituisce una singola dieta standard specifica per ID.
 
-#   "nome": "NuovoNome",
+📤 POST /diete/standard/{dietaStandardId}/custom
 
-#   "cognome": "NuovoCognome",
+Auth: bearer token (SILVER in su)
 
-#   "email": "nuovaemail@test.com"
+Si inserisce nella path la dieta standard di riferimento. Tramite il calcolo BMR, la dieta custom viene generata. is\_standard sarà false e is\_attiva sarà true.
 
-# }
+json
 
-# ```
+{
 
-# 
+  "nome": "La mia dieta personalizzata",
 
-# \#### 🔄 \*\*PUT /utenti/me/password\*\* — \*Auth: bearer token\*
+  "descrizione": "Dieta per perdere peso",
 
-# 
+  "peso": 75.0,
 
-# Cambia la password.
+  "altezza": 170,
 
-# 
+  "eta": 25,
 
-# ```json
+  "sesso": "M",
 
-# {
+  "livelloAttivita": "MODERATO",
 
-#   "passwordVecchia": "test123",
+  "tipoDieta": "IPOCALORICA"
 
-#   "passwordNuova": "nuovapassword"
+}
 
-# }
+Restituisce la dieta creata.
 
-# ```
+📥 GET /diete/custom
 
-# 
+Auth: bearer token (SILVER in su)
 
-# \#### 🗑️ \*\*DELETE /utenti/me\*\* — \*Auth: bearer token\*
+Restituisce le diete personalizzate dell'utente.
 
-# 
+📥 GET /diete/custom/{id}
 
-# Elimina l'account.
+Auth: bearer token (SILVER in su)
 
-# 
+Nella path si inserisce l'id della dieta.
 
-# ---
+Restituisce una dieta personalizzata specifica dell'utente.
 
-# 
+🔄 PATCH /diete/custom/{id}/attiva
 
-# \## \*\*3.3 Diete\*\*
+Auth: bearer token (SILVER in su)
 
-# 
+Nella path si inserisce l'id della dieta.
 
-# \#### 📥 \*\*GET /diete/standard\*\* — \*tutti i piani\*
+json
 
-# 
+{
 
-# Restituisce tutte le diete standard.
+  "attiva": true
 
-# 
+}
 
-# \#### 📥 \*\*GET /diete/standard/{id}\*\*
+Attiva o disattiva una dieta personalizzata.
 
-# 
+🗑️ DELETE /diete/custom/{id}
 
-# Restituisce una dieta standard per ID.
+Auth: bearer token (SILVER in su)
 
-# 
+Nella path si inserisce l'id della dieta.
 
-# \#### 📤 \*\*POST /diete/standard/{dietaStandardId}/custom\*\* — \*SILVER in su\*
+Elimina una dieta personalizzata.
 
-# 
 
-# Genera una dieta personalizzata basata sul calcolo BMR.
 
-# 
+#### 3.4 Schede
 
-# ```json
 
-# {
 
-#   "nome": "La mia dieta personalizzata",
+📥 GET /schede-allenamento/esercizi
 
-#   "descrizione": "Dieta per perdere peso",
+Auth: bearer token (GOLD in su)
 
-#   "peso": 75.0,
+Restituisce tutti gli esercizi.
 
-#   "altezza": 170,
+📥 GET /schede-allenamento/standard
 
-#   "eta": 25,
+Auth: bearer token (SILVER in su)
 
-#   "sesso": "M",
+Restituisce tutte le schede di allenamento standard.
 
-#   "livelloAttivita": "MODERATO",
+📥 GET /schede-allenamento/standard/obiettivo/{obiettivo}
 
-#   "tipoDieta": "IPOCALORICA"
+Auth: bearer token (SILVER in su)
 
-# }
+Nella path si inserisce l'obiettivo, che può essere: DEFINIZIONE, MASSA, MANTENIMENTO.
 
-# ```
+Restituisce le schede di allenamento standard per obiettivo.
 
-# 
+📥 GET /schede-allenamento/
 
-# \#### 📥 \*\*GET /diete/custom\*\*
+Auth: bearer token (tutti i piani)
 
-# 
+Restituisce tutte le schede di allenamento (con filtri).
 
-# Restituisce le diete custom dell'utente.
+📥 GET /schede-allenamento/{schedaId}
 
-# 
+Auth: bearer token (tutti i piani)
 
-# \#### 📥 \*\*GET /diete/custom/{id}\*\*
+Restituisce una scheda di allenamento per ID.
 
-# 
+📤 POST /schede-allenamento/me
 
-# Restituisce una dieta custom.
+Auth: bearer token (GOLD in su)
 
-# 
+Crea una scheda di allenamento personalizzata. is\_standard sarà false e is\_attiva sarà true.
 
-# \#### 🔄 \*\*PATCH /diete/custom/{id}/attiva\*\*
+Body: (esempio per 2 giorni di allenamento)
 
-# 
+json
 
-# ```json
+{
 
-# {
+  "nome": "Forza Base Piramidale",
 
-#   "attiva": true
+  "descrizione": "Programma di mantenimento con approccio piramidale sui fondamentali, 2 giorni",
 
-# }
+  "durataSettimane": 10,
 
-# ```
+  "obiettivo": "MANTENIMENTO",
 
-# 
+  "giorni": \[
 
-# \#### 🗑️ \*\*DELETE /diete/custom/{id}\*\*
+  {
 
-# 
+  "giornoSettimana": "MARTEDI",
 
-# Elimina una dieta personalizzata.
+  "serie": \[
 
-# 
+  { "esercizioId": 1, "numeroSerie": 4, "numeroRipetizioni": "6", "tempoRecuperoSecondi": 150 },
 
-# ---
+  { "esercizioId": 15, "numeroSerie": 4, "numeroRipetizioni": "8", "tempoRecuperoSecondi": 120 }
 
-# 
+  ]
 
-# \## \*\*3.4 Schede\*\*
+  },
 
-# 
+  {
 
-# (Tutta la sezione è mantenuta identica, con blocchi JSON formattati correttamente.)
+  "giornoSettimana": "VENERDI",
 
-# 
+  "serie": \[
 
-# ---
+  { "esercizioId": 8, "numeroSerie": 4, "numeroRipetizioni": "5", "tempoRecuperoSecondi": 180 },
 
-# 
+  { "esercizioId": 11, "numeroSerie": 4, "numeroRipetizioni": "8", "tempoRecuperoSecondi": 120 }
 
-# \## \*\*3.5 Chat QeA\*\*
+  ]
 
-# 
+  }
 
-# Tutte le route PREMIUM mantenute con struttura ordinata.
+  ]
 
-# 
+}
 
-# ---
+📥 GET /schede-allenamento/me
 
-# 
+Auth: bearer token (GOLD in su)
 
-# \## \*\*3.6 Admin Dashboard\*\*
+Restituisce tutte le schede di allenamento personalizzate dell'utente.
 
-# 
+📥 GET /schede-allenamento/me/{schedaId}
 
-# Tutte le rotte admin sono state mantenute e formattate con blocchi JSON leggibili.
+Auth: bearer token (GOLD in su)
 
-# 
+Restituisce una scheda di allenamento personalizzata specifica dell'utente.
 
-# Esempio:
+📥 GET /schede-allenamento/me/obiettivo/{obiettivo}
 
-# 
+Auth: bearer token (GOLD in su)
 
-# \#### 📤 \*\*POST /admin/diete\*\*
+Nella path si inserisce l'obiettivo, che può essere: DEFINIZIONE, MASSA, MANTENIMENTO.
 
-# 
+Restituisce le schede di allenamento personalizzate dell'utente per obiettivo.
 
-# ```json
+🔄 PUT /schede-allenamento/me/schede/{id}/attiva
 
-# {
+Auth: bearer token (GOLD in su)
 
-#   "nome": "Dieta delete normale dettaglio",
+Attiva una scheda di allenamento per l'utente.
 
-#   "descrizione": "Template per dieta ricca di proteine",
+🔄 PATCH /schede-allenamento/me/schede/{schedaId}/serie/{serieId}/peso
 
-#   "durataSettimane": 12,
+Auth: bearer token (GOLD in su)
 
-#   "tipoDieta": "NORMOCALORICA",
+Aggiorna il peso per una serie in una scheda di allenamento.
 
-#   "pasti": \[
+json
 
-#     {
+{
 
-#       "nomePasto": "Colazione",
+  "peso": "16/18/20"
 
-#       "ordine": 1,
+}
 
-#       "giornoSettimana": "LUNEDI",
+🗑️ DELETE /schede-allenamento/me/{schedaId}
 
-#       "alimenti": \[
+Auth: bearer token (GOLD in su)
 
-#         { "alimentoId": 1, "grammi": 100 },
+Elimina una scheda di allenamento personalizzata.
 
-#         { "alimentoId": 2, "grammi": 50 }
 
-#       ]
 
-#     }
+#### 3.5 Chat QeA
 
-#   ]
 
-# }
 
-# ```
+📥 GET /qea
 
-# 
+Auth: bearer token (PREMIUM)
 
-# ---
+Restituisce tutte le domande e risposte.
 
-# 
+📥 GET /qea/{id}
 
-# \## \*\*Conclusione\*\*
+Auth: bearer token (PREMIUM)
 
-# 
+Restituisce una domanda e risposta per ID.
 
-# Formattazione ottimizzata per GitHub, mantenendo \*tutto il testo identico\* e migliorando struttura, leggibilità e blocchi JSON.
+📥 GET /qea/{id}/domanda
 
+Auth: bearer token (PREMIUM)
 
+Restituisce solo la domanda di una Q\&A.
+
+📥 GET /qea/{id}/risposta
+
+Auth: bearer token (PREMIUM)
+
+Restituisce solo la risposta di una Q\&A.
+
+
+
+#### 3.6 Admin dashboard (admin controller)
+
+
+
+📥 GET /admin/alimenti
+
+Auth: bearer token (ADMIN)
+
+Restituisce tutti gli alimenti.
+
+📥 GET /admin/alimenti/{id}
+
+Auth: bearer token (ADMIN)
+
+Restituisce un alimento per ID.
+
+🗑️ DELETE /admin/alimenti/{id}
+
+Auth: bearer token (ADMIN)
+
+Elimina un alimento.
+
+📤 POST /admin/diete
+
+Auth: bearer token (ADMIN)
+
+Crea una dieta standard. is\_standard sarà true.
+
+Body: (esempio per 1 giorno e 3 pasti)
+
+json
+
+{
+
+  "nome": "Dieta delete normale dettaglio",
+
+  "descrizione": "Template per dieta ricca di proteine",
+
+  "durataSettimane": 12,
+
+  "tipoDieta": "NORMOCALORICA",
+
+  "pasti": \[
+
+  {
+
+  "nomePasto": "Colazione",
+
+  "ordine": 1,
+
+  "giornoSettimana": "LUNEDI",
+
+  "alimenti": \[
+
+  { "alimentoId": 1, "grammi": 100 },
+
+  { "alimentoId": 2, "grammi": 50 }
+
+  ]
+
+  }
+
+  ]
+
+}
+
+🔄 PUT /admin/diete/{id}
+
+Auth: bearer token (ADMIN)
+
+Modifica una dieta standard. Stesso body della POST.
+
+📥 GET /admin/diete/standard
+
+Auth: bearer token (ADMIN)
+
+Restituisce tutte le diete standard.
+
+📥 GET /admin/diete/custom
+
+Auth: bearer token (ADMIN)
+
+Restituisce tutte le diete personalizzate.
+
+📥 GET /admin/diete/all
+
+Auth: bearer token (ADMIN)
+
+Restituisce tutte le diete (standard e custom).
+
+📥 GET /admin/diete/{dietaId}
+
+Auth: bearer token (ADMIN)
+
+Restituisce una dieta per ID.
+
+📥 GET /admin/diete/custom/utente/{utenteId}
+
+Auth: bearer token (ADMIN)
+
+Restituisce le diete personalizzate di un utente specifico.
+
+🗑️ DELETE /admin/diete/{id}
+
+Auth: bearer token (ADMIN)
+
+Elimina una dieta.
+
+📥 GET /admin/utenti
+
+Auth: bearer token (ADMIN)
+
+Restituisce tutti gli utenti.
+
+📥 GET /admin/utenti/{id}
+
+Auth: bearer token (ADMIN)
+
+Restituisce un utente per ID.
+
+🔄 PUT /admin/utenti/{id}/piano?nuovoPiano=FREE
+
+Auth: bearer token (ADMIN)
+
+Si inserisce nella path l'id utente e nel query param nuovoPiano il tipo di piano: FREE/SILVER/GOLD/PREMIUM.
+
+Modifica il piano di un utente.
+
+🔄 PUT /admin/utenti/reset-password
+
+Auth: bearer token (ADMIN)
+
+Resetta la password di un utente.
+
+json
+
+{
+
+  "utenteId": 1,
+
+  "nuovaPassword": "newpassword123"
+
+}
+
+🗑️ DELETE /admin/utenti/{id}
+
+Auth: bearer token (ADMIN)
+
+Elimina un utente.
+
+📥 GET /admin/schede/all
+
+Auth: bearer token (ADMIN)
+
+Restituisce tutte le schede di allenamento di tutti gli utenti.
+
+📥 GET /admin/schede/utente/{utenteId}
+
+Auth: bearer token (ADMIN)
+
+Restituisce le schede di allenamento di un utente specifico.
+
+📥 GET /admin/schede/{schedaId}
+
+Auth: bearer token (ADMIN)
+
+Restituisce una scheda di allenamento per ID.
+
+📤 POST /admin/schede/standard
+
+Auth: bearer token (ADMIN)
+
+Crea una scheda di allenamento standard. is\_standard sarà true. Stesso body delle schede custom per utente.
+
+🔄 PUT /admin/schede/standard/{schedaId}
+
+Auth: bearer token (ADMIN)
+
+Aggiorna una scheda di allenamento standard. Stesso body della POST.
+
+🗑️ DELETE /admin/schede/standard/{schedaId}
+
+Auth: bearer token (ADMIN)
+
+Elimina una scheda di allenamento standard.
+
+🗑️ DELETE /admin/schede/standard/{schedaId}/esercizi/{esercizioId}
+
+Auth: bearer token (ADMIN)
+
+Rimuove un esercizio da una scheda standard.
+
+📥 GET /admin/qea
+
+Auth: bearer token (ADMIN)
+
+Restituisce tutte le Q\&A.
+
+📤 POST /admin/qea
+
+Auth: bearer token (ADMIN)
+
+Crea una nuova Q\&A.
+
+json
+
+{
+
+  "domanda": "Domanda?",
+
+  "risposta": "Risposta!"
+
+}
+
+📥 GET /admin/qea/{id}
+
+Auth: bearer token (ADMIN)
+
+Restituisce una Q\&A per ID.
+
+🔄 PUT /admin/qea/{id}
+
+Auth: bearer token (ADMIN)
+
+Aggiorna una Q\&A. Stesso body della POST.
+
+🗑️ DELETE /admin/qea/{id}
+
+Auth: bearer token (ADMIN)
+
+Elimina una Q\&A.
+
+📥 GET /admin/esercizi/all
+
+Auth: bearer token (ADMIN)
+
+Restituisce tutti gli esercizi.
+
+📤 POST /admin/esercizi
+
+Auth: bearer token (ADMIN)
+
+Crea un nuovo esercizio.
+
+json
+
+{
+
+  "nome": "nome",
+
+  "descrizione": "descrizione",
+
+  "urlImmagine": "https://example.com/esercizio",
+
+  "gruppoMuscolareId": 1,
+
+  "attrezzoId": 1,
+
+  "isComposto": false
+
+}
+
+🔄 PUT /admin/esercizi/{id}
+
+Auth: bearer token (ADMIN)
+
+Aggiorna un esercizio. Stesso body della POST.
+
+🔄 PATCH /admin/esercizi/{idEsercizio}/image
+
+Auth: bearer token (ADMIN)
+
+Carica un'immagine per un esercizio. Nel campo file del form-data, inserire l'immagine.
+
+📥 GET /admin/esercizi/{id}
+
+Auth: bearer token (ADMIN)
+
+Restituisce un esercizio per ID.
+
+🗑️ DELETE /admin/esercizi/{id}
+
+Auth: bearer token (ADMIN)
+
+Elimina un esercizio.
+
+📥 GET /admin/gruppi-muscolari
+
+Auth: bearer token (ADMIN)
+
+Restituisce tutti i gruppi muscolari.
+
+📤 POST /admin/gruppi-muscolari
+
+Auth: bearer token (ADMIN)
+
+Crea un nuovo gruppo muscolare.
+
+json
+
+{
+
+  "nome": "nome gruppo muscolare"
+
+}
+
+📥 GET /admin/attrezzi
+
+Auth: bearer token (ADMIN)
+
+Restituisce tutti gli attrezzi.
+
+📤 POST /admin/attrezzi
+
+Auth: bearer token (ADMIN)
+
+Crea un nuovo attrezzo.
+
+json
+
+{
+
+  "nome": "nome attrezzo"
+
+}
 
