@@ -65,12 +65,10 @@ public class SchedaAllenamentoController {
 
     @GetMapping
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<List<SchedaAllenamentoDTO>> getAllSchede(
+    public List<SchedaAllenamentoDTO> getAllSchede(
             @AuthenticationPrincipal Utente utente,
             @RequestParam(required = false, defaultValue = "STANDARD") String filtro) {
-
-        List<SchedaAllenamentoDTO> schede = schedaAllenamentoService.getAllSchedeFiltered(utente, filtro);
-        return ResponseEntity.ok(schede);
+        return schedaAllenamentoService.getAllSchedeFiltered(utente, filtro);
     }
     // GET - Ottieni una singola scheda (Standard o Personalizzata) per ID
     @GetMapping("/{schedaId}")
@@ -171,14 +169,13 @@ public class SchedaAllenamentoController {
 
     @PatchMapping("/me/schede/{schedaId}/serie/{serieId}/peso")
     @PreAuthorize("hasAuthority('ADMIN') or hasAnyAuthority('PIANO_PREMIUM', 'PIANO_GOLD')")
-    public ResponseEntity<SerieDTO> aggiornaPesoMiaSerie(
+    public SerieDTO aggiornaPesoMiaSerie(
             @PathVariable Long schedaId,
             @PathVariable Long serieId,
             @RequestBody PesoUpdateDTO pesoDTO,
             @AuthenticationPrincipal Utente utenteLoggato
     ) {
-        SerieDTO updated = schedaAllenamentoService.aggiornaPesoSerie(schedaId, serieId, pesoDTO.peso(), utenteLoggato);
-        return ResponseEntity.ok(updated);
+        return schedaAllenamentoService.aggiornaPesoSerie(schedaId, serieId, pesoDTO.peso(), utenteLoggato);
     }
     // Utente elimina la propria scheda personalizzata
   @DeleteMapping("/me/{schedaId}")

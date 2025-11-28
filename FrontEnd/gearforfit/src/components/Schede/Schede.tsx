@@ -197,13 +197,12 @@ export default function Schede() {
   if (!user) return <div>Devi essere loggato per accedere alle schede.</div>
 
   return (
-    <div className="container mt-4 page-content-custom">
-      <div className="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-3 gap-2 gap-md-3">
-        <h1 className="mb-3 mb-md-0">Catalogo Schede Allenamento</h1>
+    <div className="container mt-4 page-content-general">
+      <div className="d-flex flex-column flex-lg-row justify-content-between align-items-start align-items-lg-center mb-3 gap-2 gap-lg-3">
+        <h1 className="mb-3 mb-lg-0">Catalogo schede allenamento</h1>
         <div className="d-flex flex-column flex-sm-row gap-2">
           {(user?.tipoPiano === 'GOLD' || user?.tipoPiano === 'PREMIUM') && (
             <Link to="/schede/crea-custom" className="btn btn-success">
-              <i className="bi bi-plus-circle me-2"></i>
               Crea scheda personalizzata
             </Link>
           )}
@@ -268,7 +267,7 @@ export default function Schede() {
             }
             disabled={loading}
           >
-            <option value="ALL">Tutti</option>
+            <option value="ALL">Tutte</option>
             <option value="MASSA">Massa</option>
             <option value="MANTENIMENTO">Mantenimento</option>
             <option value="DEFINIZIONE">Definizione</option>
@@ -322,7 +321,7 @@ export default function Schede() {
                         <>
                           {scheda.attiva ? (
                             <BsStarFill
-                              className="star-active fs-4 ms-2"
+                              className="star-active fs-4 ms-2 me-1 mt-1 "
                               onClick={(e) =>
                                 handleToggleAttiva(e, scheda.id, true)
                               }
@@ -331,7 +330,7 @@ export default function Schede() {
                             />
                           ) : (
                             <BsStar
-                              className="star-inactive fs-4 ms-2"
+                              className="star-inactive fs-4 ms-2 me-1 mt-1"
                               onClick={(e) =>
                                 handleToggleAttiva(e, scheda.id, false)
                               }

@@ -52,7 +52,7 @@ export default function SchedaCustomAdmin() {
   // State per configurazione iniziale
   const [nomeScheda, setNomeScheda] = useState<string>('')
   const [descrizioneScheda, setDescrizioneScheda] = useState<string>('')
-  const [obiettivo, setObiettivo] = useState<string>('MASSA')
+  const [obiettivo, setObiettivo] = useState<string>('')
   const [durataSettimane, setDurataSettimane] = useState<number>(6)
   const [numeroGiorni, setNumeroGiorni] = useState<number>(3)
   const [giorniSelezionati, setGiorniSelezionati] = useState<string[]>([])
@@ -287,7 +287,7 @@ export default function SchedaCustomAdmin() {
 
   if (currentStep === 0) {
     return (
-      <div className="container mt-4 page-content-custom ">
+      <div className="container mt-4 page-content-general ">
         <h1>Crea Scheda Custom per Utente</h1>
         <p className="text-muted">
           Configura una nuova scheda personalizzata e assegnala a un utente
@@ -343,6 +343,7 @@ export default function SchedaCustomAdmin() {
                   value={obiettivo}
                   onChange={(e) => setObiettivo(e.target.value)}
                 >
+                  <option value="">Seleziona obiettivo</option>
                   {obiettivi.map((o) => (
                     <option key={o} value={o}>
                       {o}
@@ -476,7 +477,7 @@ export default function SchedaCustomAdmin() {
           return (
             <div
               key={esercizio.id}
-              className="col-lg-2 col-md-3 col-sm-4 col-6 mb-4"
+              className="col-lg-2 col-md-4 col-sm-6 col-6 mb-4"
             >
               <div
                 className={`card h-100 esercizio-card ${
@@ -506,74 +507,79 @@ export default function SchedaCustomAdmin() {
                     </p>
                   </div>
 
-                  {isSelected && config && (
-                    <div className="mt-2" onClick={(e) => e.stopPropagation()}>
-                      <label className="form-label small mb-1">Serie</label>
-                      <select
-                        className="form-select form-select-sm mb-2"
-                        value={config.numeroSerie}
-                        onChange={(e) =>
-                          handleConfigChange(
-                            esercizio.id,
-                            'numeroSerie',
-                            Number(e.target.value)
-                          )
-                        }
-                      >
-                        {Array.from({ length: 6 }, (_, i) => i + 1).map((n) => (
+                  <div
+                    className="mt-2"
+                    onClick={(e) => e.stopPropagation()}
+                    style={{
+                      opacity: isSelected ? 1 : 0.5,
+                      pointerEvents: isSelected ? 'auto' : 'none',
+                      transition: 'opacity 0.2s ease',
+                    }}
+                  >
+                    <label className="form-label small mb-1">Serie</label>
+                    <select
+                      className="form-select form-select-sm mb-2"
+                      value={config?.numeroSerie || 3}
+                      onChange={(e) =>
+                        handleConfigChange(
+                          esercizio.id,
+                          'numeroSerie',
+                          Number(e.target.value)
+                        )
+                      }
+                      disabled={!isSelected}
+                    >
+                      {Array.from({ length: 6 }, (_, i) => i + 1).map((n) => (
+                        <option key={n} value={n}>
+                          {n}
+                        </option>
+                      ))}
+                    </select>
+
+                    <label className="form-label small mb-1">Ripetizioni</label>
+                    <select
+                      className="form-select form-select-sm mb-2"
+                      value={config?.numeroRipetizioni || 10}
+                      onChange={(e) =>
+                        handleConfigChange(
+                          esercizio.id,
+                          'numeroRipetizioni',
+                          Number(e.target.value)
+                        )
+                      }
+                      disabled={!isSelected}
+                    >
+                      {Array.from({ length: 17 }, (_, i) => i + 4).map((n) => (
+                        <option key={n} value={n}>
+                          {n}
+                        </option>
+                      ))}
+                    </select>
+
+                    <label className="form-label small mb-1">
+                      Recupero (sec)
+                    </label>
+                    <select
+                      className="form-select form-select-sm"
+                      value={config?.tempoRecuperoSecondi || 90}
+                      onChange={(e) =>
+                        handleConfigChange(
+                          esercizio.id,
+                          'tempoRecuperoSecondi',
+                          Number(e.target.value)
+                        )
+                      }
+                      disabled={!isSelected}
+                    >
+                      {Array.from({ length: 11 }, (_, i) => 30 + i * 15).map(
+                        (n) => (
                           <option key={n} value={n}>
-                            {n}
+                            {n}s
                           </option>
-                        ))}
-                      </select>
-
-                      <label className="form-label small mb-1">
-                        Ripetizioni
-                      </label>
-                      <select
-                        className="form-select form-select-sm mb-2"
-                        value={config.numeroRipetizioni}
-                        onChange={(e) =>
-                          handleConfigChange(
-                            esercizio.id,
-                            'numeroRipetizioni',
-                            Number(e.target.value)
-                          )
-                        }
-                      >
-                        {Array.from({ length: 17 }, (_, i) => i + 4).map(
-                          (n) => (
-                            <option key={n} value={n}>
-                              {n}
-                            </option>
-                          )
-                        )}
-                      </select>
-
-                      <label className="form-label small mb-1">
-                        Recupero (sec)
-                      </label>
-                      <select
-                        className="form-select form-select-sm"
-                        value={config.tempoRecuperoSecondi}
-                        onChange={(e) =>
-                          handleConfigChange(
-                            esercizio.id,
-                            'tempoRecuperoSecondi',
-                            Number(e.target.value)
-                          )
-                        }
-                      >
-                        {Array.from({ length: 11 }, (_, i) => 30 + i * 15).map(
-                          (n) => (
-                            <option key={n} value={n}>
-                              {n}s
-                            </option>
-                          )
-                        )}
-                      </select>
-                    </div>
-                  )}
+                        )
+                      )}
+                    </select>
+                  </div>
                 </div>
               </div>
             </div>

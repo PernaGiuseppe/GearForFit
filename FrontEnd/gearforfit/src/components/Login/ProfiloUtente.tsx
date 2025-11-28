@@ -163,7 +163,7 @@ export default function ProfiloUtente() {
     return <div className="container mt-4 alert alert-danger">{error}</div>
 
   return (
-    <div className="container page-content-custom">
+    <div className="container page-content-general">
       <h1>Il Mio Profilo</h1>
 
       {successMsg && <div className="alert alert-success">{successMsg}</div>}

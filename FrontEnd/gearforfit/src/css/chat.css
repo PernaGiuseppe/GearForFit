@@ -3,20 +3,20 @@
   top: 60px;
   right: 5px;
   width: 280px;
-  height: calc(100vh - 80px); /* Altezza dinamica */
+  height: calc(100vh - 80px);
   max-height: 85vh;
   background: #ffffff;
   border-radius: 12px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   color: #000;
-  z-index: 1100;
+  z-index: 100;
   display: flex;
   flex-direction: column;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   transition: all 0.3s ease-in-out;
   transform: translateX(0);
   opacity: 1;
-  overflow: hidden; /* Importante! */
+  overflow: hidden;
 }
 
 .messages-dropdown.closing {
@@ -122,11 +122,37 @@
   padding: 0.6em 1em;
   background-color: white;
   font-weight: 600;
-  z-index: 1200;
+  z-index: 200;
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
 .messaggistica-button:hover {
   background-color: #f3f2ef;
+}
+
+@media (max-width: 770px) {
+  .messaggistica-button {
+    top: auto;
+    bottom: 20px;
+    right: 2.5em;
+    min-width: 100px;
+    padding: 0.7em 1.2em;
+    border-radius: 25px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+}
+
+@media (max-width: 770px) {
+  .messages-dropdown {
+    top: auto;
+    bottom: 30px;
+    right: 2.5em;
+    width: calc(100vw - 20px);
+    max-width: 350px;
+    height: 60vh;
+    max-height: 60vh;
+    transform: translateY(0);
+    border-radius: 12px 12px 12px 12px;
+  }
 }

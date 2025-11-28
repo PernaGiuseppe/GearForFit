@@ -2,9 +2,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { RootState } from '../../app/store'
 import { logout } from '../../features/auth/authSlice'
-import { Navbar, Nav, Container } from 'react-bootstrap'
-import { useState } from 'react' // Aggiungi questo import
-
+import { useState } from 'react'
 import '../../css/navbar.css'
 
 export default function Navbar() {

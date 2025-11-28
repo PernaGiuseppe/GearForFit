@@ -9,7 +9,9 @@ export default function ArticoliDettaglio() {
   const user = useSelector((state: RootState) => state.auth.user)
 
   const article = articles.find((a) => a.id === Number(id))
-
+  const handleScrollToTop = () => {
+    window.scrollTo(0, 0)
+  }
   if (!article) {
     return (
       <div className="container mt-5 text-center page-content-custom">
@@ -75,10 +77,18 @@ export default function ArticoliDettaglio() {
               allenamento personalizzati, diete su misura e molto altro.
             </p>
             <div className="d-flex flex-column flex-sm-row justify-content-center gap-2 gap-md-3">
-              <Link to="/register" className="btn btn-light btn-lg">
+              <Link
+                to="/register"
+                className="btn btn-light btn-lg"
+                onClick={handleScrollToTop}
+              >
                 Registrati
               </Link>
-              <Link to="/login" className="btn btn-outline-light btn-lg">
+              <Link
+                to="/login"
+                className="btn btn-outline-light btn-lg"
+                onClick={handleScrollToTop}
+              >
                 Accedi
               </Link>
             </div>
@@ -94,10 +104,18 @@ export default function ArticoliDettaglio() {
               la tua dieta.
             </p>
             <div className="d-flex justify-content-center gap-3">
-              <Link to="/schede" className="btn btn-primary">
+              <Link
+                to="/schede"
+                className="btn btn-primary"
+                onClick={handleScrollToTop}
+              >
                 Vai alle Schede
               </Link>
-              <Link to="/diete" className="btn btn-outline-primary">
+              <Link
+                to="/diete"
+                className="btn btn-outline-primary"
+                onClick={handleScrollToTop}
+              >
                 Vai alle Diete
               </Link>
             </div>

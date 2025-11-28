@@ -75,74 +75,62 @@ public class AdminController {
     //Admin crea una nuova dieta standard
 
     @PostMapping("/diete")
-    public ResponseEntity<DietaDTO> creaaDietaStandard(
+    @ResponseStatus(HttpStatus.CREATED)
+    public DietaDTO creaDietaStandard(
             @RequestBody DietaRequestDTO request,
             @AuthenticationPrincipal Utente utente
     ) {
-        // Verificare che l'utente sia ADMIN se necessario
-        DietaDTO dietaDTO = dietaService.creaaDietaStandard(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(dietaDTO);
+        return dietaService.creaDietaStandard(request);
     }
 
     //Admin modifica una dieta standard
-
+    //NON USATO NEL FRONT END
     @PutMapping("/diete/{id}")
-    public ResponseEntity<DietaDTO> modificaDietaStandard(
+    public DietaDTO modificaDietaStandard(
             @PathVariable Long id,
             @RequestBody DietaRequestDTO request,
             @AuthenticationPrincipal Utente utente
     ) {
-        // Verificare che l'utente sia ADMIN se necessario
-        DietaDTO dietaDTO = dietaService.modificaDietaStandard(id, request);
-        return ResponseEntity.ok(dietaDTO);
+        return dietaService.modificaDietaStandard(id, request);
     }
     // Admin visualizza SOLO diete standard
     @GetMapping("/diete/standard")
-    public ResponseEntity<List<DietaDTO>> adminGetDieteStandard() {
-        List<DietaDTO> diete = dietaService.getDieteStandardAdmin();
-        return ResponseEntity.ok(diete);
+    public List<DietaDTO> adminGetDieteStandard() {
+        return dietaService.getDieteStandardAdmin();
     }
+
 
     // Admin visualizza SOLO diete custom (di tutti gli utenti)
     @GetMapping("/diete/custom")
-    public ResponseEntity<List<DietaDTO>> adminGetDieteCustom() {
-        List<DietaDTO> diete = dietaService.getAllDieteCustom();
-        return ResponseEntity.ok(diete);
+    public List<DietaDTO> adminGetDieteCustom() {
+        return dietaService.getAllDieteCustom();
     }
     // Admin visualizza TUTTE le diete (standard + custom di tutti gli utenti)
 
     @GetMapping("/diete/all")
-    public ResponseEntity<List<DietaDTO>> adminGetAllDiete() {
-        List<DietaDTO> diete = dietaService.getAllDiete();
-        return ResponseEntity.ok(diete);
+    public List<DietaDTO> adminGetAllDiete() {
+        return dietaService.getAllDiete();
     }
 
     // Admin visualizza qualsiasi dieta (standard o custom) per ID
 
     @GetMapping("/diete/{dietaId}")
-    public ResponseEntity<DietaDTO> adminGetDietaById(
-            @PathVariable Long dietaId
-    ) {
-        DietaDTO dieta = dietaService.adminGetDietaById(dietaId);
-        return ResponseEntity.ok(dieta);
+    public DietaDTO adminGetDietaById(@PathVariable Long dietaId) {
+        return dietaService.adminGetDietaById(dietaId);
     }
     // Admin visualizza tutte le diete custom di uno specifico utente
 
     @GetMapping("diete/custom/utente/{utenteId}")
-    public ResponseEntity<List<DietaDTO>> adminGetDieteCustomByUtente(
-            @PathVariable Long utenteId
-    ) {
-        List<DietaDTO> diete = dietaService.getDieteCustomByUtente(utenteId);
-        return ResponseEntity.ok(diete);
+    public List<DietaDTO> adminGetDieteCustomByUtente(@PathVariable Long utenteId) {
+        return dietaService.getDieteCustomByUtente(utenteId);
     }
     @DeleteMapping("/diete/{id}")
-    public ResponseEntity<Void> eliminaDieta(
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void eliminaDieta(
             @PathVariable Long id,
             @AuthenticationPrincipal Utente utente
     ) {
-        // Verificare che l'utente sia ADMIN se necessario
         dietaService.eliminaDieta(id);
-        return ResponseEntity.noContent().build();
     }
 
     // ========== GESTIONE UTENTI ==========
@@ -309,15 +297,13 @@ public class AdminController {
 
     // Admin visualizza SOLO schede standard
     @GetMapping("/schede/standard")
-    public ResponseEntity<List<SchedaAllenamentoDTO>> adminGetSchedeStandard() {
-        List<SchedaAllenamentoDTO> schede = schedaAllenamentoService.getSchedeStandard();
-        return ResponseEntity.ok(schede);
+    public List<SchedaAllenamentoDTO> adminGetSchedeStandard() {
+        return schedaAllenamentoService.getSchedeStandard();
     }
     // Admin visualizza SOLO schede custom (di tutti gli utenti)
     @GetMapping("/schede/custom")
-    public ResponseEntity<List<SchedaAllenamentoDTO>> adminGetSchedeCustom() {
-        List<SchedaAllenamentoDTO> schede = schedaAllenamentoService.getAllSchedeCustom();
-        return ResponseEntity.ok(schede);
+    public List<SchedaAllenamentoDTO> adminGetSchedeCustom() {
+        return schedaAllenamentoService.getAllSchedeCustom();
     }
 
     // GET - Ottieni lista di tutte le schede di allenamento (standard e custom, solo admin)
@@ -333,23 +319,23 @@ public class AdminController {
         return schedaAllenamentoService.getSchedaByIdAndAuthorize(id, utente);
     }
 
-   @PostMapping("/schede/standard")
-   @ResponseStatus(HttpStatus.CREATED)
-   public SchedaAllenamentoDTO creaSchedaStandard(
-           @RequestBody @Validated SchedaPersonalizzataRequestDTO body,
-           BindingResult validationResult) {
-       if (validationResult.hasErrors()) {
-           List<String> errorMessages = validationResult.getFieldErrors().stream()
-                   .map(fieldError -> fieldError.getField() + " :" + fieldError.getDefaultMessage())
-                   .toList();
-           throw new NotValidException(errorMessages);
-       }
-       return schedaAllenamentoService.creaSchedaStandard(body);
-   }
+    @PostMapping("/schede/standard")
+    @ResponseStatus(HttpStatus.CREATED)
+    public SchedaAllenamentoDTO creaSchedaStandard(
+            @RequestBody @Validated SchedaPersonalizzataRequestDTO body,
+            BindingResult validationResult) {
+        if (validationResult.hasErrors()) {
+            List<String> errorMessages = validationResult.getFieldErrors().stream()
+                    .map(fieldError -> fieldError.getField() + " :" + fieldError.getDefaultMessage())
+                    .toList();
+            throw new NotValidException(errorMessages);
+        }
+        return schedaAllenamentoService.creaSchedaStandard(body);
+    }
+    //NON USATO NEL FRONT END
     @PutMapping("/schede/standard/{id}")
     public SchedaAllenamentoDTO aggiornaSchedaStandard(
             @PathVariable Long id,
-
             @RequestBody @Validated SchedaPersonalizzataRequestDTO body,
             BindingResult validationResult) {
         if (validationResult.hasErrors()) {
@@ -396,26 +382,23 @@ public class AdminController {
 
     // Admin filtra schede standard per obiettivo
     @GetMapping("/schede/standard/obiettivo/{obiettivo}")
-    public ResponseEntity<List<SchedaAllenamentoDTO>> adminGetSchedeStandardPerObiettivo(
+    public List<SchedaAllenamentoDTO> adminGetSchedeStandardPerObiettivo(
             @PathVariable ObiettivoAllenamento obiettivo) {
-        List<SchedaAllenamentoDTO> schede = schedaAllenamentoService.getSchedeStandardPerObiettivo(obiettivo);
-        return ResponseEntity.ok(schede);
+        return schedaAllenamentoService.getSchedeStandardPerObiettivo(obiettivo);
     }
 
     // Admin filtra schede custom per obiettivo
     @GetMapping("/schede/custom/obiettivo/{obiettivo}")
-    public ResponseEntity<List<SchedaAllenamentoDTO>> adminGetSchedeCustomPerObiettivo(
+    public List<SchedaAllenamentoDTO> adminGetSchedeCustomPerObiettivo(
             @PathVariable ObiettivoAllenamento obiettivo) {
-        List<SchedaAllenamentoDTO> schede = schedaAllenamentoService.getAllSchedeCustomPerObiettivo(obiettivo);
-        return ResponseEntity.ok(schede);
+        return schedaAllenamentoService.getAllSchedeCustomPerObiettivo(obiettivo);
     }
 
     // Admin filtra TUTTE le schede per obiettivo (standard + custom)
     @GetMapping("/schede/obiettivo/{obiettivo}")
-    public ResponseEntity<List<SchedaAllenamentoDTO>> adminGetSchedePerObiettivo(
+    public List<SchedaAllenamentoDTO> adminGetSchedePerObiettivo(
             @PathVariable ObiettivoAllenamento obiettivo) {
-        List<SchedaAllenamentoDTO> schede = schedaAllenamentoService.getAllSchedePerObiettivo(obiettivo);
-        return ResponseEntity.ok(schede);
+        return schedaAllenamentoService.getAllSchedePerObiettivo(obiettivo);
     }
     // DELETE - Admin elimina una qualsiasi scheda allenamento
     @DeleteMapping("/schede-allenamento/{schedaId}")

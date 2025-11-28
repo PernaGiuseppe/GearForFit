@@ -3,11 +3,11 @@ import { useParams, Link, useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../app/store'
 import { API_BASE_URL, getAuthHeader } from '../../utils/apiConfig'
-import { BsStar, BsStarFill, BsPencilFill } from 'react-icons/bs' // Aggiunta BsPencilFill
+import { BsStar, BsStarFill, BsPencilFill } from 'react-icons/bs'
 import '../../css/Schede.css'
 import { GiConfirmed } from 'react-icons/gi'
+import { MdClose } from 'react-icons/md'
 
-// NUOVO TIPO: SerieDTO con campo peso (rispecchia il DTO di SchedaAllenamentoService.java)
 type SerieDTOBackend = {
   id: number
   esercizioId: number
@@ -15,10 +15,9 @@ type SerieDTOBackend = {
   numeroSerie: number
   numeroRipetizioni: number
   tempoRecuperoSecondi: number
-  peso?: string | null // Aggiunto il campo peso
+  peso?: string | null
 }
 
-// Aggiornamento del tipo per l'elemento della scheda
 type EsercizioScheda = SerieDTOBackend
 
 type GiornoAllenamento = {
@@ -39,7 +38,6 @@ type SchedaDettaglioDTO = {
   utenteId?: number
 }
 
-// Nuovo tipo di stato per la gestione della modifica del peso
 type EditingState = {
   giornoId: number | null
   serieId: number | null
@@ -55,25 +53,23 @@ export default function SchedaDettaglio() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  // STATO PER LA MODIFICA DEL PESO
   const [editing, setEditing] = useState<EditingState>({
     giornoId: null,
     serieId: null,
     newWeight: '',
   })
 
-  // TIPO PER IL MESSAGGIO DI SUCCESSO/ERRORE (opzionale)
   const [updateMessage, setUpdateMessage] = useState<{
     type: 'success' | 'error'
     text: string
   } | null>(null)
+
   useEffect(() => {
     if (!id || !user) return
 
     setLoading(true)
     setError(null)
 
-    // Se l' admin è loggato, usa endpoint admin. Altrimenti usa logica utenti
     const endpoint =
       user.tipoUtente === 'ADMIN'
         ? `${API_BASE_URL}/admin/schede/${id}`
@@ -89,7 +85,6 @@ export default function SchedaDettaglio() {
       .finally(() => setLoading(false))
   }, [id, user])
 
-  // --- HANDLER ATTIVAZIONE
   const handleToggleAttiva = async (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
@@ -116,7 +111,6 @@ export default function SchedaDettaglio() {
     }
   }
 
-  // --- LOGICA ELIMINAZIONE ---
   const handleDelete = async () => {
     if (!scheda) return
 
@@ -151,7 +145,6 @@ export default function SchedaDettaglio() {
     }
   }
 
-  // --- HANDLER PER AGGIORNARE IL PESO ---
   const handleWeightUpdate = async (
     serie: EsercizioScheda,
     newWeight: string
@@ -175,7 +168,6 @@ export default function SchedaDettaglio() {
       if (res.ok) {
         const updatedSerie: SerieDTOBackend = await res.json()
 
-        // Aggiorna lo stato della scheda con il nuovo peso
         setScheda((prevScheda) => {
           if (!prevScheda) return null
 
@@ -188,11 +180,13 @@ export default function SchedaDettaglio() {
 
           return { ...prevScheda, giorni: updatedGiorni }
         })
-        setEditing({ giornoId: null, serieId: null, newWeight: '' }) // Chiudi l'editing
+        setEditing({ giornoId: null, serieId: null, newWeight: '' })
         setUpdateMessage({
           type: 'success',
           text: `Peso aggiornato a ${updatedSerie.peso}`,
         })
+
+        setTimeout(() => setUpdateMessage(null), 3000)
       } else {
         throw new Error("Errore durante l'aggiornamento del peso")
       }
@@ -205,65 +199,84 @@ export default function SchedaDettaglio() {
     }
   }
 
-  // Funzione per il rendering condizionale della cella del peso
   const renderWeightCell = (giornoId: number, serie: EsercizioScheda) => {
     const isEditing =
       editing.giornoId === giornoId && editing.serieId === serie.id
 
-    if (isEditing) {
-      return (
-        <div className="d-flex align-items-center justify-content-center">
-          <input
-            type="text"
-            className="form-control form-control-sm me-2 text-center"
-            style={{ width: '80px' }}
-            value={editing.newWeight}
-            onChange={(e) =>
-              setEditing({ ...editing, newWeight: e.target.value })
-            }
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') {
-                handleWeightUpdate(serie, editing.newWeight)
-              }
-            }}
-            autoFocus
-          />
-          <GiConfirmed
-            className="green-confirm"
-            title="Conferma peso"
-            onClick={() => handleWeightUpdate(serie, editing.newWeight)}
-            style={{ cursor: 'pointer', fontSize: '1.2em' }}
-          />
-        </div>
-      )
-    }
-
     const displayedWeight =
       serie.peso && serie.peso.trim() !== '' ? serie.peso : '---'
 
-    // Mostra il peso e l'icona di modifica se non è una scheda standard
+    // Mostra solo la visualizzazione se è admin o scheda standard
+    const canEdit = user?.tipoUtente !== 'ADMIN' && !scheda?.isStandard
+
     return (
-      <div className="d-flex align-items-center justify-content-center">
-        <span className="me-2">{displayedWeight}</span>
-        {!scheda?.isStandard && (
-          <BsPencilFill
-            className="text-primary"
-            title="Modifica peso"
-            onClick={() =>
-              setEditing({
-                giornoId,
-                serieId: serie.id,
-                newWeight: serie.peso || '', // Carica il peso esistente
-              })
-            }
-            style={{ cursor: 'pointer', fontSize: '0.8em' }}
-          />
+      <div style={{ position: 'relative', minHeight: '30px' }}>
+        {/* Contenuto sempre visibile (non cambia mai di dimensione) */}
+        <div className="d-flex align-items-center justify-content-center">
+          <span className="me-2">{displayedWeight}</span>
+          {canEdit && (
+            <BsPencilFill
+              className="text-primary"
+              title="Modifica peso"
+              onClick={() =>
+                setEditing({
+                  giornoId,
+                  serieId: serie.id,
+                  newWeight: serie.peso || '',
+                })
+              }
+              style={{ cursor: 'pointer', fontSize: '0.9em' }}
+            />
+          )}
+        </div>
+
+        {/* Popover di editing che si sovrappone */}
+        {isEditing && (
+          <div id="input-cambiopeso" onClick={(e) => e.stopPropagation()}>
+            <div className="d-flex align-items-center gap-2">
+              <input
+                type="text"
+                className="form-control form-control-sm text-center"
+                style={{ width: '90px' }}
+                value={editing.newWeight}
+                onChange={(e) =>
+                  setEditing({ ...editing, newWeight: e.target.value })
+                }
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    handleWeightUpdate(serie, editing.newWeight)
+                  }
+                  if (e.key === 'Escape') {
+                    setEditing({ giornoId: null, serieId: null, newWeight: '' })
+                  }
+                }}
+                placeholder="kg"
+                autoFocus
+              />
+              <GiConfirmed
+                className="text-success"
+                title="Conferma peso"
+                onClick={() => handleWeightUpdate(serie, editing.newWeight)}
+                style={{ cursor: 'pointer', fontSize: '1.5em' }}
+              />
+              <MdClose
+                className="text-danger"
+                title="Annulla"
+                onClick={() =>
+                  setEditing({ giornoId: null, serieId: null, newWeight: '' })
+                }
+                style={{ cursor: 'pointer', fontSize: '1.5em' }}
+              />
+            </div>
+            <small className="text-muted d-block mt-1 text-center">
+              Premi Enter per confermare
+            </small>
+          </div>
         )}
       </div>
     )
   }
 
-  // Rendering degli stati di caricamento/errore/non trovato (omesso per brevità, è nel tuo codice originale)
   if (loading)
     return (
       <div className="container mt-5 text-center page-content-custom">
@@ -285,11 +298,9 @@ export default function SchedaDettaglio() {
 
   return (
     <div className="container py-4">
-      {/* Intestazione */}
       <div className="row align-items-center mb-4">
         <div className="col-12 col-md-8 d-flex align-items-center">
           <h1 className="fw-bold mb-2 me-3">{scheda.nome}</h1>
-          {/* Logica Stella attiva */}
           {scheda && !scheda.isStandard && user?.tipoUtente !== 'ADMIN' && (
             <>
               {scheda.attiva ? (
@@ -310,31 +321,35 @@ export default function SchedaDettaglio() {
             </>
           )}
         </div>
-        <div className="col-12 col-md-4 text-md-end mt-3 mt-md-0">
+        <div className="col-12 col-lg-4 text-lg-end mt-3 mt-lg-0">
           {(user?.tipoUtente === 'ADMIN' || !scheda?.isStandard) && (
             <button
               className="btn btn-outline-danger me-2"
               onClick={handleDelete}
             >
-              <i className="bi bi-trash me-2"></i>Elimina
+              Elimina
             </button>
           )}
 
           <Link to="/schede" className="btn btn-outline-secondary">
-            <i className="bi bi-arrow-left me-2"></i>Torna alle schede
+            Torna alle schede
           </Link>
         </div>
       </div>
 
-      {/* Messaggio di aggiornamento */}
       {updateMessage && (
         <div
           className={`alert alert-${
             updateMessage.type === 'success' ? 'success' : 'danger'
-          }`}
+          } alert-dismissible fade show`}
           role="alert"
         >
           {updateMessage.text}
+          <button
+            type="button"
+            className="btn-close"
+            onClick={() => setUpdateMessage(null)}
+          ></button>
         </div>
       )}
 
@@ -344,7 +359,6 @@ export default function SchedaDettaglio() {
         </div>
       </div>
 
-      {/* Info Card (omesso per brevità, è nel tuo codice originale) */}
       <div className="row mb-4">
         <div className="col-12">
           <div className="card shadow-sm border-0">
@@ -375,7 +389,6 @@ export default function SchedaDettaglio() {
         </div>
       </div>
 
-      {/* Programma di Allenamento */}
       <div className="row">
         <div className="col-12 mb-3">
           <h3 className="fw-bold text-primary">Programma Settimanale</h3>
@@ -393,58 +406,140 @@ export default function SchedaDettaglio() {
 
                 <div className="card-body p-0">
                   {giorno.serie && giorno.serie.length > 0 ? (
-                    <div className="table-responsive">
-                      <table className="table table-striped table-hover mb-0 align-middle">
-                        <thead className="table-light">
-                          <tr>
-                            <th
-                              scope="col"
-                              className="ps-4"
-                              style={{ width: '30%' }}
-                            >
-                              Esercizio
-                            </th>
-                            <th scope="col" className="text-center">
-                              Serie
-                            </th>
-                            <th scope="col" className="text-center">
-                              Reps
-                            </th>
-                            <th scope="col" className="text-center">
-                              Rec (s)
-                            </th>
-                            {/* NUOVA COLONNA */}
-                            <th scope="col" className="text-center">
-                              Peso (kg)
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {giorno.serie.map((es) => (
-                            <tr key={es.id}>
-                              <td className="ps-4 fw-semibold text-primary">
-                                {es.nomeEsercizio}
-                              </td>
-                              <td className="text-center">
-                                <span className="badge bg-light text-dark border">
-                                  {es.numeroSerie}
-                                </span>
-                              </td>
-                              <td className="text-center">
-                                {es.numeroRipetizioni}
-                              </td>
-                              <td className="text-center text-muted">
-                                {es.tempoRecuperoSecondi}"
-                              </td>
-                              {/* Cella per la MODIFICA del peso */}
-                              <td className="text-center">
-                                {renderWeightCell(giorno.id, es)}
-                              </td>
+                    <>
+                      <div className="table-responsive d-none d-md-block">
+                        <table className="table table-striped table-hover mb-0 align-middle">
+                          <thead className="table-light">
+                            <tr>
+                              <th
+                                scope="col"
+                                className="ps-4"
+                                style={{ width: '35%' }}
+                              >
+                                Esercizio
+                              </th>
+                              <th
+                                scope="col"
+                                className="text-center"
+                                style={{ width: '13%' }}
+                              >
+                                Serie
+                              </th>
+                              <th
+                                scope="col"
+                                className="text-center"
+                                style={{ width: '13%' }}
+                              >
+                                Reps
+                              </th>
+                              <th
+                                scope="col"
+                                className="text-center"
+                                style={{ width: '13%' }}
+                              >
+                                Rec (s)
+                              </th>
+                              <th
+                                scope="col"
+                                className="text-center"
+                                style={{ width: '26%' }}
+                              >
+                                Peso (kg)
+                              </th>
                             </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
+                          </thead>
+                          <tbody>
+                            {giorno.serie.map((es) => (
+                              <tr key={es.id}>
+                                <td className="ps-4 fw-semibold text-primary">
+                                  {es.nomeEsercizio}
+                                </td>
+                                <td className="text-center">
+                                  <span className="badge bg-light text-dark border">
+                                    {es.numeroSerie}
+                                  </span>
+                                </td>
+                                <td className="text-center">
+                                  {es.numeroRipetizioni}
+                                </td>
+                                <td className="text-center text-muted">
+                                  {es.tempoRecuperoSecondi}"
+                                </td>
+                                <td className="text-center">
+                                  {renderWeightCell(giorno.id, es)}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+
+                      {/* CARD LAYOUT PER MOBILE (sm e inferiori) */}
+                      <div className="d-md-none p-3">
+                        {giorno.serie.map((es) => (
+                          <div
+                            key={es.id}
+                            className="card mb-3 shadow-sm border"
+                            style={{
+                              borderLeft: '4px solid #0d6efd',
+                              transition: 'transform 0.2s',
+                            }}
+                          >
+                            <div className="card-body">
+                              <h6 className="card-title text-primary fw-bold mb-3">
+                                {es.nomeEsercizio}
+                              </h6>
+
+                              <div className="row g-2">
+                                <div className="col-6">
+                                  <div className="d-flex flex-column">
+                                    <small className="text-muted mb-1">
+                                      Serie
+                                    </small>
+                                    <span className="badge bg-light text-dark border w-auto align-self-start px-3 py-2">
+                                      {es.numeroSerie}
+                                    </span>
+                                  </div>
+                                </div>
+
+                                <div className="col-6">
+                                  <div className="d-flex flex-column">
+                                    <small className="text-muted mb-1">
+                                      Ripetizioni
+                                    </small>
+                                    <span className="fw-semibold fs-5">
+                                      {es.numeroRipetizioni}
+                                    </span>
+                                  </div>
+                                </div>
+
+                                <div className="col-6">
+                                  <div className="d-flex flex-column">
+                                    <small className="text-muted mb-1">
+                                      Recupero
+                                    </small>
+                                    <span className="fw-semibold fs-5">
+                                      {es.tempoRecuperoSecondi}"
+                                    </span>
+                                  </div>
+                                </div>
+
+                                <div className="col-6">
+                                  <div className="d-flex flex-column">
+                                    <small className="text-muted mb-1">
+                                      Peso (kg)
+                                    </small>
+                                    <div className="mt-1">
+                                      {renderWeightCell(giorno.id, es)}
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </>
                   ) : (
                     <div className="p-4 text-center text-muted">
                       <em>Nessun esercizio programmato per questo giorno.</em>

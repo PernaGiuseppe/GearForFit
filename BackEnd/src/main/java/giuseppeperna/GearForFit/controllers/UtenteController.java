@@ -47,7 +47,7 @@ public class UtenteController {
         @RequestBody @Valid CambiaPasswordDTO body,
         @AuthenticationPrincipal Utente utente) {
       utenteService.cambiaPassword(utente.getId(), body.passwordVecchia(), body.passwordNuova());
-       return "Password cambiata con successo"; // Semplice stringa invece di MessageResponseDTO
+       return "Password cambiata con successo";
 }
     // Elimina il proprio account
     @DeleteMapping("/me")

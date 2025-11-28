@@ -119,7 +119,7 @@ export default function GestioneUtenti() {
     return <div className="container mt-4 alert alert-danger">{error}</div>
 
   return (
-    <div className="container mt-4 page-content-custom ">
+    <div className="container mt-4 page-content-general ">
       <h1>Gestione Utenti</h1>
       <p className="text-muted">Totale utenti: {utenti.length}</p>
 

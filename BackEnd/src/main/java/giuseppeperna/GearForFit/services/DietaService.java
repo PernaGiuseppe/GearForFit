@@ -38,7 +38,7 @@ public class DietaService {
 
     // Admin crea una nuova dieta standard
 
-    public DietaDTO creaaDietaStandard(DietaRequestDTO request) {
+    public DietaDTO creaDietaStandard(DietaRequestDTO request) {
         Dieta dieta = new Dieta();
         dieta.setNome(request.nome());
         dieta.setDescrizione(request.descrizione());

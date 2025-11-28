@@ -216,13 +216,13 @@ export default function Diete() {
   if (!user) return <div>Devi essere loggato per vedere le diete.</div>
 
   return (
-    <div className="container mt-4 page-content-custom">
+    <div className="container mt-4 page-content-general">
       <div className="d-flex justify-content-between align-items-center mb-3">
-        <h1>Catalogo Diete</h1>
+        <h1>Catalogo diete</h1>
         {(user?.tipoPiano === 'SILVER' ||
           user?.tipoPiano === 'GOLD' ||
           user?.tipoPiano === 'PREMIUM') && (
-          <Link to="/diete/crea-custom" className="btn btn-success mb-3">
+          <Link to="/diete/crea-custom" className="btn btn-success mb-3 mt-3">
             Crea Dieta Custom
           </Link>
         )}
@@ -319,7 +319,7 @@ export default function Diete() {
                         <>
                           {dieta.isAttiva ? (
                             <BsStarFill
-                              className="star-active fs-4 ms-2"
+                              className="star-active fs-4 ms-2 me-1 mt-1"
                               onClick={(e) =>
                                 handleToggleAttiva(e, dieta.id, true)
                               }
@@ -328,7 +328,7 @@ export default function Diete() {
                             />
                           ) : (
                             <BsStar
-                              className="star-inactive fs-4 ms-2"
+                              className="star-inactive fs-4 ms-2 me-1 mt-1"
                               onClick={(e) =>
                                 handleToggleAttiva(e, dieta.id, false)
                               }

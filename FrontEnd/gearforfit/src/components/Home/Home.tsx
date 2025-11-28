@@ -2,6 +2,9 @@ import { articles } from '../../data/articles'
 import { Link } from 'react-router-dom'
 
 export default function Home() {
+  const handleScrollToTop = () => {
+    window.scrollTo(0, 0)
+  }
   return (
     <div className="mb-5 page-content">
       {/* ... TITOLO SEZIONE ... */}
@@ -47,6 +50,7 @@ export default function Home() {
                 <Link
                   to={`/articoli/${a.id}`}
                   className="btn btn-outline-primary w-100 mt-3 fw-semibold"
+                  onClick={handleScrollToTop}
                 >
                   Leggi articolo <i className="bi bi-arrow-right-short"></i>
                 </Link>

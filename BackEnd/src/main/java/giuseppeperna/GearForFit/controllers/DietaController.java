@@ -25,17 +25,15 @@ public class DietaController {
     // Visualizza tutte le diete standard disponibili
 
     @GetMapping("/standard")
-    public ResponseEntity<List<DietaDTO>> getDieteStandard() {
-        List<DietaDTO> diete = dietaService.getDieteStandard();
-        return ResponseEntity.ok(diete);
+    public List<DietaDTO> getDieteStandard() {
+        return dietaService.getDieteStandard();
     }
 
     // Visualizza una dieta standard specifica per ID
 
     @GetMapping("/standard/{id}")
-    public ResponseEntity<DietaDTO> getDietaStandardById(@PathVariable Long id) {
-        DietaDTO dieta = dietaService.getDietaStandardById(id);
-        return ResponseEntity.ok(dieta);
+    public DietaDTO getDietaStandardById(@PathVariable Long id) {
+        return dietaService.getDietaStandardById(id);
     }
 
     // ===== CREAZIONE DIETA CUSTOM =====
@@ -43,14 +41,14 @@ public class DietaController {
     // Utente crea una dieta custom basata su un template standard
 
     @PostMapping("/standard/{dietaStandardId}/custom")
+    @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAuthority('ADMIN') or hasAnyAuthority('PIANO_PREMIUM', 'PIANO_GOLD', 'PIANO_SILVER')")
-    public ResponseEntity<DietaDTO> creaDialogDietaCustom(
+    public DietaDTO creaDialogDietaCustom(
             @PathVariable Long dietaStandardId,
             @RequestBody DietaCreateRequestDTO request,
             @AuthenticationPrincipal Utente utente
     ) {
-        DietaDTO dietaDTO = dietaService.creaDialogDietaCustom(dietaStandardId, request, utente);
-        return ResponseEntity.status(HttpStatus.CREATED).body(dietaDTO);
+        return dietaService.creaDialogDietaCustom(dietaStandardId, request, utente);
     }
 
     // ===== GESTIONE DIETE CUSTOM DELL'UTENTE =====
@@ -59,47 +57,44 @@ public class DietaController {
 
     @GetMapping("/custom")
     @PreAuthorize("hasAuthority('ADMIN') or hasAnyAuthority('PIANO_PREMIUM', 'PIANO_GOLD', 'PIANO_SILVER')")
-    public ResponseEntity<List<DietaDTO>> getDieteCustomUtente(
+    public List<DietaDTO> getDieteCustomUtente(
             @AuthenticationPrincipal Utente utente
     ) {
-        List<DietaDTO> diete = dietaService.getDieteCustomUtente(utente);
-        return ResponseEntity.ok(diete);
+        return dietaService.getDieteCustomUtente(utente);
     }
 
     // Visualizza una dieta custom specifica dell'utente
 
     @GetMapping("/custom/{id}")
     @PreAuthorize("hasAuthority('ADMIN') or hasAnyAuthority('PIANO_PREMIUM', 'PIANO_GOLD', 'PIANO_SILVER')")
-    public ResponseEntity<DietaDTO> getDietaCustomUtenteById(
+    public DietaDTO getDietaCustomUtenteById(
             @PathVariable Long id,
             @AuthenticationPrincipal Utente utente
     ) {
-        DietaDTO dieta = dietaService.getDietaCustomUtenteById(id, utente);
-        return ResponseEntity.ok(dieta);
+        return dietaService.getDietaCustomUtenteById(id, utente);
     }
 
     // Utente attiva/disattiva una sua dieta custom
 
     @PatchMapping("/custom/{id}/attiva")
     @PreAuthorize("hasAuthority('ADMIN') or hasAnyAuthority('PIANO_PREMIUM', 'PIANO_GOLD', 'PIANO_SILVER')")
-    public ResponseEntity<DietaDTO> setDietaAttiva(
+    public DietaDTO setDietaAttiva(
             @PathVariable Long id,
             @RequestBody DietaSetAttivaRequestDTO request,
             @AuthenticationPrincipal Utente utente
     ) {
-        DietaDTO dieta = dietaService.setDietaAttiva(id, request.isAttiva(), utente);
-        return ResponseEntity.ok(dieta);
+        return dietaService.setDietaAttiva(id, request.isAttiva(), utente);
     }
 
     // Utente elimina una sua dieta custom
 
     @DeleteMapping("/custom/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasAuthority('ADMIN') or hasAnyAuthority('PIANO_PREMIUM', 'PIANO_GOLD', 'PIANO_SILVER')")
-    public ResponseEntity<Void> eliminaDietaCustom(
+    public void eliminaDietaCustom(
             @PathVariable Long id,
             @AuthenticationPrincipal Utente utente
     ) {
         dietaService.eliminaDietaCustom(id, utente);
-        return ResponseEntity.noContent().build();
     }
 }

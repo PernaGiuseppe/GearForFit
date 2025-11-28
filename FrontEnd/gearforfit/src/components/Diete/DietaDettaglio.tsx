@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useParams, useSearchParams, Link, useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../app/store'
+import { BsStar, BsStarFill } from 'react-icons/bs'
 import { API_BASE_URL, getAuthHeader } from '../../utils/apiConfig'
 import '../../css/Dieta.css'
 
@@ -175,38 +176,41 @@ export default function DietaDettaglio() {
     <div className="container py-4 page-content-custom">
       {/* Intestazione */}
       <div className="row align-items-start align-items-md-center mb-4">
-        <div className="col-12 col-md-8 mb-3 mb-md-0">
+        <div className="col-12 col-md-8 d-flex align-items-center">
           <h1 className="fw-bold mb-2 me-3">{dieta.nome}</h1>
-
-          {/* STELLA (Solo per custom) */}
-          {!dieta.isStandard && user?.tipoUtente !== 'ADMIN' && (
-            <i
-              className={`bi bi-star${
-                dieta.isAttiva ? '-fill star-active' : ' star-inactive'
-              } fs-2`}
-              onClick={handleToggleAttiva}
-              style={{ cursor: 'pointer' }}
-              title={
-                dieta.isAttiva
-                  ? 'Dieta attiva - Clicca per disattivare'
-                  : 'Clicca per attivare'
-              }
-            ></i>
+          {dieta && !dieta.isStandard && user?.tipoUtente !== 'ADMIN' && (
+            <>
+              {dieta.isAttiva ? (
+                <BsStarFill
+                  className="stella-dettaglio star-active"
+                  onClick={handleToggleAttiva}
+                  title="Dieta attiva - Clicca per disattivare"
+                  style={{ cursor: 'pointer' }}
+                />
+              ) : (
+                <BsStar
+                  className="stella-dettaglio star-inactive"
+                  onClick={handleToggleAttiva}
+                  title="Clicca per attivare questa dieta"
+                  style={{ cursor: 'pointer' }}
+                />
+              )}
+            </>
           )}
         </div>
 
-        <div className="col-12 col-md-4 text-start text-md-end">
+        <div className="col-12 col-lg-4 text-start text-lg-end mt-2">
           {/* DELETE BUTTON */}
           {(user?.tipoUtente === 'ADMIN' || !dieta?.isStandard) && (
             <button
               className="btn btn-outline-danger me-2"
               onClick={handleDelete}
             >
-              <i className="bi bi-trash me-2"></i>Elimina
+              Elimina
             </button>
           )}
           <Link to="/diete" className="btn btn-outline-secondary">
-            <i className="bi bi-arrow-left me-2"></i>Indietro
+            Indietro
           </Link>
         </div>
       </div>

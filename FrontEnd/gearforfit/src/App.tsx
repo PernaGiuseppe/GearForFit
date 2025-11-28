@@ -32,7 +32,7 @@ export default function App() {
       <Navbar />
       <div className="container mt-4">
         {canAccessChat && (
-          <div className="chat-global">
+          <div>
             <Chat />
           </div>
         )}
