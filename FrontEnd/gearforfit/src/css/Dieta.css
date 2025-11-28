@@ -1,8 +1,8 @@
 /* Bottone delete circolare nella card (Diete lista) */
-.btn-delete-card {
+.btn-delete-button {
   position: absolute;
-  top: 145px;
-  right: -1px;
+  bottom: 0px;
+  right: 1px;
   background-color: #dc3545;
   color: white;
   border-radius: 6px;
@@ -18,7 +18,7 @@
   cursor: pointer;
 }
 
-.btn-delete-card:hover {
+.btn-delete-button:hover {
   background-color: #c82333;
   transform: scale(1.1);
 }

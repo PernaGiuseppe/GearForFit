@@ -288,7 +288,7 @@ export default function Diete() {
                 <div className="card h-100 card-diet-wrapper">
                   {(user?.tipoUtente === 'ADMIN' || !dieta?.isStandard) && (
                     <button
-                      className="btn-delete-card"
+                      className="btn-delete-button"
                       onClick={(e) =>
                         handleDelete(e, dieta.id, nomeVisualizzato)
                       }

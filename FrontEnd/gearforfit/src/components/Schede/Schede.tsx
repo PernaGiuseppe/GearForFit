@@ -303,7 +303,7 @@ export default function Schede() {
                   {/* BUTTON DELETE */}
                   {(!scheda.isStandard || user?.tipoUtente === 'ADMIN') && (
                     <button
-                      className="btn-delete-card"
+                      className="btn-delete-button"
                       onClick={(e) =>
                         handleDelete(e, scheda.id, nomeVisualizzato)
                       }
