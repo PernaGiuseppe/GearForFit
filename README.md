@@ -48,7 +48,7 @@ Environment: Uso di variabili d'ambiente su file .env
 
 
 
-##### 3.1 Autenticazione
+#### 3.1 Autenticazione
 
 
 
@@ -84,7 +84,7 @@ json
 
 }
 
-##### 3.2 Utenti
+#### 3.2 Utenti
 
 
 
@@ -136,7 +136,7 @@ Elimina l'account dell'utente autenticato.
 
 
 
-##### 3.3 Diete
+#### 3.3 Diete
 
 
 
@@ -224,7 +224,7 @@ Elimina una dieta personalizzata.
 
 
 
-##### 3.4 Schede
+#### 3.4 Schede
 
 
 
@@ -362,7 +362,7 @@ Elimina una scheda di allenamento personalizzata.
 
 
 
-##### 3.5 Chat QeA
+#### 3.5 Chat QeA
 
 
 
@@ -392,7 +392,7 @@ Restituisce solo la risposta di una Q\&A.
 
 
 
-##### 3.6 Admin dashboard (admin controller)
+#### 3.6 Admin dashboard (admin controller)
 
 
 
