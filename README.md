@@ -1,5 +1,6 @@
 # GearForFit
 
+GearForFit è una web application per appassionati di fitness dove a seconda del piano utente, si ha accesso a diversi contenuti, personalizzati e non.
 Essendo stata strutturata in modo tale che possa essere aggiornata col tempo, si presta molto all'utilizzo per piccole e grandi aziende, avendo delle relazioni tra gli elementi che lo permettono.
 Infatti tutti gli esercizi, sono aggiornabili nel tempo, avendo usato diverse classi es: attrezzi, gruppo muscolari, schema serie, giorno allenamento etc, per dare il modo di poter implementare col tempo, altri macchinari o esercizi a loro affiliati.
 
