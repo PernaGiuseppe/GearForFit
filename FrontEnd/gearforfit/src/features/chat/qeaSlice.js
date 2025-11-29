@@ -5,6 +5,7 @@ import { API_BASE_URL, getAuthHeader } from '../../utils/apiConfig'
 // =================== THUNKS (AZIONI ASINCRONE) ===================
 
 // GET /qea (Ottieni tutte le Q&A) - Usato per popolare la lista delle domande.
+// AsyncThunk serve a gestire le azioni asincrone, in modo da rendere il codice più snello.
 export const fetchAllQeA = createAsyncThunk(
   'qea/fetchAll',
   (_, { rejectWithValue }) => {

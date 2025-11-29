@@ -83,7 +83,7 @@ export default function SchedaDettaglio() {
       })
       .catch((err) => {
         setError(err.message)
-        toast.error(err.message || 'Errore nel caricamento della scheda') // Aggiunto toast
+        toast.error(err.message || 'Errore nel caricamento della scheda')
       })
       .finally(() => {
         setLoading(false)
@@ -348,7 +348,7 @@ export default function SchedaDettaglio() {
                 ) : (
                   <span className="badge bg-success p-2">Personalizzata</span>
                 )}
-                <span className="badge bg-info text-dark p-2">
+                <span className="badge bg-info text-light p-2">
                   {scheda.obiettivo}
                 </span>
                 {scheda.durataSettimane && (

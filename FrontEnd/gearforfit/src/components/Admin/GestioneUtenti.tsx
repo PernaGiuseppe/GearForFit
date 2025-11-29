@@ -173,19 +173,22 @@ export default function GestioneUtenti() {
               <tr key={utente.id}>
                 <td>{utente.id}</td>
                 <td>
+                  {/* <div className="my-1"> da modificare prima del demoday*/}
+
                   <div>
                     <strong>
                       {utente.nome} {utente.cognome}
                     </strong>
                   </div>
+                  {/* small da eliminare prima del demoday*/}
                   <small className="text-muted">{utente.email}</small>
                 </td>
                 <td>
                   <span
                     className={`badge ${
                       utente.tipoUtente === 'ADMIN'
-                        ? 'bg-danger'
-                        : 'bg-secondary'
+                        ? 'badge--violet'
+                        : 'badge--secondary'
                     }`}
                   >
                     {utente.tipoUtente}
@@ -216,10 +219,10 @@ export default function GestioneUtenti() {
                 <td>
                   <span
                     className={`badge ${
-                      utente.attivo ? 'bg-success' : 'bg-warning'
+                      utente.attivo ? 'badge--status' : 'badge--warning'
                     }`}
                   >
-                    {utente.attivo ? 'Attivo' : 'Disattivato'}
+                    {utente.attivo ? 'Attivo' : 'Inattivo'}
                   </span>
                 </td>
 

@@ -1,7 +1,10 @@
 package giuseppeperna.GearForFit.controllers;
 
 import giuseppeperna.GearForFit.entities.Alimenti.Alimento;
-import giuseppeperna.GearForFit.entities.SchedePalestra.*;
+import giuseppeperna.GearForFit.entities.SchedePalestra.Attrezzo;
+import giuseppeperna.GearForFit.entities.SchedePalestra.Esercizio;
+import giuseppeperna.GearForFit.entities.SchedePalestra.GruppoMuscolare;
+import giuseppeperna.GearForFit.entities.SchedePalestra.ObiettivoAllenamento;
 import giuseppeperna.GearForFit.entities.Utente.TipoPiano;
 import giuseppeperna.GearForFit.entities.Utente.Utente;
 import giuseppeperna.GearForFit.exceptions.NotValidException;
@@ -10,13 +13,13 @@ import giuseppeperna.GearForFit.services.*;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -93,6 +96,7 @@ public class AdminController {
     ) {
         return dietaService.modificaDietaStandard(id, request);
     }
+
     // Admin visualizza SOLO diete standard
     @GetMapping("/diete/standard")
     public List<DietaDTO> adminGetDieteStandard() {
@@ -124,6 +128,7 @@ public class AdminController {
     public List<DietaDTO> adminGetDieteCustomByUtente(@PathVariable Long utenteId) {
         return dietaService.getDieteCustomByUtente(utenteId);
     }
+
     @DeleteMapping("/diete/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void eliminaDieta(
@@ -300,6 +305,7 @@ public class AdminController {
     public List<SchedaAllenamentoDTO> adminGetSchedeStandard() {
         return schedaAllenamentoService.getSchedeStandard();
     }
+
     // Admin visualizza SOLO schede custom (di tutti gli utenti)
     @GetMapping("/schede/custom")
     public List<SchedaAllenamentoDTO> adminGetSchedeCustom() {
@@ -311,6 +317,7 @@ public class AdminController {
     public List<SchedaAllenamentoDTO> getAllSchedeAllenamento() {
         return schedaAllenamentoService.getAllSchedeAsList();
     }
+
     // GET - Ottieni una scheda di allenamento by id (standard e custom, solo admin)
     @GetMapping("/schede/{id}")
     public SchedaAllenamentoDTO getSchedaByIdConAutorizzazione(
@@ -332,6 +339,7 @@ public class AdminController {
         }
         return schedaAllenamentoService.creaSchedaStandard(body);
     }
+
     //NON USATO NEL FRONT END
     @PutMapping("/schede/standard/{id}")
     public SchedaAllenamentoDTO aggiornaSchedaStandard(
@@ -400,6 +408,7 @@ public class AdminController {
             @PathVariable ObiettivoAllenamento obiettivo) {
         return schedaAllenamentoService.getAllSchedePerObiettivo(obiettivo);
     }
+
     // DELETE - Admin elimina una qualsiasi scheda allenamento
     @DeleteMapping("/schede-allenamento/{schedaId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)

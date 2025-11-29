@@ -1,4 +1,4 @@
-/* Stella attiva/inattiva */
+/* Icona attiva/inattiva */
 .star-active {
   position: absolute;
   top: 6px;
@@ -23,7 +23,7 @@
   z-index: 10;
   transition: all 0.2s ease;
   cursor: pointer;
-  color: #d3d3d3; /* Grigio */
+  color: #d3d3d3;
   transition: color 0.2s ease;
 }
 
@@ -58,7 +58,7 @@
   transform: scale(1.1);
 }
 
-/* Stella nel dettaglio (accanto al titolo) */
+/* Icona nel dettaglio (accanto al titolo) */
 .stella-dettaglio {
   font-size: 2em;
   cursor: pointer;

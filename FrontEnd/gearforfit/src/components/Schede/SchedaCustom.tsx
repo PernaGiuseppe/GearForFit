@@ -140,7 +140,6 @@ export default function SchedaCustom() {
       toast.warning('Completa tutti i campi prima di proseguire')
       return
     }
-    // ... resto del codice (ordinamento giorni, set step) rimane uguale ...
     const giorniOrdinati = giorniSettimana.filter((g) =>
       giorniSelezionati.includes(g)
     )

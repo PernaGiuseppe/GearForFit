@@ -30,7 +30,7 @@ type DietaDettaglioDTO = {
   tipoDieta: string
   durataSettimane?: number
   isStandard: boolean
-  isAttiva?: boolean // Aggiunto campo
+  isAttiva?: boolean
   pasti: Pasto[]
 }
 
@@ -232,7 +232,7 @@ export default function DietaDettaglio() {
                 ) : (
                   <span className="badge bg-primary p-2">Standard</span>
                 )}
-                <span className="badge bg-info text-dark p-2">
+                <span className="badge bg-info text-light p-2">
                   {dieta.tipoDieta}
                 </span>
                 {dieta.durataSettimane && (
@@ -240,7 +240,6 @@ export default function DietaDettaglio() {
                     {dieta.durataSettimane} settimane
                   </span>
                 )}
-                {/* Rimosso badge 'Attiva', ora c'è la stella */}
               </div>
               {dieta.descrizione && (
                 <p className="card-text  border-top pt-3">

@@ -41,7 +41,7 @@ export default function Navbar() {
   }
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <nav className="navbar navbar-expand-lg fixed-top navbar-dark colore-navfoot">
       <div className="container-fluid">
         {/* Brand con Badge */}
         <div className="brand-container">

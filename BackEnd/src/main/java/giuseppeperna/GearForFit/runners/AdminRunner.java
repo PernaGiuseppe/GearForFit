@@ -39,15 +39,14 @@ public class AdminRunner implements CommandLineRunner {
         if (utenteRepository.findByEmail(adminEmail).isEmpty()) {
 
             System.out.println("Creazione admin in corso...⚙️  ");
-
-            // ← MODIFICA: Usa creaUtenteConPiano con TipoPiano.ADMIN
+            
             utenteService.creaUtenteConPiano(
                     adminEmail,
                     adminPassword,
                     adminNome,
                     adminCognome,
                     TipoUtente.ADMIN,
-                    TipoPiano.ADMIN  // ← Piano ADMIN per l'admin
+                    TipoPiano.ADMIN
             );
             System.out.println("✅ Admin creato con successo!");
 

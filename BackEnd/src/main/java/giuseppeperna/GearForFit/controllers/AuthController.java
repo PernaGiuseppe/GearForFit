@@ -40,7 +40,7 @@ public class AuthController {
         }
         // Controllo se l'utente non è attivo
         if (!utente.getAttivo()) {
-            // Questo messaggio verrà intercettato dal frontend
+         
             throw new BadRequestException("Errore login, il tuo account non è attivo, contattare l'admin");
         }
         String token = jwtTools.createToken(utente);

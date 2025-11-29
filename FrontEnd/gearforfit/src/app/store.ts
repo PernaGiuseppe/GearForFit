@@ -7,11 +7,10 @@ import qeaReducer from '../features/chat/qeaSlice'
 export const store = configureStore({
   reducer: {
     auth: authReducer,
-    qea: qeaReducer, // Nuovo reducer per Q&A
-    esercizi: eserciziReducer, // Nuovo reducer per Esercizi
+    qea: qeaReducer,
+    esercizi: eserciziReducer,
   },
 })
 
-// Tipi utili
 export type RootState = ReturnType<typeof store.getState>
 export type AppDispatch = typeof store.dispatch

@@ -1,4 +1,3 @@
-// src/utils/apiConfig.js
 // URL di base dell'API (Spring Boot)
 export const API_BASE_URL = 'http://localhost:3001'
 

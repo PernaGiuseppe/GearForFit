@@ -338,7 +338,7 @@ export default function Diete() {
                       )}
 
                       {dieta.tipoDieta && (
-                        <span className="badge bg-info text-dark">
+                        <span className="badge bg-info text-light">
                           {dieta.tipoDieta}
                         </span>
                       )}
@@ -351,7 +351,7 @@ export default function Diete() {
                     </p>
                     <Link
                       to={`/diete/dettaglio/${dieta.id}?type=${queryType}`}
-                      className="btn btn-outline-primary"
+                      className="btn-dettagli "
                     >
                       Dettagli
                     </Link>

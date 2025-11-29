@@ -215,13 +215,13 @@ export default function Schede() {
               <div className="admin-buttons">
                 <Link
                   to="/schede/standard-admin"
-                  className="btn btn-primary mb-3 ms-2"
+                  className="btn btn-primary btn-creastandard mb-3 ms-2"
                 >
                   Crea scheda standard
                 </Link>
                 <Link
                   to="/schede/custom-admin"
-                  className="btn btn-info mb-3 ms-2"
+                  className="btn btn-success mb-3 ms-2"
                 >
                   Crea scheda custom per Utente
                 </Link>
@@ -349,22 +349,19 @@ export default function Schede() {
 
                     <div className="mb-3">
                       {!scheda.isStandard ? (
-                        <span className="badge bg-success me-2">
+                        <span className="badge badge--success me-2">
                           Personalizzata
                         </span>
                       ) : (
                         <span className="badge bg-primary me-2">Standard</span>
                       )}
-                      <span className="badge bg-info text-dark">
+                      <span className="badge badge--category text-light">
                         {scheda.obiettivo}
                       </span>
                     </div>
 
                     <p className="card-text">Obiettivo: {scheda.obiettivo}</p>
-                    <Link
-                      to={`/schede/${scheda.id}`}
-                      className="btn btn-outline-primary"
-                    >
+                    <Link to={`/schede/${scheda.id}`} className="btn-dettagli">
                       Dettagli
                     </Link>
                   </div>

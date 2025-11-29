@@ -21,7 +21,7 @@ public class CalcoloBMRService {
     public Double calcolaBMR(CalcoloBMR profilo) {
         double bmr;
 
-        if (profilo.getSesso() == Sesso.M) {  // ← Usa Sesso separato!
+        if (profilo.getSesso() == Sesso.M) {
             bmr = (10 * profilo.getPeso()) +
                     (6.25 * profilo.getAltezza()) -
                     (5 * profilo.getEta()) + 5;

@@ -23,6 +23,8 @@ import SchedaStandardAdmin from './components/Admin/SchedaStandardAdmin'
 import ArticoliDettaglio from './components/Home/ArticoliDettaglio'
 import { Toaster } from 'sonner'
 import './App.css'
+import './css/Button.css'
+import './css/Badge.css'
 
 export default function App() {
   const user = useSelector((s: RootState) => s.auth.user)
@@ -30,109 +32,116 @@ export default function App() {
 
   return (
     <>
-      <Toaster position="top-center" richColors duration={2000} expand={true} />
+      <div className="homecolor">
+        <Toaster
+          position="top-center"
+          richColors
+          duration={2000}
+          expand={true}
+        />
 
-      <Navbar />
-      <div className="container mt-4">
-        {canAccessChat && (
-          <div>
-            <Chat />
-          </div>
-        )}
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
-          <Route path="/articoli/:id" element={<ArticoliDettaglio />} />
+        <Navbar />
+        <div className="container pt-4">
+          {canAccessChat && (
+            <div>
+              <Chat />
+            </div>
+          )}
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
+            <Route path="/articoli/:id" element={<ArticoliDettaglio />} />
 
-          {/* Route protette per tutti gli utenti loggati */}
-          <Route
-            path="/diete"
-            element={
-              <ProtectedRoute>
-                <Diete />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/diete/dettaglio/:id"
-            element={
-              <ProtectedRoute>
-                <DietaDettaglio />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/diete/crea-custom"
-            element={
-              <ProtectedRoute>
-                <DietaCustom />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/schede"
-            element={
-              <ProtectedRoute>
-                <Schede />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/schede/:id"
-            element={
-              <ProtectedRoute>
-                <SchedaDettaglio />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/schede/crea-custom"
-            element={
-              <ProtectedRoute>
-                <SchedaCustom />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/profilo"
-            element={
-              <ProtectedRoute>
-                <ProfiloUtente />
-              </ProtectedRoute>
-            }
-          />
-          {/* Route solo per ADMIN gestione utenti */}
-          <Route
-            path="/utenti"
-            element={
-              <ProtectedRoute requireAdmin>
-                <GestioneUtenti />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/schede/standard-admin"
-            element={
-              <ProtectedRoute requireAdmin>
-                <SchedaStandardAdmin />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/schede/custom-admin"
-            element={
-              <ProtectedRoute requireAdmin>
-                <SchedaCustomAdmin />
-              </ProtectedRoute>
-            }
-          />
+            {/* Route protette per tutti gli utenti loggati */}
+            <Route
+              path="/diete"
+              element={
+                <ProtectedRoute>
+                  <Diete />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/diete/dettaglio/:id"
+              element={
+                <ProtectedRoute>
+                  <DietaDettaglio />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/diete/crea-custom"
+              element={
+                <ProtectedRoute>
+                  <DietaCustom />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/schede"
+              element={
+                <ProtectedRoute>
+                  <Schede />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/schede/:id"
+              element={
+                <ProtectedRoute>
+                  <SchedaDettaglio />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/schede/crea-custom"
+              element={
+                <ProtectedRoute>
+                  <SchedaCustom />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/profilo"
+              element={
+                <ProtectedRoute>
+                  <ProfiloUtente />
+                </ProtectedRoute>
+              }
+            />
+            {/* Route solo per ADMIN gestione utenti */}
+            <Route
+              path="/utenti"
+              element={
+                <ProtectedRoute requireAdmin>
+                  <GestioneUtenti />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/schede/standard-admin"
+              element={
+                <ProtectedRoute requireAdmin>
+                  <SchedaStandardAdmin />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/schede/custom-admin"
+              element={
+                <ProtectedRoute requireAdmin>
+                  <SchedaCustomAdmin />
+                </ProtectedRoute>
+              }
+            />
 
-          {/* Error 404 */}
-          <Route path="*" element={<ErrorPage />} />
-        </Routes>
+            {/* Error 404 */}
+            <Route path="*" element={<ErrorPage />} />
+          </Routes>
+        </div>
+        <Footer />
       </div>
-      <Footer />
     </>
   )
 }

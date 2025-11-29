@@ -4,6 +4,7 @@ import { API_BASE_URL, getAuthHeader } from '../../utils/apiConfig'
 // =================== THUNKS (AZIONI ASINCRONE) ===================
 
 // GET /esercizi (Ottieni tutti gli esercizi) - SOLO ADMIN in base al controller
+// AsyncThunk serve a gestire le azioni asincrone, in modo da rendere il codice più snello.
 export const fetchAllEsercizi = createAsyncThunk(
   'esercizi/fetchAll',
   async (_, { rejectWithValue }) => {

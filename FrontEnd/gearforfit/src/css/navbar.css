@@ -9,7 +9,7 @@
 }
 
 body {
-  padding-top: 60px;
+  padding-top: 32px;
 }
 /* Brand Container con Position Relative */
 .brand-container {
@@ -43,6 +43,7 @@ body {
   color: white;
   border: 2px solid #60a5fa;
   border-radius: 18%;
+  margin-left: 1.7em;
 }
 
 /* SILVER - Grigio metallico con scritta nera */
@@ -52,6 +53,7 @@ body {
   border: 2px solid #9ca3af;
   text-shadow: 0 1px 1px rgba(255, 255, 255, 0.8);
   border-radius: 18%;
+  margin-left: 0.8em;
 }
 
 /* GOLD - Oro con scritta bianca (stile Tinder Gold) */
@@ -62,6 +64,7 @@ body {
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
   box-shadow: 0 2px 8px rgba(251, 191, 36, 0.4);
   border-radius: 18%;
+  margin-left: 1.2em;
 }
 
 /* PREMIUM - Fucsia con scritta bianca */
@@ -75,12 +78,13 @@ body {
 
 /* ADMIN - Color diamante (#C8E5EB) con scritta nera */
 .badge-admin {
-  background: linear-gradient(135deg, #c8e5eb 0%, #a0d5df 100%);
-  color: #1f2937;
-  border: 2px solid #e0f2f7;
-  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.8);
-  box-shadow: 0 2px 8px rgba(200, 229, 235, 0.5);
+  background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+  color: white;
+  border: 2px solid #a78bfa;
+  box-shadow: 0 2px 8px rgba(139, 92, 246, 0.4);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
   border-radius: 18%;
+  margin-left: 0.7em;
 }
 
 /* Spostamento dei link quando c'è il badge */

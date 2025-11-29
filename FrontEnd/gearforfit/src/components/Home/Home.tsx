@@ -6,7 +6,7 @@ export default function Home() {
     window.scrollTo(0, 0)
   }
   return (
-    <div className="mb-5 page-content">
+    <div className="mb-5 page-content pt-4">
       {/* ... TITOLO SEZIONE ... */}
       <div className="row align-items-center mb-4">
         <div className="col">
@@ -49,7 +49,7 @@ export default function Home() {
                 </p>
                 <Link
                   to={`/articoli/${a.id}`}
-                  className="btn btn-outline-primary w-100 mt-3 fw-semibold"
+                  className="btn btn--secondary w-100 mt-3 fw-semibold"
                   onClick={handleScrollToTop}
                 >
                   Leggi articolo <i className="bi bi-arrow-right-short"></i>

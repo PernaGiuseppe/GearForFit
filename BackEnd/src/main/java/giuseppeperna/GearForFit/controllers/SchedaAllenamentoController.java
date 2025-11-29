@@ -3,25 +3,25 @@ package giuseppeperna.GearForFit.controllers;
 import giuseppeperna.GearForFit.entities.SchedePalestra.Esercizio;
 import giuseppeperna.GearForFit.entities.SchedePalestra.ObiettivoAllenamento;
 import giuseppeperna.GearForFit.entities.SchedePalestra.SchedaAllenamento;
+import giuseppeperna.GearForFit.entities.Utente.TipoUtente;
 import giuseppeperna.GearForFit.entities.Utente.Utente;
 import giuseppeperna.GearForFit.exceptions.NotFoundException;
-import giuseppeperna.GearForFit.payloads.*;
 import giuseppeperna.GearForFit.exceptions.NotValidException;
-import giuseppeperna.GearForFit.entities.SchedePalestra.ObiettivoAllenamento;
-import giuseppeperna.GearForFit.entities.Utente.TipoUtente;
+import giuseppeperna.GearForFit.payloads.PesoUpdateDTO;
+import giuseppeperna.GearForFit.payloads.SchedaAllenamentoDTO;
+import giuseppeperna.GearForFit.payloads.SchedaPersonalizzataRequestDTO;
+import giuseppeperna.GearForFit.payloads.SerieDTO;
 import giuseppeperna.GearForFit.repositories.EsercizioRepository;
 import giuseppeperna.GearForFit.repositories.SchedaAllenamentoRepository;
-import giuseppeperna.GearForFit.services.EsercizioService;
 import giuseppeperna.GearForFit.services.SchedaAllenamentoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,6 +70,7 @@ public class SchedaAllenamentoController {
             @RequestParam(required = false, defaultValue = "STANDARD") String filtro) {
         return schedaAllenamentoService.getAllSchedeFiltered(utente, filtro);
     }
+
     // GET - Ottieni una singola scheda (Standard o Personalizzata) per ID
     @GetMapping("/{schedaId}")
     @PreAuthorize("isAuthenticated()")
@@ -140,7 +141,7 @@ public class SchedaAllenamentoController {
         return schedaAllenamentoService.getSchedaByIdAndUtente(schedaId, utente.getId());
     }
 
- // Ottieni le schede personalizzate dell'utente autenticato filtrate per obiettivo
+    // Ottieni le schede personalizzate dell'utente autenticato filtrate per obiettivo
     @GetMapping("/me/obiettivo/{obiettivo}")
     @PreAuthorize("hasAuthority('ADMIN') or hasAnyAuthority('PIANO_PREMIUM', 'PIANO_GOLD')")
     public List<SchedaAllenamentoDTO> getMieSchedePerObiettivo(
@@ -177,17 +178,16 @@ public class SchedaAllenamentoController {
     ) {
         return schedaAllenamentoService.aggiornaPesoSerie(schedaId, serieId, pesoDTO.peso(), utenteLoggato);
     }
+
     // Utente elimina la propria scheda personalizzata
-  @DeleteMapping("/me/{schedaId}")
-  @PreAuthorize("hasAuthority('ADMIN') or hasAnyAuthority('PIANO_PREMIUM', 'PIANO_GOLD')")
-  @ResponseStatus(HttpStatus.NO_CONTENT)
-  public void eliminaMiaSchedaPersonalizzata(
-          @AuthenticationPrincipal Utente utente,
-          @PathVariable Long schedaId) {
-      schedaAllenamentoService.eliminaSchedaPersonalizzata(schedaId, utente.getId());
-  }
-
-
+    @DeleteMapping("/me/{schedaId}")
+    @PreAuthorize("hasAuthority('ADMIN') or hasAnyAuthority('PIANO_PREMIUM', 'PIANO_GOLD')")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void eliminaMiaSchedaPersonalizzata(
+            @AuthenticationPrincipal Utente utente,
+            @PathVariable Long schedaId) {
+        schedaAllenamentoService.eliminaSchedaPersonalizzata(schedaId, utente.getId());
+    }
 
 
 }

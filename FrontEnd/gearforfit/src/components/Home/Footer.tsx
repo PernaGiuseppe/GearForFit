@@ -1,4 +1,4 @@
-import { Container, Row, Col, Form } from 'react-bootstrap'
+import { Container, Row, Col } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 
 export default function Footer() {
@@ -27,7 +27,7 @@ export default function Footer() {
   return (
     <Container
       fluid
-      className="bg-dark text-light mt-2 border-top border-secondary"
+      className="colore-navfoot text-light mt-2 border-top border-secondary"
     >
       <Row className="px-md-3Z px-3 pt-5">
         {/* Colonna Logo */}

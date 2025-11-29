@@ -7,10 +7,11 @@ import giuseppeperna.GearForFit.entities.Utente.Utente;
 import giuseppeperna.GearForFit.exceptions.NotFoundException;
 import giuseppeperna.GearForFit.exceptions.UnauthorizedException;
 import giuseppeperna.GearForFit.payloads.*;
-import giuseppeperna.GearForFit.repositories.*;
+import giuseppeperna.GearForFit.repositories.EsercizioRepository;
+import giuseppeperna.GearForFit.repositories.SchedaAllenamentoRepository;
+import giuseppeperna.GearForFit.repositories.SerieRepository;
+import giuseppeperna.GearForFit.repositories.UtenteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
@@ -267,6 +268,7 @@ public class SchedaAllenamentoService {
 
         schedaRepository.delete(scheda);
     }
+
     public SchedaAllenamentoDTO getSchedaByIdAndAuthorize(Long id, Utente utente) {
         // 1. Trova la scheda o lancia un'eccezione
         SchedaAllenamento scheda = schedaRepository.findById(id)
@@ -298,6 +300,7 @@ public class SchedaAllenamentoService {
         // 3. Se l'utente è autorizzato, mappa e restituisci il DTO
         return mapToDTO(scheda);
     }
+
     public List<SchedaAllenamentoDTO> getAllSchedeFiltered(Utente utente, String tipoFiltro) {
         List<SchedaAllenamentoDTO> result = new ArrayList<>();
 
@@ -327,6 +330,7 @@ public class SchedaAllenamentoService {
 
         return result;
     }
+
     // Ottieni una scheda per ID (standard o personalizzata)
     public SchedaAllenamentoDTO getSchedaById(Long schedaId, Utente utente) {
         SchedaAllenamento scheda = schedaRepository.findById(schedaId)
@@ -343,6 +347,7 @@ public class SchedaAllenamentoService {
 
         return mapToDTO(scheda);
     }
+
     // Ottieni tutte le schede (standard + personalizzate utente) filtrate per obiettivo
     public List<SchedaAllenamentoDTO> getAllSchedeByObiettivo(Long utenteId, ObiettivoAllenamento obiettivo) {
         List<SchedaAllenamentoDTO> result = new ArrayList<>();
@@ -364,6 +369,7 @@ public class SchedaAllenamentoService {
                 piano == giuseppeperna.GearForFit.entities.Utente.TipoPiano.PREMIUM ||
                 piano == giuseppeperna.GearForFit.entities.Utente.TipoPiano.ADMIN;
     }
+
     @Transactional
     public SchedaAllenamentoDTO setSchedaAttiva(Long schedaId, Utente utente) {
         // 1. Trova la scheda da attivare, assicurandoti che sia dell'utente corretto e che sia personalizzata
@@ -408,11 +414,13 @@ public class SchedaAllenamentoService {
                 .map(this::mapToDTO)
                 .collect(Collectors.toList());
     }
+
     public void eliminaSchedaById(Long id) {
         SchedaAllenamento scheda = schedaRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Scheda con id " + id + " non trovata"));
         schedaRepository.delete(scheda);
     }
+
     // Ottieni tutte le schede custom (di tutti gli utenti)
     public List<SchedaAllenamentoDTO> getAllSchedeCustom() {
         List<SchedaAllenamento> schede = schedaRepository.findByIsStandardFalse();
@@ -439,6 +447,7 @@ public class SchedaAllenamentoService {
                 .findByObiettivo(obiettivo);
         return schede.stream().map(this::mapToDTO).toList();
     }
+
     // ========== UTILITY ==========
     private SchedaAllenamentoDTO mapToDTO(SchedaAllenamento scheda) {
         List<GiornoAllenamentoDTO> giorniDTO = scheda.getGiorni().stream()
@@ -471,6 +480,7 @@ public class SchedaAllenamentoService {
                 giorniDTO
         );
     }
+
     private SchedaAllenamentoDTO convertToResponseDTO(SchedaAllenamento scheda) {
         List<GiornoAllenamentoDTO> giorniDTO = new ArrayList<>();
 
@@ -483,6 +493,6 @@ public class SchedaAllenamentoService {
                 scheda.getIsStandard(),
                 scheda.getUtente() != null ? scheda.getUtente().getId() : null,
                 scheda.getAttiva(),
-                giorniDTO); // Ora la variabile `giorniDTO` è correttamente valorizzata
+                giorniDTO);
     }
 }

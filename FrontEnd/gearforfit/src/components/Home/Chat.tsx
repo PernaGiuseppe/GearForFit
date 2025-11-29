@@ -23,8 +23,8 @@ export default function Chat() {
   const [isMessagesOpen, setIsMessagesOpen] = useState(false)
   const [isClosing, setIsClosing] = useState(false)
   const [selectedQeAId, setSelectedQeAId] = useState<number | null>(null)
-  const dropdownRef = useRef<HTMLDivElement>(null) // Ref per il dropdown
-  const buttonRef = useRef<HTMLButtonElement>(null) // Ref per il bottone
+  const dropdownRef = useRef<HTMLDivElement>(null)
+  const buttonRef = useRef<HTMLButtonElement>(null)
 
   const dispatch = useDispatch<AppDispatch>()
   const { listaQeA, rispostaCorrente, isLoading, error } = useSelector(

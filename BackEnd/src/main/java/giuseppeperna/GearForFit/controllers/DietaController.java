@@ -1,11 +1,12 @@
 package giuseppeperna.GearForFit.controllers;
 
 import giuseppeperna.GearForFit.entities.Utente.Utente;
-import giuseppeperna.GearForFit.payloads.*;
+import giuseppeperna.GearForFit.payloads.DietaCreateRequestDTO;
+import giuseppeperna.GearForFit.payloads.DietaDTO;
+import giuseppeperna.GearForFit.payloads.DietaSetAttivaRequestDTO;
 import giuseppeperna.GearForFit.services.DietaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;

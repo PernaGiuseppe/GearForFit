@@ -53,7 +53,7 @@ public class DietaService {
 
         // Aggiungi pasti con alimenti e calcola calorie totali
         double caloTotali = 0.0;
-        for (PastoStandardRequestDTO pastoReq : request.pasti()) {  // ← CORRETTO
+        for (PastoStandardRequestDTO pastoReq : request.pasti()) {
             PastoStandard pasto = new PastoStandard();
             pasto.setNomePasto(pastoReq.nomePasto());
             pasto.setOrdine(pastoReq.ordine());
@@ -113,7 +113,7 @@ public class DietaService {
 
         // Aggiungi nuovi pasti
         double caloTotali = 0.0;
-        for (PastoStandardRequestDTO pastoReq : request.pasti()) {  // ← CORRETTO
+        for (PastoStandardRequestDTO pastoReq : request.pasti()) {
             PastoStandard pasto = new PastoStandard();
             pasto.setNomePasto(pastoReq.nomePasto());
             pasto.setOrdine(pastoReq.ordine());

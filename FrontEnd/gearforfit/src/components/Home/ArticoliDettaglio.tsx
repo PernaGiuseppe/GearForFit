@@ -24,10 +24,13 @@ export default function ArticoliDettaglio() {
   }
 
   return (
-    <div className="container mt-5 mb-5" style={{ maxWidth: '800px' }}>
+    <div className="container my-2" style={{ maxWidth: '800px' }}>
       {/* Intestazione Articolo */}
       <div className="mb-4">
-        <button className="btn btn-primary my-3" onClick={() => navigate('/')}>
+        <button
+          className="btn btn-primary my-1 mb-3"
+          onClick={() => navigate('/')}
+        >
           Torna alla Home
         </button>
         <h1 className="fw-bold display-5 mb-3">{article.title}</h1>
@@ -65,10 +68,10 @@ export default function ArticoliDettaglio() {
 
       <hr className="my-5" />
 
-      {/* --- BOX PROMOZIONALE (CTA) --- */}
+      {/*  BOX PROMOZIONALE  */}
       {!user ? (
         // VISIBILE SOLO AI NON LOGGATI
-        <div className="card border-0 shadow-lg rounded-4 overflow-hidden bg-primary text-white">
+        <div className="card border-0 shadow-lg rounded-4 overflow-hidden bg-primary text-white mb-4">
           <div className="card-body p-5 text-center">
             <h3 className="fw-bold mb-3">Ti è piaciuto questo articolo?</h3>
             <p className="lead mb-4">
@@ -96,7 +99,7 @@ export default function ArticoliDettaglio() {
         </div>
       ) : (
         // VISIBILE SOLO AI LOGGATI
-        <div className="card border-0 shadow-sm rounded-4 bg-light">
+        <div className="card border-0 shadow-sm rounded-4 bg-light mb-4">
           <div className="card-body p-4 text-center">
             <h4 className="fw-bold">Pronto per allenarti?</h4>
             <p className="text-muted mb-3">
