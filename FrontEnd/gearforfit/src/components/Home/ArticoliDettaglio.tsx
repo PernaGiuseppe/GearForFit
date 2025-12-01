@@ -27,13 +27,10 @@ export default function ArticoliDettaglio() {
     <div className="container my-2" style={{ maxWidth: '800px' }}>
       {/* Intestazione Articolo */}
       <div className="mb-4">
-        <button
-          className="btn btn-primary my-1 mb-3"
-          onClick={() => navigate('/')}
-        >
+        <button className="btn btn-primary my-3" onClick={() => navigate('/')}>
           Torna alla Home
         </button>
-        <h1 className="fw-bold display-5 mb-3">{article.title}</h1>
+        <h1 className="fw-bold display-5 mt-1 mb-3">{article.title}</h1>
         <div className="d-flex align-items-center text-muted">
           <i className="bi bi-calendar3 me-2"></i>
           <span className="me-4">{article.date}</span>

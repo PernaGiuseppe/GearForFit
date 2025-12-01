@@ -12,6 +12,7 @@ type SchedaDTO = {
   id: number
   nome: string
   obiettivo: string
+  descrizione: string
   isStandard: boolean
   attiva?: boolean
   utenteId?: number | null
@@ -291,6 +292,7 @@ export default function Schede() {
         <div className="row pt-2">
           {schede.map((scheda) => {
             const nomeVisualizzato = scheda.nome || 'Scheda senza nome'
+            const descVisualizzata = scheda.descrizione || ''
             const uniqueKey = `${scheda.isStandard ? 'std' : 'cust'}-${
               scheda.id
             }`
@@ -315,9 +317,9 @@ export default function Schede() {
                     </button>
                   )}
 
-                  <div className="card-body">
+                  <div className="card-body cards-schede">
                     <div className="d-flex justify-content-between align-items-start mb-2">
-                      <h5 className="card-title fw-bold mb-0">
+                      <h5 className="card-title fw-bold mb-0 titolo-schede">
                         {nomeVisualizzato}
                       </h5>
 
@@ -359,8 +361,11 @@ export default function Schede() {
                         {scheda.obiettivo}
                       </span>
                     </div>
-
-                    <p className="card-text">Obiettivo: {scheda.obiettivo}</p>
+                    <p className="card-text mb-3">
+                      {descVisualizzata.length > 100
+                        ? descVisualizzata.substring(0, 100) + '...'
+                        : descVisualizzata}
+                    </p>
                     <Link to={`/schede/${scheda.id}`} className="btn-dettagli">
                       Dettagli
                     </Link>

@@ -1,8 +1,8 @@
 /* Icona attiva/inattiva */
 .star-active {
   position: absolute;
-  top: 6px;
-  right: 3px;
+  top: -5px;
+  right: -8px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -15,8 +15,8 @@
 
 .star-inactive {
   position: absolute;
-  top: 6px;
-  right: 3px;
+  top: -5px;
+  right: -8px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -33,7 +33,6 @@
   transform: scale(1.1);
 }
 
-/* Bottone delete circolare nella card (Diete lista) */
 .btn-delete-button {
   position: absolute;
   bottom: 0px;
@@ -58,7 +57,6 @@
   transform: scale(1.1);
 }
 
-/* Icona nel dettaglio (accanto al titolo) */
 .stella-dettaglio {
   font-size: 2em;
   cursor: pointer;
@@ -100,4 +98,19 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   z-index: 2;
   min-width: 100px;
+}
+.cards-schede {
+  min-height: 16em;
+  max-height: 20em;
+  position: relative;
+  padding-bottom: 3rem;
+}
+
+.btn-dettagli {
+  position: absolute;
+  bottom: 1rem;
+  left: 1rem;
+}
+.titolo-schede {
+  min-height: 2.5em;
 }

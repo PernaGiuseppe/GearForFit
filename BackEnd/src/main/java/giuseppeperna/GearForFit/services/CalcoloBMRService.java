@@ -36,7 +36,7 @@ public class CalcoloBMRService {
 
     // Calcola il TDEE (Total Daily Energy Expenditure) = BMR * fattore attività
 
-    public Double calcoloTDEE(Double bmr, LivelloAttivita livelloAttivita) {  // ← Usa LivelloAttivita separato!
+    public Double calcoloTDEE(Double bmr, LivelloAttivita livelloAttivita) {
         Map<LivelloAttivita, Double> fattori = Map.of(
                 LivelloAttivita.SEDENTARIO, 1.2,
                 LivelloAttivita.LEGGERO, 1.375,

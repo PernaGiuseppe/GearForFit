@@ -295,25 +295,6 @@ export default function SchedaDettaglio() {
       <div className="row align-items-center mb-4">
         <div className="col-12 col-md-8 d-flex align-items-center">
           <h1 className="fw-bold mb-2 me-3">{scheda.nome}</h1>
-          {scheda && !scheda.isStandard && user?.tipoUtente !== 'ADMIN' && (
-            <>
-              {scheda.attiva ? (
-                <FaBookmark
-                  className="stella-dettaglio star-active"
-                  onClick={handleToggleAttiva}
-                  title="Scheda attiva - Clicca per disattivare"
-                  style={{ cursor: 'pointer' }}
-                />
-              ) : (
-                <FaRegBookmark
-                  className="stella-dettaglio star-inactive"
-                  onClick={handleToggleAttiva}
-                  title="Clicca per attivare questa scheda"
-                  style={{ cursor: 'pointer' }}
-                />
-              )}
-            </>
-          )}
         </div>
         <div className="col-12 col-lg-4 text-lg-end mt-3 mt-lg-0">
           {(user?.tipoUtente === 'ADMIN' || !scheda?.isStandard) && (
@@ -356,6 +337,12 @@ export default function SchedaDettaglio() {
                     {scheda.durataSettimane} settimane
                   </span>
                 )}
+                {scheda &&
+                  !scheda.isStandard &&
+                  user?.tipoUtente !== 'ADMIN' &&
+                  scheda.attiva && (
+                    <span className="badge badge--attiva p-2">Attiva</span>
+                  )}
               </div>
 
               {scheda.descrizione && (

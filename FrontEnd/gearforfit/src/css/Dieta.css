@@ -22,6 +22,33 @@
   background-color: #c82333;
   transform: scale(1.1);
 }
+.star-active {
+  position: absolute;
+  top: -5px;
+  right: -8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  color: #ffc107;
+  transition: color 0.2s ease;
+}
+
+.star-inactive {
+  position: absolute;
+  top: -5px;
+  right: -8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  color: #d3d3d3;
+  transition: color 0.2s ease;
+}
 
 .stella-dettaglio {
   font-size: 2em;
@@ -42,4 +69,16 @@
 .stella-dettaglio:hover {
   color: #ffc107;
   transform: scale(1.1);
+}
+.cards-diete {
+  min-height: 15em;
+  max-height: 18em;
+  position: relative;
+  padding-bottom: 3rem;
+}
+
+.btn-dettagli {
+  position: absolute;
+  bottom: 1rem;
+  left: 1rem;
 }

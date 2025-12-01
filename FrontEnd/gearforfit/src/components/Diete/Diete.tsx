@@ -299,9 +299,9 @@ export default function Diete() {
                     </button>
                   )}
 
-                  <div className="card-body">
+                  <div className="card-body cards-diete">
                     <div className="d-flex justify-content-between align-items-start mb-2">
-                      <h5 className="card-title fw-bold mb-0">
+                      <h5 className="card-title fw-bold mb-2">
                         {nomeVisualizzato}
                       </h5>
 
@@ -344,7 +344,7 @@ export default function Diete() {
                       )}
                     </div>
 
-                    <p className="card-text">
+                    <p className="card-text mb-3">
                       {descVisualizzata.length > 100
                         ? descVisualizzata.substring(0, 100) + '...'
                         : descVisualizzata}

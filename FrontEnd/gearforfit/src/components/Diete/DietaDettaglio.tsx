@@ -178,25 +178,6 @@ export default function DietaDettaglio() {
       <div className="row align-items-start align-items-md-center mb-4">
         <div className="col-12 col-md-8 d-flex align-items-center">
           <h1 className="fw-bold mb-2 me-3">{dieta.nome}</h1>
-          {dieta && !dieta.isStandard && user?.tipoUtente !== 'ADMIN' && (
-            <>
-              {dieta.isAttiva ? (
-                <FaBookmark
-                  className="stella-dettaglio star-active"
-                  onClick={handleToggleAttiva}
-                  title="Dieta attiva - Clicca per disattivare"
-                  style={{ cursor: 'pointer' }}
-                />
-              ) : (
-                <FaRegBookmark
-                  className="stella-dettaglio star-inactive"
-                  onClick={handleToggleAttiva}
-                  title="Clicca per attivare questa dieta"
-                  style={{ cursor: 'pointer' }}
-                />
-              )}
-            </>
-          )}
         </div>
 
         <div className="col-12 col-lg-4 text-start text-lg-end mt-2">
@@ -240,6 +221,12 @@ export default function DietaDettaglio() {
                     {dieta.durataSettimane} settimane
                   </span>
                 )}
+                {dieta &&
+                  !dieta.isStandard &&
+                  user?.tipoUtente !== 'ADMIN' &&
+                  dieta.isAttiva && (
+                    <span className="badge badge--attiva p-2">Attiva</span>
+                  )}
               </div>
               {dieta.descrizione && (
                 <p className="card-text  border-top pt-3">
