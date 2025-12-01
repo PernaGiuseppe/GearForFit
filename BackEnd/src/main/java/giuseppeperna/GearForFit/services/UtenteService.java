@@ -68,7 +68,7 @@ public class UtenteService {
 
     // Ottieni tutti gli utenti
     public List<Utente> getAllUtenti() {
-        return utenteRepository.findAll();
+        return utenteRepository.findAllByOrderByIdAsc();
     }
 
 

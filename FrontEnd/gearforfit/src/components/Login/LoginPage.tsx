@@ -43,10 +43,10 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="page-content-custom-2">
+    <div className="page-content-custom-2 mt-4">
       <div className="card mx-auto" style={{ maxWidth: 520 }}>
         <div className="card-body">
-          <h5 className="card-title">Login</h5>
+          <h5 className="card-title mb-3">Login</h5>
 
           <form onSubmit={submit}>
             <div className="mb-2">

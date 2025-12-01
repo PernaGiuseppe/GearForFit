@@ -35,7 +35,6 @@ export default function RegisterPage() {
           setCognome('')
           setEmail('')
           setPassword('')
-          setTimeout(() => navigate('/login'), 2000)
           return 'Registrazione completata! Ora puoi effettuare il login.'
         }
         throw new Error('Registrazione fallita')
@@ -45,10 +44,10 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="page-content-custom-2">
+    <div className="page-content-custom-2 my-4">
       <div className="card mx-auto" style={{ maxWidth: 520 }}>
         <div className="card-body">
-          <h5 className="card-title">Registrazione</h5>
+          <h5 className="card-title mb-3">Registrazione</h5>
 
           <form onSubmit={handleSubmit}>
             <div className="mb-2">

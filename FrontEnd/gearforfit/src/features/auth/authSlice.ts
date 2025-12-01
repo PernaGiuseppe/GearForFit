@@ -151,10 +151,7 @@ const authSlice = createSlice({
       })
       .addCase(registerUser.fulfilled, (state, action) => {
         state.isLoading = false
-        state.user = action.payload
         state.error = null
-        // FIX: Salva l'utente nel localStorage dopo la registrazione riuscita
-        localStorage.setItem('user', JSON.stringify(action.payload))
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.isLoading = false
