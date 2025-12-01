@@ -181,15 +181,13 @@ export default function GestioneUtenti() {
               <tr key={utente.id}>
                 <td>{utente.id}</td>
                 <td>
-                  {/* <div className="my-1"> da modificare prima del demoday*/}
-
-                  <div>
+                  <div className="my-1">
                     <strong>
                       {utente.nome} {utente.cognome}
                     </strong>
                   </div>
                   {/* small da eliminare prima del demoday*/}
-                  <small className="text-muted">{utente.email}</small>
+                  {/* <small className="text-muted">{utente.email}</small> */}
                 </td>
                 <td>
                   <span
@@ -246,7 +244,7 @@ export default function GestioneUtenti() {
                   <button
                     className={`btn btn-sm ${
                       utente.attivo ? 'btn-warning' : 'btn-success ms-2 me-3'
-                    } me-2`}
+                    } me-2 ${utente.tipoUtente === 'ADMIN' ? 'd-none' : ''}`}
                     onClick={() => toggleUserStatus(utente.id, utente.attivo)}
                     disabled={utente.tipoUtente === 'ADMIN'}
                   >
@@ -254,7 +252,9 @@ export default function GestioneUtenti() {
                   </button>
 
                   <button
-                    className="btn btn-sm btn-danger"
+                    className={`btn btn-sm btn-danger ${
+                      utente.tipoUtente === 'ADMIN' ? 'd-none' : ''
+                    }`}
                     onClick={() => handleDeleteUser(utente.id)}
                     disabled={utente.tipoUtente === 'ADMIN'}
                   >
