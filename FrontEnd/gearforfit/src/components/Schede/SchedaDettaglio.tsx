@@ -69,7 +69,7 @@ export default function SchedaDettaglio() {
     const endpoint =
       user?.tipoUtente === 'ADMIN'
         ? `${API_BASE_URL}/admin/schede/${id}`
-        : `${API_BASE_URL}/schede-allenamento/me/${id}`
+        : `${API_BASE_URL}/schede-allenamento/${id}`
 
     setLoading(true)
     fetch(endpoint, { headers: getAuthHeader() })
@@ -273,19 +273,19 @@ export default function SchedaDettaglio() {
 
   if (loading)
     return (
-      <div className="container mt-5 text-center page-content-custom">
+      <div className="container mt-5 text-center page-content-custom-2">
         <div className="spinner-border text-primary" role="status"></div>
       </div>
     )
   if (error)
     return (
-      <div className="container mt-5 page-content-custom">
+      <div className="container mt-5 page-content-custom-2">
         <div className="alert alert-danger">{error}</div>
       </div>
     )
   if (!scheda)
     return (
-      <div className="container mt-5 page-content-custom">
+      <div className="container mt-5 page-content-custom-2">
         <div className="alert alert-warning">Scheda non trovata.</div>
       </div>
     )

@@ -43,7 +43,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="page-content-custom-2 mt-4">
+    <div className="page-content-general mt-4">
       <div className="card mx-auto" style={{ maxWidth: 520 }}>
         <div className="card-body">
           <h5 className="card-title mb-3">Login</h5>

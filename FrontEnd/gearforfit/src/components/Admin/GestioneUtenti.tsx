@@ -147,9 +147,17 @@ export default function GestioneUtenti() {
   }
 
   if (loading)
-    return <div className="container mt-4">Caricamento utenti...</div>
+    return (
+      <div className="container mt-4 page-content-general ">
+        Caricamento utenti...
+      </div>
+    )
   if (error)
-    return <div className="container mt-4 alert alert-danger">{error}</div>
+    return (
+      <div className="container mt-4 page-content-general ">
+        <div className="alert alert-danger">{error}</div>
+      </div>
+    )
 
   return (
     <div className="container mt-4 page-content-general ">

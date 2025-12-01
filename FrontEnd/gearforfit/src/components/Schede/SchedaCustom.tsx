@@ -248,7 +248,7 @@ export default function SchedaCustom() {
 
   if (currentStep === 0) {
     return (
-      <div className="container mt-4 page-content-custom">
+      <div className="container mt-4 page-content-general">
         <h1>Crea la tua Scheda Custom</h1>
         <p className="text-muted">
           Configura la tua scheda di allenamento personalizzata

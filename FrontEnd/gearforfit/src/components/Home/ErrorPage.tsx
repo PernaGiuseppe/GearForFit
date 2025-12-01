@@ -5,7 +5,7 @@ import '../../css/errorpage.css'
 
 export default function ErrorPage() {
   return (
-    <div className="error-page page-content-custom-2">
+    <div className="error-page page-content-error">
       <div className="error-content">
         <div className="error-numbers">
           <span className="number-4 blue">4</span>

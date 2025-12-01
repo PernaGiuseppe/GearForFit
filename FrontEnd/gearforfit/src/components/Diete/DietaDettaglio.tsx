@@ -132,21 +132,21 @@ export default function DietaDettaglio() {
 
   if (loading)
     return (
-      <div className="container mt-5 text-center page-content-custom ">
+      <div className="container mt-5 text-center page-content-custom-2 ">
         <div className="spinner-border text-primary"></div>
       </div>
     )
   if (error)
     return (
       <>
-        <div className="page-content-custom">
+        <div className="page-content-custom-2">
           <div className="container mt-5 alert alert-danger ">{error}</div>
         </div>
       </>
     )
   if (!dieta)
     return (
-      <div className="page-content-custom">
+      <div className="ppage-content-custom-2">
         <div className="container mt-5 alert alert-warning">
           Dieta non trovata.
         </div>

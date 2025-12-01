@@ -12,14 +12,19 @@
   min-height: 80vh;
 }
 .page-content-general {
-  min-height: 69vh;
+  min-height: 73vh;
+}
+.page-content-general-1 {
+  min-height: 71vh;
+}
+.page-content-error {
+  min-height: 76vh;
 }
 .page-content-custom {
   min-height: 60vh;
 }
-
 .page-content-custom-2 {
-  min-height: 59vh;
+  min-height: 70vh;
 }
 .colore-navfoot {
   background-color: #0f172a;

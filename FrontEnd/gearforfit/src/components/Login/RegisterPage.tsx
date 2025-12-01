@@ -44,7 +44,7 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="page-content-custom-2 my-4">
+    <div className="page-content-general-1 my-4">
       <div className="card mx-auto" style={{ maxWidth: 520 }}>
         <div className="card-body">
           <h5 className="card-title mb-3">Registrazione</h5>
