@@ -168,8 +168,9 @@ export default function GestioneUtenti() {
         <table className="table table-striped table-hover align-middle">
           <thead>
             <tr>
-              <th>ID</th>
-              <th>Info</th>
+              <div className="ps-3">
+                <th>Info</th>
+              </div>
               <th>Ruolo</th>
               <th>Piano</th>
               <th>Stato</th>
@@ -179,9 +180,8 @@ export default function GestioneUtenti() {
           <tbody>
             {utenti.map((utente) => (
               <tr key={utente.id}>
-                <td>{utente.id}</td>
                 <td>
-                  <div className="my-1">
+                  <div className="my-1 ps-2">
                     <strong>
                       {utente.nome} {utente.cognome}
                     </strong>
