@@ -180,6 +180,59 @@ public class SchedaAllenamentoService {
         scheda.setObiettivo(body.obiettivo());
         scheda.setDurataSettimane(body.durataSettimane());
         scheda.setIsStandard(false);
+        scheda.setAttiva(true);
+        scheda.setUtente(utente);
+
+        schedaRepository.findByUtenteIdAndAttivaTrue(utente.getId())
+                .ifPresent(schedaVecchia -> {
+                    schedaVecchia.setAttiva(false);
+                    schedaRepository.save(schedaVecchia);
+                });
+
+        // === LOGICA PER SALVARE GIORNI E SERIE ===
+        if (body.giorni() != null && !body.giorni().isEmpty()) {
+            List<GiornoAllenamento> giorni = new ArrayList<>();
+            for (GiornoAllenamentoRequestDTO giornoDTO : body.giorni()) {
+                GiornoAllenamento giorno = new GiornoAllenamento();
+                giorno.setGiornoSettimana(giornoDTO.giornoSettimana());
+                giorno.setScheda(scheda); // Collega al genitore
+
+                List<Serie> serieList = new ArrayList<>();
+                for (SerieRequestDTO serieDTO : giornoDTO.serie()) {
+                    // Trova l'esercizio dal DB
+                    Esercizio esercizio = esercizioRepository.findById(serieDTO.esercizioId())
+                            .orElseThrow(() -> new NotFoundException("Esercizio con ID " + serieDTO.esercizioId() + " non trovato"));
+
+                    Serie serie = new Serie();
+                    serie.setEsercizio(esercizio);
+                    serie.setNumeroSerie(serieDTO.numeroSerie());
+                    serie.setNumeroRipetizioni(serieDTO.numeroRipetizioni());
+                    serie.setTempoRecuperoSecondi(serieDTO.tempoRecuperoSecondi());
+                    serie.setGiorno(giorno);
+                    serieList.add(serie);
+                }
+                giorno.setSerie(serieList);
+                giorni.add(giorno);
+            }
+            scheda.setGiorni(giorni);
+        }
+    
+
+        SchedaAllenamento saved = schedaRepository.save(scheda);
+        return mapToDTO(saved);
+    }
+
+    // ADMIN CREA SCHEDA PERSONALIZZATA PER UTENTE
+    public SchedaAllenamentoDTO creaSchedaPersonalizzataPerUtente(Long utenteId, SchedaPersonalizzataRequestDTO body) {
+        Utente utente = utenteRepository.findById(utenteId)
+                .orElseThrow(() -> new NotFoundException("Utente non trovato"));
+
+        SchedaAllenamento scheda = new SchedaAllenamento();
+        scheda.setNome(body.nome());
+        scheda.setDescrizione(body.descrizione());
+        scheda.setObiettivo(body.obiettivo());
+        scheda.setDurataSettimane(body.durataSettimane());
+        scheda.setIsStandard(false);
         scheda.setUtente(utente);
 
         // === NUOVA LOGICA PER SALVARE GIORNI E SERIE ===
@@ -201,7 +254,7 @@ public class SchedaAllenamentoService {
                     serie.setNumeroSerie(serieDTO.numeroSerie());
                     serie.setNumeroRipetizioni(serieDTO.numeroRipetizioni());
                     serie.setTempoRecuperoSecondi(serieDTO.tempoRecuperoSecondi());
-                    serie.setGiorno(giorno); // Collega al genitore
+                    serie.setGiorno(giorno);
                     serieList.add(serie);
                 }
                 giorno.setSerie(serieList);

@@ -379,7 +379,7 @@ public class AdminController {
     public SchedaAllenamentoDTO creaSchedaPerUtente(
             @PathVariable Long utenteId,
             @RequestBody @Valid SchedaPersonalizzataRequestDTO body) {
-        return schedaAllenamentoService.creaSchedaPersonalizzata(utenteId, body);
+        return schedaAllenamentoService.creaSchedaPersonalizzataPerUtente(utenteId, body);
     }
 
     @GetMapping("/schede/utente/{utenteId}")
