@@ -315,7 +315,7 @@ export default function SchedaCustomAdmin() {
               <option value="">-- Seleziona un utente --</option>
               {utenti.map((u) => (
                 <option key={u.id} value={u.id}>
-                  Nome: {u.nome} {u.cognome}/ ID: ({u.id})
+                  Utente: {u.nome} {u.cognome}
                 </option>
               ))}
             </select>

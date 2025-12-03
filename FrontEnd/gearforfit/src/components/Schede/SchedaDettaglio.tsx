@@ -377,19 +377,39 @@ export default function SchedaDettaglio() {
                       <table className="table table-striped table-hover mb-0 align-middle">
                         <thead className="table-light">
                           <tr>
-                            <th scope="col" className="ps-4">
+                            <th
+                              scope="col"
+                              className="ps-4 **text-start**"
+                              style={{ width: '40%' }}
+                            >
                               Esercizio
                             </th>
-                            <th scope="col" className="text-center">
+                            <th
+                              scope="col"
+                              className="text-center"
+                              style={{ width: '15%' }}
+                            >
                               Serie
                             </th>
-                            <th scope="col" className="text-center">
+                            <th
+                              scope="col"
+                              className="text-center"
+                              style={{ width: '15%' }}
+                            >
                               Reps
                             </th>
-                            <th scope="col" className="text-center">
+                            <th
+                              scope="col"
+                              className="text-center"
+                              style={{ width: '15%' }}
+                            >
                               Rec (s)
                             </th>
-                            <th scope="col" className="text-center">
+                            <th
+                              scope="col"
+                              className="text-center"
+                              style={{ width: '15%' }}
+                            >
                               Peso (kg)
                             </th>
                           </tr>
@@ -397,7 +417,7 @@ export default function SchedaDettaglio() {
                         <tbody>
                           {giorno.serie.map((es) => (
                             <tr key={es.id}>
-                              <td className="ps-4 fw-semibold text-primary">
+                              <td className="ps-4 fw-semibold text-primary **text-start**">
                                 {es.nomeEsercizio}
                               </td>
                               <td className="text-center">
