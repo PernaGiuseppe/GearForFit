@@ -46,8 +46,6 @@ const initialState: AuthState = {
   error: null,
 }
 
-// =================== 2. THUNKS (AZIONI ASINCRONE) ===================
-
 const handleFetch = (
   url: string,
   options: RequestInit,
@@ -75,6 +73,8 @@ const handleFetch = (
       )
     })
 }
+
+// =================== 2. THUNKS (AZIONI ASINCRONE) ===================
 
 // POST /auth/login
 export const loginUser = createAsyncThunk<

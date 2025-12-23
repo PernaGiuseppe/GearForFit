@@ -62,7 +62,6 @@ public class Utente implements UserDetails {
         this.dataCreazione = LocalDateTime.now();
     }
 
-    // Dentro la classe Utente.java
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
